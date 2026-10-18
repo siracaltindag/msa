@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Siraç Altındağ</title>
+<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1020;--p:rgba(16,26,48,.72);--l:rgba(140,180,255,.16);--t:#e8eefc;--m:#8fa0c4;--a:#7fb8ff;--a2:#ffd9a0;--r:#ff8a8a;--g:#7fe0b0}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font:15px/1.5 Manrope,system-ui,sans-serif;background:radial-gradient(120% 90% at 20% 0%,#142344,var(--bg) 60%);color:var(--t);padding-top:env(safe-area-inset-top)}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.hide{display:none!important}
+.sig{font:400 3rem/1 "Mrs Saint Delafield",cursive;background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.logo img{max-height:56px;max-width:100%}
+.box{background:var(--p);border:1px solid var(--l);border-radius:14px;backdrop-filter:blur(10px)}
+#auth{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;padding:20px}
+#auth .box{width:min(380px,100%);padding:28px}
+#auth .logo{text-align:center;margin-bottom:18px}
+#auth .sig{font-size:3.6rem}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1}
+button,input,textarea,select{font:inherit;color:inherit}
+input,textarea,select{width:100%;padding:10px 12px;margin:0 0 10px;background:rgba(8,14,30,.7);border:1px solid var(--l);border-radius:8px}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--a);outline-offset:1px}
+textarea{min-height:240px;font:13px/1.5 ui-monospace,Menlo,monospace}
+button{cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--l);background:rgba(127,184,255,.08)}
+button:hover{background:rgba(127,184,255,.18)}
+button.pri{background:var(--a);color:#07101f;border-color:var(--a);font-weight:700}
+button.on{background:rgba(127,184,255,.22);border-color:var(--a)}
+button.dng{color:var(--r)}
+.err{color:var(--r);min-height:20px;font-size:13px;margin-bottom:6px}
+#app{position:relative;z-index:1;display:flex;height:100%}
+aside{width:230px;padding:18px 14px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--l);background:var(--p);backdrop-filter:blur(10px)}
+aside .logo{padding:4px 6px 14px}
+aside .sig{font-size:2.2rem}
+aside .who{color:var(--m);font-size:12px;padding:0 6px 10px;overflow:hidden;text-overflow:ellipsis}
+aside button{text-align:left;border-color:transparent;background:none}
+aside button.on{background:rgba(127,184,255,.16)}
+aside .sp{flex:1}
+main{flex:1;min-width:0;overflow:auto;padding:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+h2{font-weight:700;font-size:1.3rem;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{padding:16px;display:flex;flex-direction:column;gap:12px;cursor:pointer}
+.card:hover{border-color:var(--a)}
+.card b{overflow-wrap:anywhere}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.sb{justify-content:space-between}
+.m{color:var(--m);font-size:13px}
+.star{color:var(--m)}.star.on{color:var(--a2);background:none}
+.empty{color:var(--m);padding:30px 0}
+iframe{width:100%;height:calc(100vh - 110px);border:1px solid var(--l);border-radius:12px;background:#fff}
+.li{padding:12px 14px;margin-bottom:10px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#5a6786;margin-right:6px}.dot.on{background:var(--g)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:8px 10px;border-bottom:1px solid var(--l);text-align:left;vertical-align:top}
+@media(max-width:720px){#app{flex-direction:column}aside{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--l);padding:10px}aside .logo{padding:0;margin-right:auto}aside .sig{font-size:1.8rem}aside .who,aside .sp{display:none}iframe{height:calc(100vh - 170px)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<canvas id="bg"></canvas>
+
+<section id="auth" class="hide"><div class="box">
+<div class="logo" data-logo></div>
+<div class="tabs"><button id="tL" class="on">Giriş yap</button><button id="tR">Kayıt ol</button></div>
+<input id="aN" class="hide" placeholder="Ad Soyad" autocomplete="name">
+<input id="aE" type="email" placeholder="E-posta" autocomplete="email">
+<input id="aP" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password">
+<div id="aErr" class="err"></div>
+<button id="aGo" class="pri" style="width:100%">Giriş yap</button>
+</div></section>
+
+<div id="app" class="hide">
+<aside>
+<div class="logo" data-logo></div>
+<div class="who" id="who"></div>
+<button data-a="nav" data-v="lib">Kütüphane</button>
+<button data-a="nav" data-v="fav">Favoriler</button>
+<button data-a="nav" data-v="adm" id="admBtn" class="hide">Yönetici Paneli</button>
+<div class="sp"></div>
+<button data-a="out">Çıkış</button>
+</aside>
+<main id="main"></main>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc,updateDoc,deleteDoc,addDoc,collection,getDocs,query,where,orderBy,limit,startAfter,serverTimestamp,arrayUnion,arrayRemove}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== AYARLAR: kendi değerlerini yapıştır ===== */
+const firebaseConfig={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
+const ADMIN_UID="a0DYXzGYMLMANMG4QKkabIL3GJP2";
+/* Koleksiyonlar: users, pages {title,html,visible,createdAt}, logs {uid,email,action,detail,ts} */
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>t?.toDate?t.toDate().toLocaleString("tr-TR"):"—";
+const S={u:null,name:"",fav:[],pages:[],view:"lib",edit:null,tab:"pg",logs:[],cur:null,filter:""};
+let reg=0,mode="L",hb=null;
+const isAdm=()=>S.u&&S.u.uid===ADMIN_UID;
+
+/* logo */
+document.querySelectorAll("[data-logo]").forEach(el=>{el.innerHTML='<img src="sirac.logo.png" alt="Siraç Altındağ" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'sig\',textContent:\'Siraç Altındağ\'}))">'});
+
+/* devre arka planı */
+const cv=$("bg"),cx=cv.getContext("2d");let W,H,paths=[];
+const DX=[1,1,0,-1,-1,-1,0,1],DY=[0,1,1,1,0,-1,-1,-1];
+function mk(){W=cv.width=innerWidth;H=cv.height=innerHeight;paths=[];const g=48,n=Math.floor(W*H/26000);
+for(let i=0;i<n;i++){let x=Math.round(Math.random()*W/g)*g,y=Math.round(Math.random()*H/g)*g,a=Math.floor(Math.random()*8),p=[[x,y]],L=[0],t=0;
+for(let k=0,K=5+Math.random()*6;k<K;k++){const s=g*(1+Math.floor(Math.random()*3));x+=DX[a]*s;y+=DY[a]*s;t+=Math.hypot(DX[a],DY[a])*s;p.push([x,y]);L.push(t);a=(a+[0,1,-1,0][Math.floor(Math.random()*4)]+8)%8}
+paths.push({p,L,t,d:Math.random()*t,v:.5+Math.random()*.9})}}
+function pt(q,d){d=Math.max(0,Math.min(q.t,d));let i=1;while(i<q.L.length-1&&q.L[i]<d)i++;const f=(d-q.L[i-1])/((q.L[i]-q.L[i-1])||1),A=q.p[i-1],B=q.p[i];return[A[0]+(B[0]-A[0])*f,A[1]+(B[1]-A[1])*f]}
+const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+function draw(){cx.clearRect(0,0,W,H);cx.lineWidth=1;cx.strokeStyle="rgba(120,170,255,.11)";
+for(const q of paths){cx.beginPath();q.p.forEach((c,i)=>i?cx.lineTo(c[0],c[1]):cx.moveTo(c[0],c[1]));cx.stroke();
+for(const c of[q.p[0],q.p[q.p.length-1]]){cx.beginPath();cx.arc(c[0],c[1],3,0,7);cx.stroke()}}
+if(!still)for(const q of paths){q.d+=q.v;if(q.d>q.t+80)q.d=-40;
+for(let j=14;j>=0;j--){const d=q.d-j*5;if(d<0||d>q.t)continue;const c=pt(q,d),k=1-j/15;cx.fillStyle=`rgba(${j?127:255},${j?184:217},${j?255:160},${k*.7})`;cx.shadowBlur=j?0:12;cx.shadowColor="#7fb8ff";cx.beginPath();cx.arc(c[0],c[1],j?1.8*k+.4:2.4,0,7);cx.fill()}}
+cx.shadowBlur=0;if(!still)requestAnimationFrame(draw)}
+addEventListener("resize",()=>{mk();if(still)draw()});mk();draw();
+
+/* log */
+const log=(action,detail="")=>addDoc(collection(db,"logs"),{uid:S.u?.uid||"",email:S.u?.email||"",action,detail,ts:serverTimestamp()}).catch(()=>{});
+
+/* auth ekranı */
+function setMode(m){mode=m;$("tL").classList.toggle("on",m=="L");$("tR").classList.toggle("on",m=="R");$("aN").classList.toggle("hide",m=="L");$("aGo").textContent=m=="L"?"Giriş yap":"Kayıt ol";$("aP").autocomplete=m=="L"?"current-password":"new-password";$("aErr").textContent=""}
+$("tL").onclick=()=>setMode("L");$("tR").onclick=()=>setMode("R");
+const emsg=c=>({"auth/invalid-credential":"E-posta veya şifre hatalı.","auth/invalid-email":"Geçerli bir e-posta gir.","auth/email-already-in-use":"Bu e-posta zaten kayıtlı.","auth/weak-password":"Şifre en az 6 karakter olmalı.","auth/too-many-requests":"Çok fazla deneme. Biraz bekle."}[c]||"İşlem başarısız. Tekrar dene.");
+$("aGo").onclick=async()=>{
+const n=$("aN").value.trim(),e=$("aE").value.trim(),p=$("aP").value,er=$("aErr");er.textContent="";
+if(!e||!p)return er.textContent="E-posta ve şifre zorunlu.";
+if(mode=="R"&&!n)return er.textContent="Ad Soyad zorunlu.";
+if(mode=="R"&&p.length<6)return er.textContent="Şifre en az 6 karakter olmalı.";
+try{
+if(mode=="L"){const c=await signInWithEmailAndPassword(auth,e,p);if(await boot(c.user))log("giriş")}
+else{reg=1;const c=await createUserWithEmailAndPassword(auth,e,p);await updateProfile(c.user,{displayName:n});
+await setDoc(doc(db,"users",c.user.uid),{name:n,email:e,blocked:false,favs:[],online:true,lastLogin:serverTimestamp(),lastSeen:serverTimestamp(),createdAt:serverTimestamp()});
+reg=0;S.u=c.user;await boot(c.user);log("kayıt",n)}
+}catch(x){reg=0;er.textContent=emsg(x.code)}};
+["aN","aE","aP"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key=="Enter")$("aGo").click()}));
+
+/* oturum */
+async function boot(u){
+let d={};try{const s=await getDoc(doc(db,"users",u.uid));d=s.data()||{}}catch{}
+if(d.blocked){await signOut(auth);$("aErr").textContent="Hesabın engellendi.";return false}
+S.u=u;S.name=d.name||u.displayName||"";S.fav=d.favs||[];
+const beat=()=>updateDoc(doc(db,"users",u.uid),{lastSeen:serverTimestamp()}).catch(()=>{});
+updateDoc(doc(db,"users",u.uid),{lastLogin:serverTimestamp(),lastSeen:serverTimestamp()}).catch(()=>{});
+clearInterval(hb);hb=setInterval(beat,60000);
+$("auth").classList.add("hide");$("app").classList.remove("hide");
+$("who").textContent=S.name||u.email;$("admBtn").classList.toggle("hide",!isAdm());
+nav("lib");return true}
+onAuthStateChanged(auth,u=>{if(reg)return;if(u)boot(u);else{$("app").classList.add("hide");$("auth").classList.remove("hide")}});
+
+/* veri */
+async function loadPages(){
+const c=collection(db,"pages"),s=await getDocs(isAdm()?c:query(c,where("visible","==",true)));
+S.pages=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0))}
+
+/* görünümler */
+async function nav(v){S.view=v;S.cur=null;document.querySelectorAll("aside [data-v]").forEach(b=>b.classList.toggle("on",b.dataset.v==v));
+$("main").innerHTML='<p class="m">Yükleniyor…</p>';
+try{if(v!="adm"||S.tab=="pg")await loadPages()}catch{$("main").innerHTML='<p class="empty">Veriler yüklenemedi.</p>';return}
+render()}
+function render(){
+const m=$("main");
+if(S.cur){const p=S.pages.find(x=>x.id==S.cur);m.innerHTML=`<div class="row sb" style="margin-bottom:12px"><button data-a="nav" data-v="${S.view}">Geri dön</button><b>${esc(p?.title)}</b></div><iframe sandbox="allow-scripts allow-forms allow-popups" title="${esc(p?.title)}"></iframe>`;m.querySelector("iframe").srcdoc=p?.html||"";return}
+if(S.view=="adm")return admin();
+let l=S.pages.filter(p=>p.visible);if(S.view=="fav")l=l.filter(p=>S.fav.includes(p.id));
+m.innerHTML=`<h2>${S.view=="fav"?"Favoriler":"Kütüphane"}</h2>`+(l.length?`<div class="grid">${l.map(p=>`<div class="box card" data-a="open" data-id="${p.id}"><b>${esc(p.title)}</b><div class="row sb"><span class="m">${fmt(p.createdAt).split(" ")[0]}</span><button class="star ${S.fav.includes(p.id)?"on":""}" data-a="fav" data-id="${p.id}" aria-label="Favori">★</button></div></div>`).join("")}</div>`:`<p class="empty">${S.view=="fav"?"Henüz favorin yok. Kütüphanede ★ ile ekle.":"Henüz yayınlanmış sayfa yok."}</p>`)}
+
+async function admin(){
+const m=$("main"),T=(k,n)=>`<button data-a="tab" data-t="${k}" class="${S.tab==k?"on":""}">${n}</button>`;
+let h=`<h2>Yönetici Paneli</h2><div class="row" style="margin-bottom:16px">${T("pg","Sayfalar")}${T("us","Kullanıcılar")}${T("lg","Loglar")}</div>`;
+if(S.tab=="pg"){const e=S.pages.find(p=>p.id==S.edit)||{};
+h+=`<div class="box li"><input id="eT" placeholder="Başlık" value="${esc(e.title)}"><textarea id="eH" placeholder="HTML kodu">${esc(e.html)}</textarea><div class="row"><button class="pri" data-a="save">${S.edit?"Güncelle":"Ekle"}</button>${S.edit?'<button data-a="cancel">Vazgeç</button>':""}</div></div>`+
+S.pages.map(p=>`<div class="box li row sb"><span>${esc(p.title)} ${p.visible?"":'<span class="m">(gizli)</span>'}</span><span class="row"><button data-a="edit" data-id="${p.id}">Düzenle</button><button data-a="hide" data-id="${p.id}">${p.visible?"Gizle":"Göster"}</button><button class="dng" data-a="del" data-id="${p.id}">Sil</button></span></div>`).join("");m.innerHTML=h}
+else if(S.tab=="us"){m.innerHTML=h+'<p class="m">Yükleniyor…</p>';
+try{const s=await getDocs(collection(db,"users"));const now=Date.now();
+m.innerHTML=h+`<div class="box tw"><table><tr><th>Kullanıcı</th><th>Durum</th><th>Son giriş</th><th></th></tr>${s.docs.map(d=>{const u=d.data(),on=u.lastSeen?.toDate&&now-u.lastSeen.toDate()<120000;return`<tr><td>${esc(u.name)}<div class="m">${esc(u.email)}</div></td><td><span class="dot ${on?"on":""}"></span>${on?"Çevrimiçi":"Çevrimdışı"}</td><td>${fmt(u.lastLogin)}</td><td>${d.id==ADMIN_UID?"":`<button class="${u.blocked?"":"dng"}" data-a="ban" data-id="${d.id}" data-b="${u.blocked?1:0}">${u.blocked?"Engeli aç":"Engelle"}</button>`}</td></tr>`}).join("")}</table></div>`}catch{m.innerHTML=h+'<p class="empty">Kullanıcılar yüklenemedi.</p>'}}
+else{if(!S.logs.length&&!S.more)await moreLogs(1);logView(h)}}
+
+function logView(h){
+const f=S.filter,l=S.logs.filter(x=>!f||(x.action||"").includes(f));
+$("main").innerHTML=h+`<div class="row" style="margin-bottom:12px"><select id="lF" style="width:auto;margin:0"><option value="">Tüm işlemler</option>${["giriş","çıkış","kayıt","ekle","düzenle","sil","gizle","engel"].map(o=>`<option ${f==o?"selected":""}>${o}</option>`).join("")}</select></div><div class="box tw"><table><tr><th>Zaman</th><th>Kullanıcı</th><th>İşlem</th><th>Detay</th></tr>${l.map(x=>`<tr><td>${fmt(x.ts)}</td><td>${esc(x.email)}</td><td>${esc(x.action)}</td><td>${esc(x.detail)}</td></tr>`).join("")||'<tr><td colspan="4" class="m">Kayıt yok.</td></tr>'}</table></div>${S.more!==false?'<p style="margin-top:12px"><button data-a="more">Daha fazla yükle</button></p>':""}`;
+$("lF").onchange=e=>{S.filter=e.target.value;logView(h)}}
+async function moreLogs(first){
+const c=collection(db,"logs"),q=S.last?query(c,orderBy("ts","desc"),startAfter(S.last),limit(25)):query(c,orderBy("ts","desc"),limit(25));
+try{const s=await getDocs(q);S.logs.push(...s.docs.map(d=>d.data()));S.last=s.docs[s.docs.length-1]||S.last;S.more=s.docs.length==25?true:false}catch{S.more=false}
+if(!first)admin()}
+
+/* tıklamalar */
+document.addEventListener("click",async e=>{
+const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,id=b.dataset.id;
+if(a=="nav"){if(b.dataset.v=="adm")S.edit=null;return nav(b.dataset.v)}
+if(a=="open"){S.cur=id;return render()}
+if(a=="fav"){e.stopPropagation();const on=S.fav.includes(id);S.fav=on?S.fav.filter(x=>x!=id):[...S.fav,id];updateDoc(doc(db,"users",S.u.uid),{favs:on?arrayRemove(id):arrayUnion(id)}).catch(()=>{});return render()}
+if(a=="out"){clearInterval(hb);await log("çıkış");await updateDoc(doc(db,"users",S.u.uid),{lastSeen:new Date(0)}).catch(()=>{});S.logs=[];S.last=null;S.more=undefined;return signOut(auth)}
+if(a=="tab"){S.tab=b.dataset.t;S.edit=null;if(S.tab=="pg")await loadPages();return admin()}
+if(a=="edit"){S.edit=id;return admin()}
+if(a=="cancel"){S.edit=null;return admin()}
+try{
+if(a=="save"){const t=$("eT").value.trim(),h=$("eH").value;if(!t||!h)return alert("Başlık ve HTML zorunlu.");
+if(S.edit){await updateDoc(doc(db,"pages",S.edit),{title:t,html:h});log("düzenle",t)}else{await addDoc(collection(db,"pages"),{title:t,html:h,visible:true,createdAt:serverTimestamp()});log("ekle",t)}
+S.edit=null;await loadPages();return admin()}
+if(a=="hide"){const p=S.pages.find(x=>x.id==id);await updateDoc(doc(db,"pages",id),{visible:!p.visible});log(p.visible?"gizle":"göster",p.title);await loadPages();return admin()}
+if(a=="del"){const p=S.pages.find(x=>x.id==id);if(!confirm(`"${p.title}" silinsin mi?`))return;await deleteDoc(doc(db,"pages",id));log("sil",p.title);await loadPages();return admin()}
+if(a=="ban"){const bl=b.dataset.b=="1";await updateDoc(doc(db,"users",id),{blocked:!bl});log(bl?"engeli aç":"engelle",id);return admin()}
+if(a=="more"){await moreLogs();return}
+}catch{alert("İşlem başarısız. Yetkini ve bağlantını kontrol et.")}});
+</script>
+</body></html>
