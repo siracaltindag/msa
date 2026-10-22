@@ -1,214 +1,1670 @@
-<!DOCTYPE html>
-<html lang="tr"><head>
+<!doctype html>
+<html lang="tr">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Siraç Altındağ</title>
-<link href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<title>MSA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a1020;--p:rgba(16,26,48,.72);--l:rgba(140,180,255,.16);--t:#e8eefc;--m:#8fa0c4;--a:#7fb8ff;--a2:#ffd9a0;--r:#ff8a8a;--g:#7fe0b0}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%}
-body{font:15px/1.5 Manrope,system-ui,sans-serif;background:radial-gradient(120% 90% at 20% 0%,#142344,var(--bg) 60%);color:var(--t);padding-top:env(safe-area-inset-top)}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
-.hide{display:none!important}
-.sig{font:400 3rem/1 "Mrs Saint Delafield",cursive;background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
-.logo img{max-height:56px;max-width:100%}
-.box{background:var(--p);border:1px solid var(--l);border-radius:14px;backdrop-filter:blur(10px)}
-#auth{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;padding:20px}
-#auth .box{width:min(380px,100%);padding:28px}
-#auth .logo{text-align:center;margin-bottom:18px}
-#auth .sig{font-size:3.6rem}
-.tabs{display:flex;gap:6px;margin-bottom:14px}
-.tabs button{flex:1}
-button,input,textarea,select{font:inherit;color:inherit}
-input,textarea,select{width:100%;padding:10px 12px;margin:0 0 10px;background:rgba(8,14,30,.7);border:1px solid var(--l);border-radius:8px}
-input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--a);outline-offset:1px}
-textarea{min-height:240px;font:13px/1.5 ui-monospace,Menlo,monospace}
-button{cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid var(--l);background:rgba(127,184,255,.08)}
-button:hover{background:rgba(127,184,255,.18)}
-button.pri{background:var(--a);color:#07101f;border-color:var(--a);font-weight:700}
-button.on{background:rgba(127,184,255,.22);border-color:var(--a)}
-button.dng{color:var(--r)}
-.err{color:var(--r);min-height:20px;font-size:13px;margin-bottom:6px}
-#app{position:relative;z-index:1;display:flex;height:100%}
-aside{width:230px;padding:18px 14px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--l);background:var(--p);backdrop-filter:blur(10px)}
-aside .logo{padding:4px 6px 14px}
-aside .sig{font-size:2.2rem}
-aside .who{color:var(--m);font-size:12px;padding:0 6px 10px;overflow:hidden;text-overflow:ellipsis}
-aside button{text-align:left;border-color:transparent;background:none}
-aside button.on{background:rgba(127,184,255,.16)}
-aside .sp{flex:1}
-main{flex:1;min-width:0;overflow:auto;padding:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-h2{font-weight:700;font-size:1.3rem;margin-bottom:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.card{padding:16px;display:flex;flex-direction:column;gap:12px;cursor:pointer}
-.card:hover{border-color:var(--a)}
-.card b{overflow-wrap:anywhere}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.row.sb{justify-content:space-between}
-.m{color:var(--m);font-size:13px}
-.star{color:var(--m)}.star.on{color:var(--a2);background:none}
-.empty{color:var(--m);padding:30px 0}
-iframe{width:100%;height:calc(100vh - 110px);border:1px solid var(--l);border-radius:12px;background:#fff}
-.li{padding:12px 14px;margin-bottom:10px}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#5a6786;margin-right:6px}.dot.on{background:var(--g)}
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{padding:8px 10px;border-bottom:1px solid var(--l);text-align:left;vertical-align:top}
-@media(max-width:720px){#app{flex-direction:column}aside{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--l);padding:10px}aside .logo{padding:0;margin-right:auto}aside .sig{font-size:1.8rem}aside .who,aside .sp{display:none}iframe{height:calc(100vh - 170px)}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style></head><body>
-<canvas id="bg"></canvas>
+@property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+:root{
+  --bg:#07070d;--text:#f5f5f7;--muted:#8b8b99;
+  --violet:#6d4aff;--blue:#2a7fff;
+  --gold:#d4af37;--gold-light:#f5d77a;
+  --err:#ff7a99;--ok:#6ee7b7;--line:rgba(255,255,255,.1);
+  --font-h:"Sora",system-ui,sans-serif;--font-b:"Inter",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1)
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html::after{content:"";position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.03;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+body{margin:0;min-height:100dvh;background:var(--bg);color:var(--text);font:400 15px/1.5 var(--font-b);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(60% 50% at 0% 0%,rgba(109,74,255,.12),transparent 70%),radial-gradient(60% 50% at 100% 100%,rgba(42,127,255,.10),transparent 70%)}
+body::after{content:"";position:fixed;inset:-50%;z-index:-1;pointer-events:none;background:radial-gradient(40% 30% at 50% 50%,rgba(255,255,255,.04),transparent 70%);animation:drift 30s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(20%,15%) rotate(25deg)}}
 
-<section id="auth" class="hide"><div class="box">
-<div class="logo" data-logo></div>
-<div class="tabs"><button id="tL" class="on">Giriş yap</button><button id="tR">Kayıt ol</button></div>
-<input id="aN" class="hide" placeholder="Ad Soyad" autocomplete="name">
-<input id="aE" type="email" placeholder="E-posta" autocomplete="email">
-<input id="aP" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password">
-<div id="aErr" class="err"></div>
-<button id="aGo" class="pri" style="width:100%">Giriş yap</button>
-</div></section>
+#splash{position:fixed;inset:0;z-index:40;display:grid;place-items:center;transition:opacity .5s}
+#splash.off{opacity:0;pointer-events:none}
+#splash img{height:48px;width:auto;animation:breathe 1.6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35;transform:scale(.94)}}
 
-<div id="app" class="hide">
-<aside>
-<div class="logo" data-logo></div>
-<div class="who" id="who"></div>
-<button data-a="nav" data-v="lib">Kütüphane</button>
-<button data-a="nav" data-v="fav">Favoriler</button>
-<button data-a="nav" data-v="adm" id="admBtn" class="hide">Yönetici Paneli</button>
-<div class="sp"></div>
-<button data-a="out">Çıkış</button>
-</aside>
-<main id="main"></main>
+#stage{min-height:100dvh;display:grid;place-items:center;padding:16px}
+.card{width:100%;max-width:420px;padding:32px 28px;border-radius:28px;background:rgba(255,255,255,.045);border:1px solid var(--line);backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);box-shadow:0 30px 80px rgba(0,0,0,.5);animation:cardIn .7s var(--ease) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.logo{display:block;height:44px;width:auto;margin:0 auto 18px}
+.view.in{animation:viewIn .5s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}}
+
+h1,h2{font-family:var(--font-h);font-weight:600;text-align:center;margin:0}
+h1{font-size:26px}h2{font-size:22px}
+.sub{color:var(--muted);font-size:14px;text-align:center;margin:6px 0 0}
+
+.tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;margin:22px 0 18px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;color:var(--muted);font:500 14px var(--font-h);padding:12px 0;cursor:pointer;transition:color .3s}
+.tabs button.on{color:#fff}
+.ind{position:absolute;left:0;bottom:-1px;width:50%;height:2px;border-radius:2px;background:#fff;transition:transform .45s var(--ease)}
+#view-auth.reg .ind{transform:translateX(100%)}
+
+.fg{margin:0 0 12px}
+.field{position:relative}
+.ic{width:20px;height:20px;fill:none;stroke:#6b6b78;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+.field>.ic{position:absolute;z-index:2;left:20px;top:50%;margin-top:-10px;pointer-events:none}
+.field:focus-within>.ic{stroke:var(--violet)}
+.field input{width:100%;height:54px;padding:0 52px;border:0;border-radius:999px;background:#fff;color:#000;font:400 16px var(--font-b);outline:0;transition:transform .35s var(--ease),box-shadow .35s}
+.field input::placeholder{color:#8a8a96}
+.field input:focus{transform:scale(1.02);box-shadow:0 0 0 2px rgba(109,74,255,.55),0 0 20px rgba(109,74,255,.45),0 0 32px rgba(42,127,255,.3)}
+.eye{position:absolute;z-index:2;right:9px;top:50%;width:36px;height:36px;margin-top:-18px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;display:grid;place-items:center}
+.err{margin:4px 0 0;padding:0 20px;color:var(--err);font-size:12.5px}
+.err:empty{display:none}
+.err.ok{color:var(--ok)}
+
+#view-auth input::placeholder{font-size:13px;font-weight:500;letter-spacing:.2px;color:#6f6f7c}
+#view-auth .err{font-size:12px;font-weight:500}
+#view-auth .sub{font-size:13.5px;line-height:1.5}
+.mqw{position:absolute;left:52px;right:20px;top:0;bottom:0;display:flex;align-items:center;overflow:hidden;pointer-events:none}
+.mq{white-space:nowrap;font:500 13px var(--font-b);color:#6f6f7c;animation:mq 11s linear infinite}
+@keyframes mq{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(-100%)}}
+#remail:not(:placeholder-shown)~.mqw,#remail:focus~.mqw{display:none}
+.lb{display:block;margin:4px 0 -6px 6px;font:600 12px var(--font-b);color:var(--muted);letter-spacing:.3px}
+#notif .nh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+#notif .nh h3{margin:0}
+.nb{display:flex;gap:6px}
+.nb button{width:80px;height:26px;padding:0;font-size:11px}
+.nit.t-chat{padding-left:10px;border-left:3px solid #2dd4bf;background:rgba(45,212,191,.08)}
+.nit.t-chat.un{color:#8ff5e6}
+.btns.ub{display:grid;grid-template-columns:repeat(2,1fr);width:max-content;gap:6px}
+.btns.ub button{height:28px;padding:0 10px;font-size:11.5px;white-space:nowrap}
+.fab.gold{background:linear-gradient(135deg,var(--gold-light),var(--gold) 55%,#a67c1a);color:#2a1d00;box-shadow:0 10px 30px rgba(212,175,55,.45)}
+.fab.gold:hover{box-shadow:0 14px 40px rgba(212,175,55,.65)}
+.card2.prem{background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(255,255,255,.04) 60%);box-shadow:0 0 0 1px rgba(212,175,55,.35),0 12px 36px rgba(212,175,55,.16),inset 0 1px 0 rgba(255,255,255,.12)}
+.card2.prem b{color:var(--gold-light)}
+.collapse{display:grid;grid-template-rows:1fr;transition:grid-template-rows .45s var(--ease),opacity .35s,visibility 0s linear 0s}
+.collapse>div{min-height:0;overflow:hidden;padding:24px 32px;margin:-24px -32px;pointer-events:none}
+.collapse>div>*{pointer-events:auto}
+.reg-only{grid-template-rows:0fr;opacity:0;visibility:hidden;transition-delay:0s,0s,.45s}
+.reg .reg-only{grid-template-rows:1fr;opacity:1;visibility:visible;transition-delay:0s}
+.reg .login-only{grid-template-rows:0fr;opacity:0;visibility:hidden;transition-delay:0s,0s,.45s}
+.row{text-align:right;padding-right:6px}
+.link{display:inline-block;background:none;border:0;padding:6px 2px;color:var(--muted);font:13px var(--font-b);cursor:pointer;transition:color .3s}
+.link:hover{color:#fff}
+
+.btn-wrap{position:relative;margin-top:10px;--spin:3s}
+.btn-wrap::before{content:"";position:absolute;inset:-2px;border-radius:999px;background:conic-gradient(from var(--angle),transparent 0 50%,#fff 72%,#b9a4ff 86%,var(--blue) 100%);filter:blur(16px);opacity:.5;animation:spin var(--spin) linear infinite;transition:opacity .4s}
+.btn-wrap:hover::before{opacity:.95}
+.btn-wrap.fast{--spin:.3s}
+.btn{position:relative;display:block;width:100%;height:54px;border:0;border-radius:999px;background:transparent;color:#000;font:600 16px var(--font-h);cursor:pointer;isolation:isolate}
+.btn::before{content:"";position:absolute;inset:-3px;border-radius:999px;z-index:-2;background:conic-gradient(from var(--angle),transparent 0 50%,#fff 72%,#b9a4ff 86%,var(--blue) 100%);animation:spin var(--spin) linear infinite}
+.btn::after{content:"";position:absolute;inset:0;border-radius:999px;z-index:-1;background:#fff}
+.btn-wrap.flash .btn::after{animation:flash .5s ease-out}
+@keyframes spin{to{--angle:360deg}}
+@keyframes flash{0%{box-shadow:0 0 0 0 #fff}30%{box-shadow:0 0 40px 14px rgba(255,255,255,.95)}100%{box-shadow:0 0 0 0 #fff}}
+.lbl{transition:opacity .2s}
+.spin{position:absolute;inset:0;width:20px;height:20px;margin:auto;border:2px solid rgba(0,0,0,.15);border-top-color:#000;border-radius:50%;opacity:0;animation:rot .7s linear infinite}
+.loading .spin{opacity:1}
+.loading .lbl{opacity:0}
+@keyframes rot{to{transform:rotate(360deg)}}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+
+.btn-ghost{display:block;width:100%;height:54px;margin-top:12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--text);font:500 15px var(--font-h);cursor:pointer;transition:background .3s,color .3s}
+.btn-ghost:hover{background:rgba(255,255,255,.06)}
+.btn-ghost:disabled{color:var(--muted);cursor:not-allowed}
+.btn-ghost.sm{width:auto;height:38px;margin:0;padding:0 18px;font-size:14px}
+
+.state{text-align:center}
+.state .sub{margin:8px 0 20px}
+.state .link{margin-top:10px}
+.big{display:block;width:72px;height:72px;margin:6px auto 16px;stroke:#fff;stroke-width:1.2}
+.mail{animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(109,74,255,.7))}
+.ban{stroke:var(--err);filter:drop-shadow(0 0 14px rgba(255,122,153,.5))}
+@keyframes float{50%{transform:translateY(-8px)}}
+.orb{width:72px;height:72px;margin:6px auto 18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#b9a4ff,var(--violet) 55%,var(--blue));animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(109,74,255,.55)}100%{box-shadow:0 0 0 30px rgba(109,74,255,0)}}
+
+#home header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line)}
+#home header img{height:32px;width:auto}
+.me{display:flex;align-items:center;gap:14px;font:500 14px var(--font-h)}
+#content{min-height:calc(100dvh - 67px)}
+
+#shell{display:flex;min-height:100dvh}
+#side{position:sticky;top:0;height:100dvh;flex:none;width:280px;background:rgba(22,22,29,.45);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);border-right:1px solid var(--line);overflow:hidden;z-index:30;transition:width .45s var(--ease)}
+.side-in{height:100%;display:flex;flex-direction:column;padding:14px 10px;white-space:nowrap;background:rgba(255,255,255,.03)}
+.brand{display:flex;align-items:center;justify-content:space-between;height:44px;margin:0 0 14px;padding:0 4px 0 15px}
+.brand img{height:30px;width:auto;transition:opacity .3s,width .45s var(--ease)}
+#sname{flex:1;min-width:0;margin:0 8px 0 10px;font-size:13px;font-weight:600;color:#fff;opacity:.9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#nav,#navb{display:flex;flex-direction:column;gap:4px}
+#navb{margin-top:auto}
+.side-in a{display:flex;align-items:center;gap:14px;height:44px;padding:0 15px;border-radius:14px;color:var(--muted);text-decoration:none;font:500 14px var(--font-h);transition:background .3s,color .3s}
+.side-in a:hover{background:rgba(255,255,255,.07);color:#fff}
+.side-in a.on{background:rgba(255,255,255,.1);color:#fff}
+.side-in a.gold{color:var(--gold-light)}
+.side-in a .ic{flex:none;width:22px;height:22px;stroke:currentColor}
+.lb{transition:opacity .3s,transform .45s var(--ease)}
+#scrim{display:none}
+#main{flex:1;min-width:0}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;height:64px;padding:0 20px;border-bottom:1px solid var(--line);background:rgba(7,7,13,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.top h2{flex:1;min-width:0;margin:0;font-size:18px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-r{flex:none;display:flex;align-items:center;gap:12px;font:500 14px var(--font-h)}
+.ib{position:relative;flex:none;width:40px;height:40px;padding:0;border:1px solid var(--line);border-radius:50%;background:rgba(255,255,255,.04);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:background .3s}
+.ib:hover{background:rgba(255,255,255,.1)}
+.ib .ic,.fab .ic{stroke:currentColor;transition:transform .45s var(--ease)}
+.dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--err)}
+#burger{display:none}
+#notif{position:fixed;top:72px;right:16px;z-index:35;width:min(320px,calc(100vw - 32px));padding:18px 20px;border-radius:20px;border:1px solid var(--line);background:#16161d;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:viewIn .3s var(--ease)}
+#notif h3{margin:0 0 6px;font:600 16px var(--font-h)}
+.muted,.empty{color:var(--muted)}
+#content{min-height:0;padding:24px 20px 96px}
+#content.in{animation:viewIn .4s var(--ease) both}
+.htabs{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto}
+.htabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;color:var(--muted);font:500 14px var(--font-h);white-space:nowrap;cursor:pointer;transition:color .3s,border-color .3s}
+.htabs button.on{color:#fff;border-color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.card2{display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:1;padding:18px;border-radius:24px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);text-decoration:none;font:600 15px var(--font-h);transition:background .3s}
+.card2:not(.cs):hover{background:rgba(255,255,255,.08)}
+.card2 .ic{width:30px;height:30px;stroke:#fff}
+.card2.gold .ic{stroke:var(--gold-light)}
+.beam{--b1:#b9a4ff;--b2:var(--blue);--g:rgba(109,74,255,.45);position:relative}
+.beam.gold{--b1:var(--gold);--b2:var(--gold-light);--g:rgba(212,175,55,.5)}
+.beam::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;background:conic-gradient(from var(--angle),transparent 0 70%,var(--b1) 85%,var(--b2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 6s linear infinite}
+.beam::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:glow 6s ease-in-out infinite}
+@keyframes glow{0%,62%{box-shadow:0 0 0 0 transparent}82%{box-shadow:0 0 26px 2px var(--g)}100%{box-shadow:0 0 0 0 transparent}}
+.fab{position:fixed;right:20px;bottom:20px;z-index:25;width:58px;height:58px;border:0;border-radius:50%;display:grid;place-items:center;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--violet),var(--blue));box-shadow:0 10px 30px rgba(42,127,255,.4);transition:transform .3s var(--ease),box-shadow .3s}
+.fab:hover{transform:scale(1.08);box-shadow:0 14px 40px rgba(109,74,255,.55)}
+.fab .ic{width:26px;height:26px}
+.card2{cursor:pointer}
+.card2 b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.25}
+.card2 small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:var(--muted);font:400 12px var(--font-b)}
+.acts{display:flex;gap:2px;margin:0 -6px -6px}
+.acts button{display:flex;align-items:center;gap:3px;padding:6px;border:0;border-radius:10px;background:none;color:var(--muted);font:500 12px var(--font-b);cursor:pointer;transition:color .3s,background .3s}
+.acts button:hover{background:rgba(255,255,255,.08);color:#fff}
+.acts button.on{color:#b9a4ff}
+.card2.gold .acts button.on{color:var(--gold-light)}
+.acts .ic{width:16px;height:16px;stroke:currentColor}
+.acts .on .ic{fill:currentColor}
+.acts i{font-style:normal}
+.bd{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--muted);font:500 11px var(--font-b);font-style:normal}
+.st-pending{color:var(--gold-light)}.st-approved{color:var(--ok)}.st-blocked,.st-rejected{color:var(--err)}
+.row2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}
+.row2 small{display:block;color:var(--muted);font-size:12px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{height:34px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--text);font:500 13px var(--font-b);cursor:pointer}
+.btns button:hover{background:rgba(255,255,255,.08)}
+.sh{margin:18px 0 10px;color:var(--muted);font:600 14px var(--font-h)}
+.lf{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.lf select{height:42px;padding:0 14px;border:0;border-radius:999px;background:#fff;color:#000;font:500 14px var(--font-b)}
+.addf{display:grid;gap:12px;max-width:640px}
+.addf input,.addf textarea{width:100%;padding:14px 18px;border:0;border-radius:20px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
+.addf textarea{height:260px;resize:vertical;font:14px ui-monospace,monospace}
+#nlist{max-height:60dvh;overflow:auto}
+.nit{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);cursor:pointer}
+.nit.un{color:#fff;font-weight:500}
+.nit small{display:block;color:var(--muted);font-weight:400}
+#viewer{position:fixed;inset:0;z-index:100;background:#000}
+#viewer iframe{width:100%;height:100%;border:0;background:#fff}
+#vx{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:8px;z-index:2;height:32px;padding:0 12px;border:0;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font:500 12px var(--font-h);cursor:pointer;backdrop-filter:blur(8px)}
+#cm{position:fixed;inset:0;z-index:60;display:grid;place-items:end center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px)}
+.cmp{display:flex;flex-direction:column;width:min(560px,100%);max-height:85dvh;padding:16px;border:1px solid var(--line);border-radius:24px 24px 0 0;background:#16161d}
+.cmh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#cml{flex:1;overflow:auto}
+.cmi{padding:10px 0;border-bottom:1px solid var(--line)}
+.cmi.l1{margin-left:28px;padding-left:12px;border-left:2px solid var(--line)}
+.cmi p{margin:4px 0;white-space:pre-wrap;word-break:break-word}
+.cmi small{color:var(--muted)}
+.cmi button{padding:2px 12px 2px 0;border:0;background:none;color:var(--muted);font:12px var(--font-b);cursor:pointer}
+#cmf textarea{width:100%;height:64px;margin:10px 0 8px;padding:12px 14px;border:0;border-radius:16px;background:#fff;color:#000;font:16px var(--font-b);resize:none}
+#rep{margin:8px 0 0;cursor:pointer;font-size:12px}
+.toast{position:fixed;left:50%;bottom:90px;z-index:200;transform:translateX(-50%);padding:12px 18px;border:1px solid var(--line);border-radius:999px;background:#26262f;font:500 13px var(--font-b);animation:viewIn .3s var(--ease)}
+.acts{flex-wrap:nowrap;gap:0;margin:0 -8px -6px}
+.acts button{padding:5px 3px}
+.dot{min-width:16px;width:auto;height:16px;padding:0 4px;top:2px;right:2px;border-radius:8px;color:#fff;font:600 10px/16px var(--font-b);text-align:center}
+.row2[data-a]{cursor:pointer}
+.row2.sel{border-color:rgba(255,255,255,.35)}
+#chat{position:fixed;right:20px;bottom:90px;z-index:26;display:flex;flex-direction:column;width:min(340px,calc(100vw - 32px));height:min(460px,65dvh);padding:14px;border:1px solid var(--line);border-radius:24px;background:#16161d;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:viewIn .3s var(--ease)}
+.ch1{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font:600 15px var(--font-h)}
+#chl{flex:1;overflow:auto;padding:2px}
+.chl{max-height:50dvh;min-height:120px;margin-top:14px;padding:12px;overflow:auto;border:1px solid var(--line);border-radius:18px}
+.mg{width:fit-content;max-width:82%;margin:4px 0;padding:8px 12px;border-radius:16px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.mg.u{margin-left:auto;background:linear-gradient(135deg,var(--violet),var(--blue))}
+.mg.a{background:rgba(255,255,255,.1)}
+.chf{display:flex;gap:8px;margin-top:10px}
+.chf input{flex:1;min-width:0;height:44px;padding:0 16px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
+.cs{background:color-mix(in srgb,var(--cc) 14%,#0f0f17)}
+.bs-solid{border:2px solid var(--cc)}
+.bs-neon{border:1.5px solid var(--cc);box-shadow:0 0 14px var(--cc),inset 0 0 14px color-mix(in srgb,var(--cc) 40%,transparent)}
+.bs-gold{border:2px solid transparent;background:linear-gradient(color-mix(in srgb,var(--cc) 14%,#0f0f17),color-mix(in srgb,var(--cc) 14%,#0f0f17)) padding-box,linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold)) border-box}
+.bs-dashed{border:2px dashed var(--cc)}
+.bs-double{border:5px double var(--cc)}
+.beam.cc{--b1:var(--cc);--b2:var(--cc);--g:color-mix(in srgb,var(--cc) 55%,transparent)}
+#ed{--fs:13px;--lh:20px;position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:#0a0a11}
+.edtop{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--line)}
+.edtop input{flex:1;min-width:140px;height:40px;padding:0 16px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
+.edtop .btn-ghost{height:40px}
+.edst{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--line)}
+#edpal{display:flex;gap:6px}
+.sw{width:24px;height:24px;padding:0;border:2px solid transparent;border-radius:50%;cursor:pointer}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.edst select{height:34px;padding:0 12px;border:0;border-radius:999px;background:#fff;color:#000;font:500 13px var(--font-b)}
+.edtabs{display:none}
+.edb{display:flex;flex:1;min-height:0}
+.edc{display:flex;flex:1;min-width:0;border-right:1px solid var(--line);background:#0d0d15}
+.edw{position:relative;flex:1;min-width:0}
+.edprev{flex:1;min-width:0;background:#fff}
+#edf{width:100%;height:100%;border:0}
+#edn,#edpre,#edh{font:var(--fs)/var(--lh) ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:0}
+#edn{flex:none;width:46px;padding:12px 8px;overflow:hidden;border-right:1px solid var(--line);color:#5b5f73;text-align:right;white-space:pre;user-select:none}
+#edpre,#edh{position:absolute;inset:0;margin:0;padding:12px;border:0;white-space:pre;word-wrap:normal;tab-size:2;overflow:auto;scrollbar-width:none}
+#edh::-webkit-scrollbar{display:none}
+#edpre{overflow:hidden;color:#cfd3e6;pointer-events:none}
+#edh{resize:none;outline:0;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}
+#edh,#edn{touch-action:pan-x pan-y}
+#edh::selection{background:rgba(109,74,255,.4)}
+#edpre i{font-style:normal}
+#edpre .c{color:#6a7385;font-style:italic}
+#edpre .t{color:#ff7b9c}
+#edpre .a{color:#7ee0ff}
+#edpre .s{color:#ffd479}
+@media(max-width:860px){
+  #ed{--fs:16px;--lh:24px}
+  .edtabs{display:flex;border-bottom:1px solid var(--line)}
+  .edtabs button{flex:1;padding:10px;border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);font:500 14px var(--font-h);cursor:pointer}
+  .edtabs button.on{color:#fff;border-color:#fff}
+  #ed:not(.pv) .edprev{display:none}
+  #ed.pv .edc{display:none}
+}
+#sq{background:rgba(255,255,255,.06)!important;color:var(--text)!important;border:1px solid var(--line)!important}
+#sq::placeholder{color:var(--muted)}
+.sq{-webkit-appearance:none;appearance:none;width:100%;max-width:420px;height:44px;margin-bottom:14px;padding:0 18px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
+.av{display:inline-grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;font:600 14px/1 var(--font-h);vertical-align:middle}
+#hav{width:40px;height:40px;font-size:16px;text-decoration:none;cursor:pointer}
+.av.xs{width:20px;height:20px;margin-right:6px;font-size:10px}
+.card2 .by{display:flex;align-items:center;gap:6px;margin-bottom:8px;overflow:hidden;white-space:nowrap;color:var(--muted);font:500 11px var(--font-b)}
+.card2 .by .av{margin:0}.card2 .by span.n{overflow:hidden;text-overflow:ellipsis}
+.av.avgold,.sw.avgold{background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.9) 50%,transparent 65%) 100% 0/250% 100% no-repeat,linear-gradient(135deg,#f5d77a,#d4af37 55%,#a67c1a);color:#2a1d00;box-shadow:0 0 12px rgba(212,175,55,.55);animation:shine 2.4s linear infinite}
+@keyframes shine{to{background-position:0 0,0 0}}
+.side-in a .lb{display:block;margin:0;padding:0;line-height:1.2}
+#sname{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25;overflow:hidden}
+#edx{border:0;background:linear-gradient(135deg,#ff5c8a,#ff6a3d);color:#fff;font-weight:600}
+.side-in a.lo{color:#ff8a8a}
+.sw-none{background:transparent!important;border:2px dashed var(--muted)}
+.av.sm{width:26px;height:26px;margin-right:8px;font-size:12px}
+.avbig{display:grid;place-items:center;width:96px;height:96px;margin-bottom:16px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.1);font:600 36px var(--font-h)}
+#pbio{height:110px}
+.pcard{max-width:640px}
+.tick{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;word-break:break-word}
+.tick small{display:block;color:var(--muted)}
+.row2 small.nt{margin:4px 0;color:var(--text);font-size:14px;white-space:pre-wrap;word-break:break-word}
+#warn{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px;background:rgba(12,0,6,.96);text-align:center}
+#warn h2{margin:0 0 12px;color:var(--err);font-size:28px}
+#warn p{max-width:420px;margin:8px auto;color:#fff}
+.chh{display:flex;align-items:center;gap:8px}
+.mgx{margin-left:8px;padding:0;border:0;background:none;color:inherit;opacity:.6;cursor:pointer}
+.logo{height:64px}
+.brand{height:56px}
+.brand img{height:42px}
+#splash img{height:72px}
+#main{display:flex;flex-direction:column}
+#content{flex:1}
+#foot{padding:16px 20px 96px;color:var(--muted);font-size:12px;text-align:center}
+.btn2{position:relative;display:block;width:100%;height:52px;margin-top:10px;overflow:hidden;border:0;border-radius:16px;background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff;font:600 15px var(--font-h);cursor:pointer;box-shadow:0 8px 24px rgba(42,127,255,.3);transition:transform .25s var(--ease),box-shadow .3s}
+.btn2::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:sheen 3.2s ease-in-out infinite}
+@keyframes sheen{0%,55%{left:-60%}100%{left:130%}}
+.btn2:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(109,74,255,.5)}
+.btn2:active{transform:scale(.97)}
+#dlg{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:viewIn .25s var(--ease)}
+.dlgb{width:min(360px,100%);padding:24px;border:1px solid var(--line);border-radius:24px;background:#16161d;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+#dlgt{margin:0 0 20px;font:500 16px/1.45 var(--font-h)}
+.dlga{display:flex;gap:10px}
+.dlga .btn-ghost{width:auto;flex:1;height:46px;margin:0}
+.dlgy{flex:1;height:46px;border:0;border-radius:999px;background:linear-gradient(135deg,#ff5c8a,#ff6a3d);color:#fff;font:600 14px var(--font-h);cursor:pointer;transition:transform .2s var(--ease)}
+.dlgy:active{transform:scale(.96)}
+@media(min-width:861px){
+  #shell.collapsed #side{width:72px}
+  #shell.collapsed .lb{opacity:0;transform:translateX(-10px)}
+  #shell.collapsed .brand{justify-content:center;padding:0}
+    #shell.collapsed #collapse .ic{transform:rotate(180deg)}
+}
+@media(max-width:860px){
+  #side{position:fixed;left:0;top:0;width:268px;transform:translateX(-100%);transition:transform .45s var(--ease)}
+  #shell.open #side{transform:none}
+  #collapse{display:none}
+  #burger{display:grid}
+  #hname{display:none}
+  #scrim{display:block;position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .4s}
+  #shell.open #scrim{opacity:1;pointer-events:auto}
+  .top{padding:0 14px}
+  #content{padding:20px 14px 96px}
+}
+@media(max-width:480px){.card{padding:28px 20px}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .spin{animation-duration:1.5s!important;animation-iteration-count:infinite!important}
+}
+.brand{gap:10px}
+.brand{height:72px}
+.logobox{flex:none;display:grid;place-items:center;width:66px;height:66px;border-radius:50%;border:0;background:none}
+.logobox img{height:52px;max-width:52px;object-fit:contain}
+.sn{flex:1;min-width:0;display:flex;align-items:center;margin-left:4px;font:600 13px var(--font-h)}
+#sname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shell.collapsed .logobox,#shell.collapsed .sn{display:none}
+.avbtn{display:block;padding:0;border:0;background:none;cursor:pointer}
+.avbtn .avbig{margin-bottom:6px}
+.avp{margin:0 0 16px;padding:14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}
+.avp .sw{width:32px;height:32px;margin:0 6px 8px 0}
+.avp label.btn-ghost{display:inline-flex;align-items:center;cursor:pointer}
+.addf input,.addf textarea,.lf select,.chf input,.edtop input,.edst select,.sq,#cmf textarea{background:rgba(255,255,255,.06)!important;color:var(--text)!important;border:1px solid var(--line)!important}
+.addf input::placeholder,.addf textarea::placeholder,.chf input::placeholder,.edtop input::placeholder,.sq::placeholder,#cmf textarea::placeholder{color:var(--muted)}
+.addf input:focus,.addf textarea:focus,.chf input:focus,.edtop input:focus,.sq:focus,.lf select:focus{border-color:rgba(185,164,255,.7)!important}
+.addf input[readonly]{opacity:.7}
+select{color-scheme:dark}
+.addf,.pcard{max-width:none!important}
+.kvl{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13px;line-height:1.45;cursor:pointer}
+.kvl input{all:revert;flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:#6d4aff}
+.kvl .link{display:inline;padding:0;color:#b9a4ff;text-decoration:underline}
+.kvs{margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+#kvkkm{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.kvb{width:min(680px,100%);max-height:88dvh;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:20px;background:#16161d}
+.kvh{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+#kvt{overflow:auto;padding:16px 18px 22px;font-size:14px;line-height:1.6;color:var(--text)}
+#kvt h4{margin:18px 0 6px;font:600 15px var(--font-h)}#kvt p,#kvt li{margin:0 0 8px;color:var(--muted)}#kvt ul{margin:0 0 8px;padding-left:20px}
+.brand{gap:2px!important}.sn{margin-left:0!important}#sname{margin:0 4px 0 0!important}
+.nit.t-chat{padding-left:14px;border-left:0;background:none}
+.nit.t-chat.un{color:#fff}
+#notif{padding:14px 16px;border-radius:16px}
+#notif .nh h3{font-size:15px}
+.nb button{width:auto;height:auto;padding:0 0 0 10px;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline}
+.nit{position:relative;padding:9px 0 9px 14px;border-bottom:1px solid var(--line)}
+.nit.un::before{content:"";position:absolute;left:0;top:15px;width:6px;height:6px;border-radius:50%;background:var(--violet)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.2 6.9A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+</defs></svg>
+
+<div id="splash"><img src="msa.logo.png" alt="MSA"></div>
+
+<main id="stage" hidden>
+  <div class="card">
+    <img class="logo" src="msa.logo.png" alt="MSA">
+
+    <section class="view" id="view-auth" data-view="auth" hidden>
+      <h1>Hoş geldin</h1>
+      <p class="sub">Hesabına giriş yap veya yeni hesap oluştur.</p>
+      <div class="tabs">
+        <button type="button" data-mode="login" class="on">Giriş Yap</button>
+        <button type="button" data-mode="register">Kayıt Ol</button>
+        <i class="ind"></i>
+      </div>
+      <form id="form" novalidate>
+        <div class="collapse reg-only"><div><div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-user"/></svg><input id="fullName" placeholder="Ad Soyad" autocomplete="name" maxlength="60"></div>
+          <p class="err" id="e-fullName"></p>
+        </div></div></div>
+
+        <div class="collapse reg-only"><div><div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-user"/></svg><input id="username" name="reg-username" placeholder="Kullanıcı adı" autocomplete="off" maxlength="20"></div>
+          <p class="err" id="e-username"></p>
+        </div></div></div>
+
+        <div class="collapse reg-only"><div><div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-mail"/></svg><input id="remail" type="email" placeholder="E-posta (isteğe bağlı)" autocomplete="email" inputmode="email" autocapitalize="none"></div>
+          <p class="err" id="e-remail"></p>
+        </div></div></div>
+
+        <div class="collapse login-only"><div><div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-user"/></svg><input id="email" name="username" type="text" placeholder="Kullanıcı adı veya e-posta" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+          <p class="err" id="e-email"></p>
+        </div></div></div>
+
+        <div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-lock"/></svg><input id="password" name="password" type="password" placeholder="Şifre" autocomplete="current-password"><button type="button" class="eye" aria-label="Şifreyi göster/gizle"><svg class="ic"><use href="#i-eye"/></svg></button></div>
+          <p class="err" id="e-password"></p>
+        </div>
+
+        <div class="collapse reg-only"><div><div class="fg">
+          <div class="field"><svg class="ic"><use href="#i-lock"/></svg><input id="password2" type="password" placeholder="Şifre tekrar" autocomplete="new-password"><button type="button" class="eye" aria-label="Şifreyi göster/gizle"><svg class="ic"><use href="#i-eye"/></svg></button></div>
+          <p class="err" id="e-password2"></p>
+        </div>
+        <div class="fg"><label class="kvl"><input type="checkbox" id="kvkk"><span>Aydınlatma Metni'ni okudum; kişisel verilerimin işlenmesini ve yurt dışındaki sunucularda (Google Firebase) saklanmasını kabul ediyorum. <button type="button" class="link" data-kvkk>Tamamını oku</button></span></label>
+          <p class="kvs">Ad soyad, kullanıcı adı, isteğe bağlı e-posta ve paylaştığın içerikler üyelik ve güvenlik amacıyla işlenir. Korumalı içerikleri açarken kullanıcı adın filigran olarak görünür. Hesabını silince verilerin tamamen silinir.</p>
+          <p class="err" id="e-kvkk"></p></div></div></div>
+
+        <div class="collapse login-only"><div><div class="row"><button type="button" id="forgot" class="link">Şifremi unuttum</button></div></div></div>
+
+        <p class="err" id="e-form"></p>
+        <div class="btn-wrap" id="submit-wrap"><button class="btn" type="submit"><span class="lbl">Giriş Yap</span><i class="spin"></i></button></div>
+      </form>
+    </section>
+
+    <section class="view state" data-view="verify" hidden>
+      <svg class="ic big mail"><use href="#i-mail"/></svg>
+      <h2>E-postanı doğrula</h2>
+      <p class="sub"><b id="vmail"></b> adresine doğrulama bağlantısı gönderdik. Bağlantıya tıkladıktan sonra "Doğruladım"a bas.</p>
+      <p class="err" id="e-verify"></p>
+      <div class="btn-wrap" id="ck-wrap"><button class="btn" id="checked" type="button"><span class="lbl">Doğruladım</span><i class="spin"></i></button></div>
+      <button class="btn-ghost" id="resend" type="button">Tekrar gönder</button>
+      <button class="link" data-logout type="button">Çıkış yap</button>
+    </section>
+
+    <section class="view state" data-view="pending" hidden>
+      <div class="orb"></div>
+      <h2>Onay bekleniyor</h2>
+      <p class="sub">Kaydın admine bildirildi. Onaylandığında otomatik olarak içeri alınacaksın.</p>
+      <button class="link" data-logout type="button">Çıkış yap</button>
+    </section>
+
+    <section class="view state" data-view="blocked" hidden>
+      <svg class="ic big ban"><use href="#i-ban"/></svg>
+      <h2>Hesabın engellendi</h2>
+      <p class="sub">Bu hesapla erişim izni verilmiyor.</p>
+      <button class="btn-ghost" data-logout type="button">Çıkış yap</button>
+    </section>
+  </div>
+</main>
+
+<section id="home" hidden>
+  <div id="shell">
+    <aside id="side"><div class="side-in">
+      <div class="brand">
+        <div class="logobox"><img src="msa.logo.png" alt="MSA"></div><span class="sn" id="sn"><span id="sname"></span></span>
+        <button class="ib" id="collapse" type="button" aria-label="Paneli daralt"><svg class="ic" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <nav id="nav"></nav>
+      <nav id="navb"></nav>
+    </div></aside>
+    <div id="scrim"></div>
+    <div id="main">
+      <div class="top">
+        <button class="ib" id="burger" type="button" aria-label="Menü"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <h2 id="ptitle"></h2>
+        <div class="top-r">
+          <a id="hav" class="ib" href="#/profile" aria-label="Profil"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></a><span id="hname"></span>
+          <button class="ib" id="bell" type="button" aria-label="Bildirimler"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="dot" hidden></i></button>
+        </div>
+      </div>
+      <div id="notif" hidden><div class="nh"><h3>Bildirimler</h3><span class="nb"><button class="btn-ghost sm" id="nall" data-a="nall" type="button" hidden>Tümü okundu</button><button class="btn-ghost sm" id="nclr" data-a="nclr" type="button" hidden>Temizle</button></span></div><div id="nlist"><p class="muted">Henüz bildirim yok.</p></div></div>
+      <main id="content"></main>
+      <footer id="foot">&copy; MSA | siracaltindag tüm hakları saklıdır.</footer>
+    </div>
+  </div>
+  <button class="fab" id="ask" type="button" title="Admine Soru Sor" aria-label="Admine Soru Sor"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
+<div id="kvkkm" hidden><div class="kvb"><div class="kvh"><b>Aydınlatma Metni (KVKK)</b><button type="button" class="ib" id="kvx" aria-label="Kapat">✕</button></div><div id="kvt"></div></div></div>
+<div id="dlg" hidden><div class="dlgb"><p id="dlgt"></p><input id="dlgp" class="sq" type="password" placeholder="Şifren" autocomplete="current-password" hidden style="margin:0 0 16px"><div class="dlga"><button class="btn-ghost" id="dlgn" type="button">Vazgeç</button><button class="dlgy" id="dlgy" type="button">Evet</button></div></div></div>
+<div id="warn" hidden><div><h2>⚠️ Güvenlik ihlali</h2><p>Geliştirici araçları, yasak kısayol veya sağ tık kullanımı tespit edildi.</p><p id="warnt"></p><p><b>Bu işlem admine bildirildi ve oturumun kapatılıyor.</b></p></div></div>
+<div id="viewer" hidden><button id="vx" type="button">Çıkış</button><iframe id="vf" sandbox="allow-scripts" title="HTML"></iframe></div>
+<div id="cm" hidden><div class="cmp"><div class="cmh"><b id="cmt"></b><button class="ib" data-a="cx" type="button" aria-label="Kapat">×</button></div><div id="cml"></div><form id="cmf"><p id="rep" class="muted" data-a="rcancel" hidden></p><textarea id="cmx" maxlength="500" placeholder="Yorum yaz..."></textarea><button class="btn-ghost sm" type="submit">Gönder</button></form></div></div>
+<div id="chat" hidden><div class="ch1"><b>Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
+<div id="ed" hidden>
+  <div class="edtop"><input id="edt" placeholder="Başlık" maxlength="80"><input id="edd" placeholder="Açıklama" maxlength="200"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
+  <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
+  <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts" title="Önizleme"></iframe></div></div>
 </div>
+</section>
 
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,updateProfile}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import{getFirestore,doc,getDoc,setDoc,updateDoc,deleteDoc,addDoc,collection,getDocs,query,where,orderBy,limit,startAfter,serverTimestamp,arrayUnion,arrayRemove}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCl8YDtZ9V0M0ZuPH5abt4aUBfSAFo77zY",
+  authDomain: "msa-siracaltindag.firebaseapp.com",
+  projectId: "msa-siracaltindag",
+  storageBucket: "msa-siracaltindag.firebasestorage.app",
+  messagingSenderId: "883902020685",
+  appId: "1:883902020685:web:54f5d9e13b9134dfe0b004"
+};
 
-/* ===== AYARLAR: kendi değerlerini yapıştır ===== */
-const firebaseConfig={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
-const ADMIN_UID="a0DYXzGYMLMANMG4QKkabIL3GJP2";
-/* Koleksiyonlar: users, pages {title,html,visible,createdAt}, logs {uid,email,action,detail,ts} */
+/* KVKK: kendi bilgilerini buraya yaz */
+const KVKK = { sorumlu: "[AD SOYAD / ÜNVAN]", eposta: "[BAŞVURU E-POSTASI]", tarih: "22.10.2026" };
+const ADMIN_UID = "dnNCccsp9qbsPSzYhqxLuDRr2Sw2";
 
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const fmt=t=>t?.toDate?t.toDate().toLocaleString("tr-TR"):"—";
-const S={u:null,name:"",fav:[],pages:[],view:"lib",edit:null,tab:"pg",logs:[],cur:null,filter:""};
-let reg=0,mode="L",hb=null;
-const isAdm=()=>S.u&&S.u.uid===ADMIN_UID;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, setPersistence, browserLocalPersistence, createUserWithEmailAndPassword,
+  signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail,
+  updateProfile, signOut, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser, updateEmail, verifyBeforeUpdateEmail
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, deleteDoc, collection, onSnapshot, serverTimestamp,
+  query, where, orderBy, limit, writeBatch, arrayUnion, arrayRemove, increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* logo */
-document.querySelectorAll("[data-logo]").forEach(el=>{el.innerHTML='<img src="sirac.logo.png" alt="Siraç Altındağ" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'sig\',textContent:\'Siraç Altındağ\'}))">'});
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+auth.languageCode = "tr";
+const db = getFirestore(app);
+const ready = setPersistence(auth, browserLocalPersistence).catch(() => {});
 
-/* devre arka planı */
-const cv=$("bg"),cx=cv.getContext("2d");let W,H,paths=[];
-const DX=[1,1,0,-1,-1,-1,0,1],DY=[0,1,1,1,0,-1,-1,-1];
-function mk(){W=cv.width=innerWidth;H=cv.height=innerHeight;paths=[];const g=48,n=Math.floor(W*H/26000);
-for(let i=0;i<n;i++){let x=Math.round(Math.random()*W/g)*g,y=Math.round(Math.random()*H/g)*g,a=Math.floor(Math.random()*8),p=[[x,y]],L=[0],t=0;
-for(let k=0,K=5+Math.random()*6;k<K;k++){const s=g*(1+Math.floor(Math.random()*3));x+=DX[a]*s;y+=DY[a]*s;t+=Math.hypot(DX[a],DY[a])*s;p.push([x,y]);L.push(t);a=(a+[0,1,-1,0][Math.floor(Math.random()*4)]+8)%8}
-paths.push({p,L,t,d:Math.random()*t,v:.5+Math.random()*.9})}}
-function pt(q,d){d=Math.max(0,Math.min(q.t,d));let i=1;while(i<q.L.length-1&&q.L[i]<d)i++;const f=(d-q.L[i-1])/((q.L[i]-q.L[i-1])||1),A=q.p[i-1],B=q.p[i];return[A[0]+(B[0]-A[0])*f,A[1]+(B[1]-A[1])*f]}
-const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
-function draw(){cx.clearRect(0,0,W,H);cx.lineWidth=1;cx.strokeStyle="rgba(120,170,255,.11)";
-for(const q of paths){cx.beginPath();q.p.forEach((c,i)=>i?cx.lineTo(c[0],c[1]):cx.moveTo(c[0],c[1]));cx.stroke();
-for(const c of[q.p[0],q.p[q.p.length-1]]){cx.beginPath();cx.arc(c[0],c[1],3,0,7);cx.stroke()}}
-if(!still)for(const q of paths){q.d+=q.v;if(q.d>q.t+80)q.d=-40;
-for(let j=14;j>=0;j--){const d=q.d-j*5;if(d<0||d>q.t)continue;const c=pt(q,d),k=1-j/15;cx.fillStyle=`rgba(${j?127:255},${j?184:217},${j?255:160},${k*.7})`;cx.shadowBlur=j?0:12;cx.shadowColor="#7fb8ff";cx.beginPath();cx.arc(c[0],c[1],j?1.8*k+.4:2.4,0,7);cx.fill()}}
-cx.shadowBlur=0;if(!still)requestAnimationFrame(draw)}
-addEventListener("resize",()=>{mk();if(still)draw()});mk();draw();
+let emit = () => {}, unsub = null, regBusy = false, goneMsg = "";
 
-/* log */
-const log=(action,detail="")=>addDoc(collection(db,"logs"),{uid:S.u?.uid||"",email:S.u?.email||"",action,detail,ts:serverTimestamp()}).catch(()=>{});
+const MAILDOM = "@kullanici.msa";
+const slug = n => [...n.trim().toLowerCase()].map(c => /[a-z0-9_]/.test(c) ? c : "-" + c.codePointAt(0).toString(16)).join("");
+const syncMap = u => { if (!u.email || isFake(u.email)) return; setDoc(doc(db, "usernames", slug(u.displayName || u.email.split("@")[0])), { uid: u.uid, email: u.email }).catch(() => {}); };
+const toMail = id => id.includes("@") ? id : slug(id) + MAILDOM;
+const isFake = e => (e || "").endsWith(MAILDOM);
+const okMail = e => /^[^\s@]+@(gmail|hotmail)\.com$/i.test(e || "");
 
-/* auth ekranı */
-function setMode(m){mode=m;$("tL").classList.toggle("on",m=="L");$("tR").classList.toggle("on",m=="R");$("aN").classList.toggle("hide",m=="L");$("aGo").textContent=m=="L"?"Giriş yap":"Kayıt ol";$("aP").autocomplete=m=="L"?"current-password":"new-password";$("aErr").textContent=""}
-$("tL").onclick=()=>setMode("L");$("tR").onclick=()=>setMode("R");
-const emsg=c=>({"auth/invalid-credential":"E-posta veya şifre hatalı.","auth/invalid-email":"Geçerli bir e-posta gir.","auth/email-already-in-use":"Bu e-posta zaten kayıtlı.","auth/weak-password":"Şifre en az 6 karakter olmalı.","auth/too-many-requests":"Çok fazla deneme. Biraz bekle."}[c]||"İşlem başarısız. Tekrar dene.");
-$("aGo").onclick=async()=>{
-const n=$("aN").value.trim(),e=$("aE").value.trim(),p=$("aP").value,er=$("aErr");er.textContent="";
-if(!e||!p)return er.textContent="E-posta ve şifre zorunlu.";
-if(mode=="R"&&!n)return er.textContent="Ad Soyad zorunlu.";
-if(mode=="R"&&p.length<6)return er.textContent="Şifre en az 6 karakter olmalı.";
-try{
-if(mode=="L"){const c=await signInWithEmailAndPassword(auth,e,p);if(await boot(c.user))log("giriş")}
-else{reg=1;const c=await createUserWithEmailAndPassword(auth,e,p);await updateProfile(c.user,{displayName:n});
-await setDoc(doc(db,"users",c.user.uid),{name:n,email:e,blocked:false,favs:[],online:true,lastLogin:serverTimestamp(),lastSeen:serverTimestamp(),createdAt:serverTimestamp()});
-reg=0;S.u=c.user;await boot(c.user);log("kayıt",n)}
-}catch(x){reg=0;er.textContent=emsg(x.code)}};
-["aN","aE","aP"].forEach(i=>$(i).addEventListener("keydown",e=>{if(e.key=="Enter")$("aGo").click()}));
+const ERR = {
+  "auth/invalid-credential": "Kullanıcı adı/e-posta veya şifre hatalı.",
+  "auth/wrong-password": "Kullanıcı adı/e-posta veya şifre hatalı.",
+  "auth/user-not-found": "Kullanıcı adı/e-posta veya şifre hatalı.",
+  "auth/invalid-email": "Geçerli bir kullanıcı adı veya e-posta gir.",
+  "auth/email-already-in-use": "Bu kullanıcı adı veya e-posta zaten kayıtlı.",
+  "auth/weak-password": "Şifre çok zayıf, en az 8 karakter kullan.",
+  "auth/too-many-requests": "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.",
+  "auth/network-request-failed": "Bağlantı hatası. İnternetini kontrol et.",
+  "auth/user-disabled": "Bu hesap devre dışı bırakılmış.",
+  "auth/requires-recent-login": "Güvenlik için tekrar giriş yapıp dene.",
+  "auth/operation-not-allowed": "E-posta değişikliği şu an kullanılamıyor (Firebase ayarı gerekli).",
+  "auth/invalid-new-email": "Geçersiz e-posta.",
+  "permission-denied": "Bu işlem için yetkin yok. (firestore.rules güncel mi?)"
+};
+const trError = e => ERR[e?.code] || "Hata: " + (e?.code || e?.message);
 
-/* oturum */
-async function boot(u){
-let d={};try{const s=await getDoc(doc(db,"users",u.uid));d=s.data()||{}}catch{}
-if(d.blocked){await signOut(auth);$("aErr").textContent="Hesabın engellendi.";return false}
-S.u=u;S.name=d.name||u.displayName||"";S.fav=d.favs||[];
-const beat=()=>updateDoc(doc(db,"users",u.uid),{lastSeen:serverTimestamp()}).catch(()=>{});
-updateDoc(doc(db,"users",u.uid),{lastLogin:serverTimestamp(),lastSeen:serverTimestamp()}).catch(()=>{});
-clearInterval(hb);hb=setInterval(beat,60000);
-$("auth").classList.add("hide");$("app").classList.remove("hide");
-$("who").textContent=S.name||u.email;$("admBtn").classList.toggle("hide",!isAdm());
-nav("lib");return true}
-onAuthStateChanged(auth,u=>{if(reg)return;if(u)boot(u);else{$("app").classList.add("hide");$("auth").classList.remove("hide")}});
+function validate(mode, v) {
+  const e = {};
+  if (mode !== "register" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email) && (mode === "reset" || !v.email || v.email.includes("@")))
+    e.email = mode === "reset" ? "Şifre sıfırlamak için kayıtlı e-posta adresini gir (kullanıcı adı hesaplarında admine yaz)." : "Kullanıcı adı veya geçerli e-posta gir.";
+  if (mode === "reset") return e;
+  if (mode === "register") {
+    if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(v.username)) e.username = "3-20 karakter olmalı (harf, rakam, _ ve .).";
+    if (!/^\S+( \S+)+$/.test(v.fullName)) e.fullName = "Ad ve soyadını gir.";
+    if (v.remail && !okMail(v.remail)) e.remail = "Geçersiz e-posta.";
+    if (v.password.length < 8) e.password = "Şifre en az 8 karakter olmalı.";
+    if (v.password2 !== v.password) e.password2 = "Şifreler eşleşmiyor.";
+    if (!v.kvkk) e.kvkk = "Devam etmek için Aydınlatma Metni onayı gerekli.";
+  } else if (!v.password) e.password = "Şifreni gir.";
+  return e;
+}
 
-/* veri */
-async function loadPages(){
-const c=collection(db,"pages"),s=await getDocs(isAdm()?c:query(c,where("visible","==",true)));
-S.pages=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0))}
+async function resolve(u) {
+  if (unsub) { unsub(); unsub = null; }
+  if (!u) return emit({ screen: "auth" });
+  if (!u.emailVerified && !isFake(u.email)) return emit({ screen: "verify", user: u });
+  const ref = doc(db, "users", u.uid);
+  if (u.uid === ADMIN_UID) {
+    const s = await getDoc(ref), d = s.data();
+    if (!s.exists() || d.status !== "approved" || d.role !== "admin") {
+      await setDoc(ref, {
+        username: u.displayName || u.email.split("@")[0], email: u.email,
+        status: "approved", role: "admin",
+        ...(s.exists() ? {} : { createdAt: serverTimestamp(), lastLogin: serverTimestamp() })
+      }, { merge: true });
+    }
+  }
+  if (auth.currentUser?.uid !== u.uid) return;
+  let mapped = false;
+  unsub = onSnapshot(ref, s => {
+    if (!s.exists() && u.uid !== ADMIN_UID) { if (!s.metadata.fromCache) gone(u); return; }
+    if (!mapped) { mapped = true; syncMap(u); }
+    const d = s.exists() ? s.data() : null, st = d?.status || "pending";
+    emit({ screen: st === "approved" ? "home" : st === "blocked" || st === "rejected" ? "blocked" : "pending", user: u, data: d });
+  }, () => {});
+}
 
-/* görünümler */
-async function nav(v){S.view=v;S.cur=null;document.querySelectorAll("aside [data-v]").forEach(b=>b.classList.toggle("on",b.dataset.v==v));
-$("main").innerHTML='<p class="m">Yükleniyor…</p>';
-try{if(v!="adm"||S.tab=="pg")await loadPages()}catch{$("main").innerHTML='<p class="empty">Veriler yüklenemedi.</p>';return}
-render()}
-function render(){
-const m=$("main");
-if(S.cur){const p=S.pages.find(x=>x.id==S.cur);m.innerHTML=`<div class="row sb" style="margin-bottom:12px"><button data-a="nav" data-v="${S.view}">Geri dön</button><b>${esc(p?.title)}</b></div><iframe sandbox="allow-scripts allow-forms allow-popups" title="${esc(p?.title)}"></iframe>`;m.querySelector("iframe").srcdoc=p?.html||"";return}
-if(S.view=="adm")return admin();
-let l=S.pages.filter(p=>p.visible);if(S.view=="fav")l=l.filter(p=>S.fav.includes(p.id));
-m.innerHTML=`<h2>${S.view=="fav"?"Favoriler":"Kütüphane"}</h2>`+(l.length?`<div class="grid">${l.map(p=>`<div class="box card" data-a="open" data-id="${p.id}"><b>${esc(p.title)}</b><div class="row sb"><span class="m">${fmt(p.createdAt).split(" ")[0]}</span><button class="star ${S.fav.includes(p.id)?"on":""}" data-a="fav" data-id="${p.id}" aria-label="Favori">★</button></div></div>`).join("")}</div>`:`<p class="empty">${S.view=="fav"?"Henüz favorin yok. Kütüphanede ★ ile ekle.":"Henüz yayınlanmış sayfa yok."}</p>`)}
+async function gone(u) {
+  if (unsub) { unsub(); unsub = null; }
+  goneMsg = "Bu hesap admin tarafından silindi.";
+  try { await deleteUser(u); } catch { await signOut(auth).catch(() => {}); }
+}
 
-async function admin(){
-const m=$("main"),T=(k,n)=>`<button data-a="tab" data-t="${k}" class="${S.tab==k?"on":""}">${n}</button>`;
-let h=`<h2>Yönetici Paneli</h2><div class="row" style="margin-bottom:16px">${T("pg","Sayfalar")}${T("us","Kullanıcılar")}${T("lg","Loglar")}</div>`;
-if(S.tab=="pg"){const e=S.pages.find(p=>p.id==S.edit)||{};
-h+=`<div class="box li"><input id="eT" placeholder="Başlık" value="${esc(e.title)}"><textarea id="eH" placeholder="HTML kodu">${esc(e.html)}</textarea><div class="row"><button class="pri" data-a="save">${S.edit?"Güncelle":"Ekle"}</button>${S.edit?'<button data-a="cancel">Vazgeç</button>':""}</div></div>`+
-S.pages.map(p=>`<div class="box li row sb"><span>${esc(p.title)} ${p.visible?"":'<span class="m">(gizli)</span>'}</span><span class="row"><button data-a="edit" data-id="${p.id}">Düzenle</button><button data-a="hide" data-id="${p.id}">${p.visible?"Gizle":"Göster"}</button><button class="dng" data-a="del" data-id="${p.id}">Sil</button></span></div>`).join("");m.innerHTML=h}
-else if(S.tab=="us"){m.innerHTML=h+'<p class="m">Yükleniyor…</p>';
-try{const s=await getDocs(collection(db,"users"));const now=Date.now();
-m.innerHTML=h+`<div class="box tw"><table><tr><th>Kullanıcı</th><th>Durum</th><th>Son giriş</th><th></th></tr>${s.docs.map(d=>{const u=d.data(),on=u.lastSeen?.toDate&&now-u.lastSeen.toDate()<120000;return`<tr><td>${esc(u.name)}<div class="m">${esc(u.email)}</div></td><td><span class="dot ${on?"on":""}"></span>${on?"Çevrimiçi":"Çevrimdışı"}</td><td>${fmt(u.lastLogin)}</td><td>${d.id==ADMIN_UID?"":`<button class="${u.blocked?"":"dng"}" data-a="ban" data-id="${d.id}" data-b="${u.blocked?1:0}">${u.blocked?"Engeli aç":"Engelle"}</button>`}</td></tr>`}).join("")}</table></div>`}catch{m.innerHTML=h+'<p class="empty">Kullanıcılar yüklenemedi.</p>'}}
-else{if(!S.logs.length&&!S.more)await moreLogs(1);logView(h)}}
+async function startSession(cb) {
+  emit = cb;
+  await ready;
+  onAuthStateChanged(auth, u => { if (!regBusy) resolve(u); });
+}
 
-function logView(h){
-const f=S.filter,l=S.logs.filter(x=>!f||(x.action||"").includes(f));
-$("main").innerHTML=h+`<div class="row" style="margin-bottom:12px"><select id="lF" style="width:auto;margin:0"><option value="">Tüm işlemler</option>${["giriş","çıkış","kayıt","ekle","düzenle","sil","gizle","engel"].map(o=>`<option ${f==o?"selected":""}>${o}</option>`).join("")}</select></div><div class="box tw"><table><tr><th>Zaman</th><th>Kullanıcı</th><th>İşlem</th><th>Detay</th></tr>${l.map(x=>`<tr><td>${fmt(x.ts)}</td><td>${esc(x.email)}</td><td>${esc(x.action)}</td><td>${esc(x.detail)}</td></tr>`).join("")||'<tr><td colspan="4" class="m">Kayıt yok.</td></tr>'}</table></div>${S.more!==false?'<p style="margin-top:12px"><button data-a="more">Daha fazla yükle</button></p>':""}`;
-$("lF").onchange=e=>{S.filter=e.target.value;logView(h)}}
-async function moreLogs(first){
-const c=collection(db,"logs"),q=S.last?query(c,orderBy("ts","desc"),startAfter(S.last),limit(25)):query(c,orderBy("ts","desc"),limit(25));
-try{const s=await getDocs(q);S.logs.push(...s.docs.map(d=>d.data()));S.last=s.docs[s.docs.length-1]||S.last;S.more=s.docs.length==25?true:false}catch{S.more=false}
-if(!first)admin()}
+async function signIn(email, password) {
+  await ready;
+  let ems = [toMail(email)];
+  if (!email.includes("@")) { const m = await getDoc(doc(db, "usernames", slug(email))).catch(() => null); if (m?.exists() && m.data().email !== ems[0]) ems.unshift(m.data().email); }
+  let user;
+  for (let i = 0; i < ems.length; i++) {
+    try { ({ user } = await signInWithEmailAndPassword(auth, ems[i], password)); break; }
+    catch (x) { if (i === ems.length - 1 || !["auth/invalid-credential", "auth/user-not-found", "auth/wrong-password"].includes(x.code)) throw x; }
+  }
+  updateDoc(doc(db, "users", user.uid), { lastLogin: serverTimestamp() }).catch(() => {});
+}
 
-/* tıklamalar */
-document.addEventListener("click",async e=>{
-const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,id=b.dataset.id;
-if(a=="nav"){if(b.dataset.v=="adm")S.edit=null;return nav(b.dataset.v)}
-if(a=="open"){S.cur=id;return render()}
-if(a=="fav"){e.stopPropagation();const on=S.fav.includes(id);S.fav=on?S.fav.filter(x=>x!=id):[...S.fav,id];updateDoc(doc(db,"users",S.u.uid),{favs:on?arrayRemove(id):arrayUnion(id)}).catch(()=>{});return render()}
-if(a=="out"){clearInterval(hb);await log("çıkış");await updateDoc(doc(db,"users",S.u.uid),{lastSeen:new Date(0)}).catch(()=>{});S.logs=[];S.last=null;S.more=undefined;return signOut(auth)}
-if(a=="tab"){S.tab=b.dataset.t;S.edit=null;if(S.tab=="pg")await loadPages();return admin()}
-if(a=="edit"){S.edit=id;return admin()}
-if(a=="cancel"){S.edit=null;return admin()}
-try{
-if(a=="save"){const t=$("eT").value.trim(),h=$("eH").value;if(!t||!h)return alert("Başlık ve HTML zorunlu.");
-if(S.edit){await updateDoc(doc(db,"pages",S.edit),{title:t,html:h});log("düzenle",t)}else{await addDoc(collection(db,"pages"),{title:t,html:h,visible:true,createdAt:serverTimestamp()});log("ekle",t)}
-S.edit=null;await loadPages();return admin()}
-if(a=="hide"){const p=S.pages.find(x=>x.id==id);await updateDoc(doc(db,"pages",id),{visible:!p.visible});log(p.visible?"gizle":"göster",p.title);await loadPages();return admin()}
-if(a=="del"){const p=S.pages.find(x=>x.id==id);if(!confirm(`"${p.title}" silinsin mi?`))return;await deleteDoc(doc(db,"pages",id));log("sil",p.title);await loadPages();return admin()}
-if(a=="ban"){const bl=b.dataset.b=="1";await updateDoc(doc(db,"users",id),{blocked:!bl});log(bl?"engeli aç":"engelle",id);return admin()}
-if(a=="more"){await moreLogs();return}
-}catch{alert("İşlem başarısız. Yetkini ve bağlantını kontrol et.")}});
+async function signUp({ username, password, remail, fullName }) {
+  await ready;
+  const taken = await getDoc(doc(db, "usernames", slug(username))).catch(() => null);
+  if (taken?.exists()) { const t = new Error("taken"); t.code = "auth/email-already-in-use"; throw t; }
+  const email = slug(username) + MAILDOM;
+  regBusy = true;
+  try {
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(user, { displayName: username });
+    await setDoc(doc(db, "users", user.uid), { username, fullName, email: "", ...(remail ? { contactEmail: remail } : {}), status: "pending", createdAt: serverTimestamp(), lastLogin: null, kvkk: true, kvkkAt: serverTimestamp() });
+    await addDoc(collection(db, "notifications"), { type: "new_user", uid: user.uid, username, createdAt: serverTimestamp(), read: false });
+  } finally { regBusy = false; }
+  await resolve(auth.currentUser);
+}
+
+const forgot = email => sendPasswordResetEmail(auth, email);
+const resend = () => sendEmailVerification(auth.currentUser);
+const logout = () => signOut(auth);
+
+async function checkVerified() {
+  await auth.currentUser.reload();
+  if (!auth.currentUser.emailVerified) return false;
+  await resolve(auth.currentUser);
+  return true;
+}
+
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+const stage = $("#stage"), home = $("#home"), splash = $("#splash");
+const authView = $("#view-auth"), form = $("#form"), wrap = $("#submit-wrap");
+const rs = $("#resend"), ck = $("#ck-wrap");
+let mode = "login", busy = false, cur = null, cool = null;
+
+const FIELDS = ["fullName", "username", "remail", "email", "password", "password2", "form", "verify"];
+const setErr = (k, m = "", ok = false) => { const p = $("#e-" + k); p.textContent = m; p.classList.toggle("ok", ok); };
+const clearErrs = () => FIELDS.forEach(k => setErr(k));
+const shake = el => { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); };
+const vals = () => ({
+  fullName: $("#fullName").value.trim().replace(/\s+/g, " "), username: $("#username").value.trim(), remail: $("#remail").value.trim().toLowerCase(), email: $("#email").value.trim(),
+  password: $("#password").value, password2: $("#password2").value, kvkk: $("#kvkk").checked
+});
+
+function sync() {
+  $$(".reg-only").forEach(e => e.inert = mode !== "register");
+  $$(".login-only").forEach(e => e.inert = mode === "register");
+}
+sync();
+
+$$(".tabs button").forEach(b => b.onclick = () => {
+  mode = b.dataset.mode;
+  $$(".tabs button").forEach(x => x.classList.toggle("on", x === b));
+  authView.classList.toggle("reg", mode === "register");
+  $(".lbl", wrap).textContent = mode === "login" ? "Giriş Yap" : "Kayıt Ol";
+  $("#password").autocomplete = mode === "login" ? "current-password" : "new-password";
+  clearErrs(); sync();
+});
+
+$$(".eye").forEach(b => b.onclick = () => {
+  const i = b.previousElementSibling, show = i.type === "password";
+  i.type = show ? "text" : "password";
+  b.firstElementChild.firstElementChild.setAttribute("href", show ? "#i-eyeoff" : "#i-eye");
+});
+
+$$("#form input").forEach(i => i.oninput = () => { setErr(i.id); setErr("form"); });
+
+form.onsubmit = async e => {
+  e.preventDefault();
+  if (busy) return;
+  clearErrs();
+  const v = vals(), er = validate(mode, v);
+  if (Object.keys(er).length) { Object.entries(er).forEach(([k, m]) => setErr(k, m)); shake(wrap); return; }
+  busy = true;
+  wrap.classList.add("fast", "flash", "loading");
+  await sleep(700);
+  try {
+    if (mode === "login") await signIn(v.email, v.password);
+    else { await signUp(v); startCool(); }
+  } catch (x) {
+    const c = x.code || "";
+    const k = c === "auth/email-already-in-use" || c === "auth/invalid-email" ? (mode === "register" ? "username" : "email") : c === "auth/weak-password" ? "password" : "form";
+    setErr(k, trError(x));
+    shake(wrap);
+  }
+  wrap.classList.remove("fast", "flash", "loading");
+  busy = false;
+};
+
+$("#forgot").onclick = async () => {
+  clearErrs();
+  const email = $("#email").value.trim(), er = validate("reset", { email });
+  if (er.email) return setErr("email", er.email);
+  try { await forgot(email); setErr("form", "Sıfırlama bağlantısı e-postana gönderildi.", true); }
+  catch (x) { setErr("form", trError(x)); }
+};
+
+function startCool() {
+  clearInterval(cool);
+  let n = 60;
+  const t = () => {
+    rs.disabled = n > 0;
+    rs.textContent = n > 0 ? `Tekrar gönder (${n})` : "Tekrar gönder";
+    if (n-- <= 0) clearInterval(cool);
+  };
+  t(); cool = setInterval(t, 1000);
+}
+
+rs.onclick = async () => {
+  setErr("verify");
+  try { await resend(); startCool(); setErr("verify", "Bağlantı tekrar gönderildi.", true); }
+  catch (x) { setErr("verify", trError(x)); }
+};
+
+$("#checked").onclick = async () => {
+  setErr("verify");
+  ck.classList.add("loading");
+  try { if (!await checkVerified()) setErr("verify", "E-posta henüz doğrulanmadı. Gelen kutunu ve spam klasörünü kontrol et."); }
+  catch (x) { setErr("verify", trError(x)); }
+  ck.classList.remove("loading");
+};
+
+$$("[data-logout]").forEach(b => b.onclick = async () => { logout(); });
+
+function show(n) {
+  if (n === cur) return;
+  const first = cur === null, prev = cur;
+  cur = n;
+  const h = n === "home";
+  stage.hidden = h; home.hidden = !h;
+  $$(".view").forEach(v => { const on = v.dataset.view === n; v.hidden = !on; v.classList.toggle("in", on); });
+  if (n === "auth" && !first && prev !== "auth") {
+    form.reset(); $('[data-mode="login"]').click(); clearErrs();
+    clearInterval(cool); rs.disabled = false; rs.textContent = "Tekrar gönder";
+  }
+}
+
+const IC = {
+  home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
+  code: '<path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/>',
+  folder: '<path d="M3 6h6l2 3h10v11H3z"/>',
+  note: '<path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  heart: '<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>',
+  pin: '<path d="M9 3h6l-1 6 3 3H7l3-3zM12 12v9"/>',
+  msg: '<path d="M4 5h16v11H9l-5 4z"/>',
+  pen: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+  trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>'
+};
+const ROUTES = {
+  home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], profile: ["Profil", "user"],
+  add: ["HTML Ekle", "code"], mine: ["HTML'lerim", "folder"], notes: ["Notlarım", "note"],
+  settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"]
+};
+const TABS = [["all", "Tümü"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
+const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
+const NT = {
+  new_user: n => `${esc(n.username)} kayıt oldu`,
+  html_pending: n => `${esc(n.username)} HTML ekledi: ${esc(n.detail)}`,
+  access_request: n => `${esc(n.username)} açma isteği: ${esc(n.detail)}`,
+  violation: n => `${esc(n.username)} ihlal yaptı: ${esc(n.detail)}`,
+  chat: n => `${esc(n.username)} mesaj yazdı: ${esc(n.detail)}`
+};
+let ctx = {}, vio = false, gt = null;
+const shell = $("#shell"), viewer = $("#viewer"), frame = $("#vf");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = t => t?.toDate ? t.toDate().toLocaleString("tr-TR") : "—";
+const ms = t => t?.toMillis ? t.toMillis() : Date.now();
+const svg = n => `<svg class="ic" viewBox="0 0 24 24">${IC[n]}</svg>`;
+const toast = m => { const t = document.createElement("div"); t.className = "toast"; t.textContent = m; document.body.append(t); setTimeout(() => t.remove(), 3200); };
+
+const notify = (type, extra = {}) => addDoc(collection(db, "notifications"), {
+  type, uid: auth.currentUser.uid, username: ctx.name || auth.currentUser.displayName || "", ...extra, createdAt: serverTimestamp(), read: false
+}).catch(() => {});
+
+const card = c => `<a class="card2 beam${c.gold ? " gold" : ""}" href="${c.h}">${svg(c.i)}<span>${c.t}</span></a>`;
+const navItem = r => `<a href="#/${r}" data-r="${r}" title="${ROUTES[r][0]}" class="${r === "admin" ? "gold beam" : ""}">${svg(ROUTES[r][1])}<span class="lb">${ROUTES[r][0]}</span></a>`;
+const empty = () => '<p class="empty">Henüz içerik yok.</p>';
+
+function hcard(h) {
+  const S = ctx.S, n = S.likes.filter(l => l.htmlId === h.id).length;
+  const lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
+  const own = h.by === ctx.uid;
+  const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
+  return `<div class="card2" data-a="open" data-id="${h.id}"><div><div class="by"><span class="n">${esc(h.byName || "")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
+}
+const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
+
+function adminPage() {
+  const S = ctx.S, at = ctx.at;
+  const tabs = `<div class="htabs">${[["users", "Kullanıcılar"], ["pend", "Bekleyenler"], ["msgs", "Mesajlar"], ["data", "Veri"], ["trace", "İz çöz"], ["ann", "Duyuru"]].map(([k, t]) => `<button data-at="${k}" class="${k === at ? "on" : ""}">${t}</button>`).join("")}</div>`;
+  if (at === "users") {
+    const U = [...S.users].sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
+    const ub = u => {
+      const B = (v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(u.username)}">${t}</button>`;
+      if (u.id === ADMIN_UID) return "";
+      const m = u.status === "pending" ? B("approved", "Onayla") + B("rejected", "Reddet") : u.status === "approved" ? B("blocked", "Engelle") : B("approved", "Engeli kaldır");
+      return m + `<button data-a="mex" data-id="${u.id}" data-v="${u.mailExempt ? "" : "1"}" data-n="${esc(u.username)}">${u.mailExempt ? "E-posta zorunlu yap" : "E-posta muaf"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
+    };
+    return tabs + (U.map(u => `<div class="row2"><div>${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}</b> <em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5 ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.mailExempt ? " · e-posta muaf" : ""} · Son giriş: ${fmt(u.lastLogin)} · Son görülme: ${fmt(u.lastSeen)}</small></div><div class="btns ub">${ub(u)}</div></div>`).join("") || empty());
+  }
+  if (at === "data") {
+    const du = ctx.du || "all", all = du === "all", D = ctx.dv;
+    const nm = Object.fromEntries(S.users.map(u => [u.id, u.username || u.email]));
+    const uo = `<option value="all"${all ? " selected" : ""}>Tümü</option>` + S.users.map(u => `<option value="${u.id}"${u.id === du ? " selected" : ""}>${esc(u.username || u.email)}</option>`).join("");
+    const F = { fullName: "Ad Soyad", username: "Kullanıcı adı", contactEmail: "E-posta", bio: "Biyografi", photoURL: "Fotoğraf" };
+    const ut = n => all && n ? ` <em class="bd st-approved">${esc(n)}</em>` : "", dl = x => x.deleted ? ' <em class="bd st-blocked">silindi</em>' : "";
+    const notes = S.allNotes.filter(n => all || n.uid === du).sort((a, b) => ms(b.updatedAt) - ms(a.updatedAt));
+    const htmls = S.allHtmls.filter(h => all || h.by === du).sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
+    const prof = D ? D.prof.map(p => `<div class="tick">✓ ${ut(p.u)}<b>${F[p.field] || esc(p.field)}</b>: ${esc(p.old) || "—"} → ${esc(p.new) || "—"}<small>${fmt(p.ts)}</small></div>`).join("") || empty() : '<p class="muted">Yükleniyor...</p>';
+    const body = `<h3 class="sh">Profil geçmişi <button class="btn-ghost sm" data-a="pclr" type="button">Temizle</button></h3>${prof}<h3 class="sh">Notlar</h3>${notes.map(n => `<div class="row2"><div><b>${esc(n.title || "Başlıksız")}</b>${dl(n)}${ut(nm[n.uid])}<small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="ddel" data-k="notes" data-id="${n.id}">Sil</button></div></div>`).join("") || empty()}<h3 class="sh">HTML'ler</h3>${htmls.map(x => `<div class="row2"><div><b>${esc(x.title)}</b> <em class="bd st-${x.status}">${ST[x.status] || x.status}</em>${dl(x)}${ut(nm[x.by])}<small>${fmt(x.createdAt)}</small></div><div class="btns"><button data-a="dl" data-id="${x.id}" data-n="${esc(x.title)}">İndir</button><button data-a="ddel" data-k="htmls" data-id="${x.id}">Sil</button></div></div>`).join("") || empty()}`;
+    return tabs + `<div class="lf"><select id="du">${uo}</select></div>` + body;
+  }
+  if (at === "trace") {
+    return tabs + '<form class="addf" onsubmit="return false"><p class="muted">Sızan HTML\'i veya metni buraya yapıştır. Gizli iz ve filigran yazısı aranır.</p><textarea id="trin" placeholder="Yapıştır..." style="height:160px"></textarea><button class="btn2" type="button" data-a="trace"><span class="lbl">İzi Çöz</span></button></form><div id="trout"></div>';
+  }
+  if (at === "ann") {
+    return tabs + `<form id="anf" class="addf"><textarea id="anx" maxlength="500" placeholder="Duyuru yaz..." style="height:100px"></textarea><button class="btn2" type="submit"><span class="lbl">Herkese Gönder</span><i class="spin"></i></button></form><h3 class="sh">Gönderilenler</h3>` + (S.ann.map(a => `<div class="row2"><div><small class="nt">${esc(a.text)}</small><small>${fmt(a.ts)}</small></div><div class="btns"><button data-a="andel" data-id="${a.id}">Sil</button></div></div>`).join("") || empty());
+  }
+  if (at === "msgs") {
+    const C = [...S.chats].sort((a, b) => ms(b.updated) - ms(a.updated));
+    const list = C.map(c => `<div class="row2${c.id === ctx.ct ? " sel" : ""}" data-a="ch" data-id="${c.id}"><div><b>${esc(c.name)}</b>${c.adminUnread ? ` <em class="bd st-pending">${c.adminUnread} yeni</em>` : ""}<small>${esc(c.last)}</small></div><small>${fmt(c.updated)}</small></div>`).join("");
+    const mu = '<option value="">Yeni mesaj: kullanıcı seç</option>' + S.users.filter(u => u.id !== ADMIN_UID && u.status === "approved").map(u => `<option value="${u.id}"${u.id === ctx.ct ? " selected" : ""}>${esc(u.username || u.email)}</option>`).join("");
+    const cn = ctx.ct ? esc(S.users.find(u => u.id === ctx.ct)?.username || S.chats.find(c => c.id === ctx.ct)?.name || "") : "";
+    const conv = ctx.ct ? `<h3 class="sh">${cn}</h3><div id="adl" class="chl">${ctx.cmsgs.map(m => bub(m, m.from === "admin")).join("")}</div><form id="adf" class="chf"><input id="adx" maxlength="500" placeholder="Cevap yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form><button class="btn-ghost sm" data-a="cdelall" type="button" style="margin-top:10px">Sohbeti tamamen sil</button>` : "";
+    return tabs + `<div class="lf"><select id="mu">${mu}</select></div>` + (list || empty()) + conv;
+  }
+  if (at === "pend") {
+    const hp = S.pend.map(h => `<div class="row2"><div><b>${esc(h.title)}</b><small>${esc(h.byName)} · ${esc(h.desc)}</small></div><div class="btns"><button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button><button data-a="hap" data-id="${h.id}">Onayla</button><button data-a="hrej" data-id="${h.id}">Reddet</button></div></div>`).join("");
+    const rq = S.reqs.map(r => `<div class="row2"><div><b>${esc(r.name)}</b><small>${esc(r.title)}</small></div><div class="btns"><button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="granted">İzin ver</button><button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="denied">Reddet</button></div></div>`).join("");
+    return tabs + `<h3 class="sh">HTML onayları</h3>${hp || empty()}<h3 class="sh">Açma istekleri</h3>${rq || empty()}`;
+  }
+
+  return tabs;
+}
+
+const needMail = () => !ctx.admin && !ctx.prof?.mailExempt && !okMail(ctx.prof?.contactEmail) && isFake(ctx.email);
+function backfill() {
+  try { if (localStorage.umap2) return; } catch {}
+  const us = ctx.S.users.filter(u => u.email && !isFake(u.email) && u.username);
+  if (!us.length) return;
+  const w = writeBatch(db);
+  us.forEach(u => w.set(doc(db, "usernames", slug(u.username)), { uid: u.id, email: u.email }));
+  w.commit().then(() => { try { localStorage.umap2 = "1"; } catch {} }).catch(() => {});
+}
+const ids = v => v === "all" ? ctx.S.users.map(u => u.id) : [v];
+async function delCol(q) {
+  const s = await getDocs(q);
+  for (let i = 0; i < s.docs.length; i += 400) { const w = writeBatch(db); s.docs.slice(i, i + 400).forEach(x => w.delete(x.ref)); await w.commit(); }
+  return s.docs;
+}
+async function wipeHtml(id) {
+  await delCol(query(collection(db, "comments"), where("htmlId", "==", id)));
+  await delCol(query(collection(db, "likes"), where("htmlId", "==", id)));
+  await delCol(query(collection(db, "access"), where("htmlId", "==", id)));
+  await deleteDoc(doc(db, "htmlBodies", id)).catch(() => {});
+  await deleteDoc(doc(db, "htmls", id));
+}
+async function wipeUser(id) {
+  const u = ctx.S.users.find(x => x.id === id), col = n => collection(db, n);
+  const hs = await getDocs(query(col("htmls"), where("by", "==", id)));
+  for (const h of hs.docs) await wipeHtml(h.id);
+  await delCol(query(col("htmlBodies"), where("by", "==", id)));
+  await delCol(query(col("notes"), where("uid", "==", id)));
+  const cs = await getDocs(query(col("comments"), where("uid", "==", id)));
+  for (const c of cs.docs) await delCol(query(col("comments"), where("parent", "==", c.id)));
+  await delCol(query(col("comments"), where("uid", "==", id)));
+  await delCol(query(col("likes"), where("uid", "==", id)));
+  await delCol(query(col("access"), where("uid", "==", id)));
+  await delCol(query(col("notifications"), where("uid", "==", id)));
+  await delCol(query(col("usernames"), where("uid", "==", id)));
+  if (u?.username) await deleteDoc(doc(db, "usernames", slug(u.username))).catch(() => {});
+  await delCol(collection(db, "chats", id, "msgs"));
+  await delCol(collection(db, "profileHistory", id, "items"));
+  await deleteDoc(doc(db, "chats", id)).catch(() => {});
+  await deleteDoc(doc(db, "prefs", id)).catch(() => {});
+  await deleteDoc(doc(db, "users", id));
+}
+
+const PAGES = {
+  home: () => {
+    const S = ctx.S, t = ctx.tab;
+    const l = t === "all" ? S.htmls : t === "html" ? S.mine : t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : [];
+    const ad = "";
+    const tabs = `<div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${n}</button>`).join("")}</div>`;
+    return tabs + (l.length || ad ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>` : empty());
+  },
+  favs: () => grid(ctx.S.htmls.filter(h => ctx.S.prefs.favs.includes(h.id))),
+  mine: () => grid(ctx.S.mine),
+  add: () => `<form id="addf" class="addf"><input id="ht" placeholder="Başlık" maxlength="80"><input id="hd" placeholder="Açıklama" maxlength="200"><textarea id="hh" placeholder="HTML kodu"></textarea><p class="err" id="e-add"></p><button class="btn2" type="submit"><span class="lbl">${ctx.admin ? "Yayınla" : "Onaya Gönder"}</span><i class="spin"></i></button></form>`,
+  notes: empty, settings: empty,
+  profile: () => `<p><b>${esc(ctx.name)}</b></p><p class="muted">${esc(ctx.email)}</p>`,
+  admin: adminPage
+};
+
+function render() {
+  const keep = ["adx", "anx"].map(i => { const x = $("#" + i); return [i, x?.value, x && document.activeElement === x]; });
+  const sl = $(".htabs")?.scrollLeft || 0;
+  $("#content").innerHTML = PAGES[ctx.r]();
+  keep.forEach(([i, v, f]) => { const n = $("#" + i); if (n) { if (v) n.value = v; if (f) n.focus(); } });
+  const t = $(".htabs");
+  if (t) {
+    t.scrollLeft = sl;
+    const on = t.querySelector(".on");
+    if (on) { const l = on.offsetLeft, r = l + on.offsetWidth; if (l < t.scrollLeft) t.scrollLeft = l - 8; else if (r > t.scrollLeft + t.clientWidth) t.scrollLeft = r - t.clientWidth + 8; }
+  }
+  $("#adl")?.scrollTo(0, 1e9);
+}
+const rf = () => {
+  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); return; }
+  if (ctx.r === "notes" && $("#nl")) { $("#nl").innerHTML = notesList(); return; }
+  if (["favs", "mine", "admin"].includes(ctx.r)) render();
+};
+
+function route() {
+  if (!ctx.uid) return;
+  let r = location.hash.replace("#/", "") || "home";
+  if (!ROUTES[r] || (r === "admin" && !ctx.admin)) r = "home";
+  if (r === "add") { if (location.hash !== "#/home") location.hash = "#/home"; openEditor(null); return; }
+  ctx.r = r;
+  $$("#nav a,#navb a").forEach(a => a.classList.toggle("on", a.dataset.r === r));
+  $("#ptitle").textContent = ROUTES[r][0];
+  const c = $("#content");
+  c.classList.remove("in"); void c.offsetWidth; c.classList.add("in");
+  render();
+  shell.classList.remove("open");
+  scrollTo(0, 0);
+}
+
+function notifRender() {
+  const S = ctx.S, dot = $("#bell .dot");
+  if (!ctx.admin) {
+    const cu = S.chat?.userUnread || 0, seen = S.prefs.annSeen || 0, n = cu + S.ann.filter(a => ms(a.ts) > seen).length;
+    dot.hidden = !n; dot.textContent = n;
+    const it = (cu ? `<div class="nit un" data-a="openchat">Admin'den ${cu} yeni mesaj</div>` : "") + S.ann.map(a => `<div class="nit${ms(a.ts) > seen ? " un" : ""}">${esc(a.text)}<small>${fmt(a.ts)}</small></div>`).join("");
+    $("#nlist").innerHTML = it || '<p class="muted">Henüz bildirim yok.</p>';
+    return;
+  }
+  const N = S.notifs, u = N.filter(n => !n.read).length;
+  dot.hidden = !u; dot.textContent = u; $("#nclr").hidden = !N.length; $("#nall").hidden = !N.some(n => !n.read);
+  $("#nlist").innerHTML = N.length ? N.map(n => `<div class="nit${n.read ? "" : " un"} t-${n.type}" data-a="nread" data-id="${n.id}" data-k="${n.type}">${(NT[n.type] || (x => esc(x.type)))(n)}<small>${fmt(n.createdAt)}</small></div>`).join("") : '<p class="muted">Henüz bildirim yok.</p>';
+}
+
+async function loadProf() {
+  const v = ctx.du || "all", nm = Object.fromEntries(ctx.S.users.map(u => [u.id, u.username || u.email]));
+  ctx.dv = null;
+  try {
+    const ps = await Promise.all(ids(v).map(i => getDocs(query(collection(db, "profileHistory", i, "items"), orderBy("ts", "desc"), limit(100))).then(q => q.docs.map(d => ({ id: d.id, ...d.data(), u: nm[i] })))));
+    if ((ctx.du || "all") !== v) return;
+    ctx.dv = { prof: ps.flat().sort((a, b) => ms(b.ts) - ms(a.ts)).slice(0, 300) };
+  } catch (x) { toast(trError(x)); ctx.dv = { prof: [] }; }
+  if (ctx.r === "admin" && ctx.at === "data") render();
+}
+
+function startData() {
+  const S = ctx.S, c = n => collection(db, n), map = s => s.docs.map(d => ({ id: d.id, ...d.data() }));
+  const sub = (q, fn) => ctx.subs.push(onSnapshot(q, fn, () => {}));
+  sub(query(c("htmls"), where("status", "==", "approved")), s => { S.htmls = map(s).filter(x => !x.deleted); rf(); });
+  sub(query(c("htmls"), where("by", "==", ctx.uid)), s => { S.mine = map(s).filter(x => !x.deleted); rf(); });
+  sub(c("likes"), s => { S.likes = map(s); rf(); });
+  sub(query(c("notes"), where("uid", "==", ctx.uid)), s => { S.notes = map(s); rf(); });
+  sub(query(c("announcements"), orderBy("ts", "desc"), limit(20)), s => { S.ann = map(s); rf(); notifRender(); });
+  sub(doc(db, "prefs", ctx.uid), s => { S.prefs = { favs: [], pins: [], ...s.data() }; rf(); notifRender(); });
+  sub(query(c("access"), where("uid", "==", ctx.uid)), s => { S.access = {}; s.docs.forEach(d => S.access[d.data().htmlId] = d.data().status); });
+  if (!ctx.admin) sub(doc(db, "chats", ctx.uid), s => { S.chat = s.data() || {}; notifRender(); if (!$("#chat").hidden) chatDraw(); if (!$("#chat").hidden && S.chat.userUnread) setDoc(doc(db, "chats", ctx.uid), { userUnread: 0 }, { merge: true }).catch(() => {}); });
+  if (ctx.admin) {
+    sub(c("chats"), s => { S.chats = map(s); rf(); });
+    sub(c("users"), s => { S.users = map(s); rf(); backfill(); });
+    sub(c("notes"), s => { S.allNotes = map(s); rf(); });
+    sub(c("htmls"), s => { S.allHtmls = map(s); rf(); });
+    sub(query(c("htmls"), where("status", "==", "pending")), s => { S.pend = map(s).filter(x => !x.deleted); rf(); });
+    sub(query(c("access"), where("status", "==", "requested")), s => { S.reqs = map(s); rf(); });
+    sub(query(c("notifications"), orderBy("createdAt", "desc"), limit(30)), s => { S.notifs = map(s); notifRender(); });
+  }
+}
+
+function buildHome(user, data) {
+  const name = data?.username || user.displayName || "";
+  if (ctx.uid === user.uid) { ctx.name = name; ctx.prof = data || {}; $("#hname").textContent = name; avatarUpd(); return; }
+  ctx = {
+    uid: user.uid, admin: user.uid === ADMIN_UID, name, email: user.email, prof: data || {}, tab: "all", at: "users", subs: [], ct: "", cmsgs: [], q: "", nid: null, du: "all", dv: null,
+    S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
+  };
+  $("#hname").textContent = name; avatarUpd();
+  $("#nav").innerHTML = ["home", "favs", "profile", "add", "mine", "notes"].map(navItem).join("");
+  { const a = $("#ask"); a.classList.toggle("gold", !!ctx.admin); a.title = ctx.admin ? "Yönetim Paneli" : "Admine Soru Sor"; a.innerHTML = ctx.admin ? `<svg class="ic" viewBox="0 0 24 24">${IC.shield}</svg>` : '<svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>'; }
+  $("#navb").innerHTML = '<a href="#" class="lo" data-lo><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="lb">Çıkış Yap</span></a>' + navItem("settings");
+  $("#navb [data-lo]").onclick = async e => { e.preventDefault(); if (await ask("Çıkış yapılsın mı?", "Çıkış yap")) logout(); };
+  startData();
+  if (location.hash !== "#/home") location.hash = "#/home";
+  route(); beat();
+}
+
+function clearHome() {
+  ctx.subs?.forEach(u => u());
+  ctx.cu?.(); ctx.chu?.(); ctx.cmu?.();
+  $("#chat").hidden = true; $("#ed").hidden = true;
+  if (!viewer.hidden) exitViewer();
+  $("#cm").hidden = true;
+  ctx = {};
+  history.replaceState(null, "", location.pathname + location.search);
+  ["nav", "navb", "content"].forEach(i => $("#" + i).innerHTML = "");
+  shell.classList.remove("open");
+}
+
+/* HTML görüntüleme + koruma */
+const HOOK = '<script>addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();parent.postMessage({x:1},"*")},true)<\/script>';
+const isBad = e => {
+  const k = (e.key || "").toLowerCase(), c = e.ctrlKey || e.metaKey;
+  return e.key === "F12" || (c && (k === "u" || k === "s")) || (c && e.shiftKey && ["i", "j", "c"].includes(k));
+};
+const onKey = e => { if (isBad(e)) { e.preventDefault(); violate("Kısayol: " + e.key); } };
+const onCtx = e => { e.preventDefault(); violate("Sağ tık"); };
+function devtools() {
+  if (matchMedia("(pointer:fine)").matches && (outerWidth - innerWidth > 200 || outerHeight - innerHeight > 260)) return violate("DevTools (boyut)");
+  const t = performance.now(); debugger;
+  if (performance.now() - t > 100) violate("DevTools (debugger)");
+}
+function guard(on) {
+  if (ctx.admin) return;
+  const f = on ? addEventListener : removeEventListener;
+  f("keydown", onKey, true); f("contextmenu", onCtx, true);
+  clearInterval(gt);
+  if (on) gt = setInterval(devtools, 1500);
+}
+addEventListener("message", e => {
+  if (viewer.hidden || e.source !== frame.contentWindow) return;
+  const d = e.data || {};
+  if (d.v) violate(String(d.v).slice(0, 80)); else if (d.x) violate("Sağ tık"); else if (isBad({ key: d.k, ctrlKey: d.c, metaKey: d.m, shiftKey: d.s })) violate("Kısayol: " + d.k);
+});
+async function violate(d) {
+  if (ctx.admin || vio || !ctx.uid) return;
+  vio = true;
+  const uid = ctx.uid;
+  exitViewer();
+  $("#warnt").textContent = "Tespit edilen: " + d;
+  $("#warn").hidden = false;
+  await Promise.race([notify("violation", { detail: d }), sleep(2500)]);
+  await Promise.race([updateDoc(doc(db, "users", uid), { status: "pending", violationAt: serverTimestamp() }).catch(() => {}), sleep(2500)]);
+  await sleep(4000);
+  await logout();
+  $("#warn").hidden = true;
+  vio = false;
+}
+function exitViewer() { frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
+$("#vx").onclick = exitViewer;
+
+function kvkkHtml() {
+  const k = KVKK;
+  return `<p>Yürürlük tarihi: ${esc(k.tarih)}</p>
+<h4>1. Veri sorumlusu</h4><p>6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında veri sorumlusu ${esc(k.sorumlu)}'dur. İletişim: ${esc(k.eposta)}</p>
+<h4>2. İşlenen kişisel veriler</h4><ul><li>Kimlik ve hesap: ad soyad, kullanıcı adı, şifre (şifrelenmiş olarak)</li><li>İletişim: isteğe bağlı e-posta adresi</li><li>Profil: biyografi ve profil değişiklik geçmişi</li><li>İçerik: paylaştığın HTML'ler, notlar, yorumlar, beğeniler ve yöneticiyle yazışmalar</li><li>İşlem güvenliği: giriş ve son görülme zamanı, erişim istekleri, güvenlik ihlali bildirimleri</li><li>Tarayıcı: oturumunu sürdürmek için tarayıcı depolaması</li></ul>
+<h4>3. İşleme amaçları</h4><p>Üyelik hesabının oluşturulması ve yönetimi, içerik paylaşımı ve onay sürecinin yürütülmesi, mesajlaşma ve bildirimler, site güvenliğinin sağlanması ve içeriklerin telif haklarının korunması.</p>
+<h4>4. Hukuki sebepler</h4><p>Sözleşmenin kurulması ve ifası, hakkın tesisi, kullanılması ve korunması, veri sorumlusunun meşru menfaati (güvenlik ve telif koruması) ve yurt dışına aktarım için açık rızan.</p>
+<h4>5. Aktarım</h4><p>Verilerin Google Firebase altyapısında yurt dışındaki sunucularda saklanır. Bu aktarım için kayıt sırasında açık rızan alınır. Verilerin bunun dışında üçüncü kişilerle paylaşılmaz.</p>
+<h4>6. İçerik koruma ve izleme</h4><p>Korumalı içerikler açılırken kullanıcı adın ve tarih filigran olarak eklenir; içeriğe izleyenin kimliğini gösteren görünmez bir iz de gömülür. Kopyalama, kısayol, sağ tık ve geliştirici araçlarıyla içerik çıkarma denemeleri kaydedilir ve hesabın kapatılmasına yol açabilir.</p>
+<h4>7. Saklama süresi</h4><p>Verilerin hesabın açık olduğu sürece saklanır. Hesabını sildiğinde veya yönetici hesabı sildiğinde verilerin veritabanından tamamen silinir.</p>
+<h4>8. KVKK madde 11 kapsamındaki haklarınız</h4><ul><li>Kişisel verilerinin işlenip işlenmediğini öğrenme ve bilgi talep etme</li><li>İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme</li><li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme</li><li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li><li>Silinmesini veya yok edilmesini isteme</li><li>İşlenmesine itiraz etme ve zarara uğraman hâlinde giderilmesini talep etme</li></ul><p>Başvurularını ${esc(k.eposta)} adresine iletebilirsin.</p>`;
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("[data-kvkk]")) { e.preventDefault(); $("#kvt").innerHTML = kvkkHtml(); $("#kvkkm").hidden = false; }
+  else if (e.target.id === "kvx" || e.target.closest("#kvx") || e.target.id === "kvkkm") $("#kvkkm").hidden = true;
+});
+
+/* Admin HTML'leri için kopyalama caydırıcıları */
+function protect(html) {
+  const key = Array.from(crypto.getRandomValues(new Uint8Array(12)));
+  const enc = src => { const b = new TextEncoder().encode(src); let bin = ""; for (let i = 0; i < b.length; i++) bin += String.fromCharCode(b[i] ^ key[i % key.length]); return btoa(bin); };
+  const wrap = src => '<script>(function(k,d){var s="",i=0,b=atob(d);for(;i<b.length;i++)s+=String.fromCharCode(b.charCodeAt(i)^k[i%k.length]);var e=document.createElement("script");e.text=decodeURIComponent(escape(s));(document.head||document.documentElement).appendChild(e);e.parentNode.removeChild(e)})(' + JSON.stringify(key) + ',"' + enc(src) + '")<\/script>';
+  html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (m, a, code) =>
+    /\bsrc\s*=/i.test(a) || !code.trim() || (/\btype\s*=/i.test(a) && !/\btype\s*=\s*["']?(text|application)\/javascript/i.test(a)) ? m : wrap(code));
+  html = html.replace(/<!--(?!\[|>)[\s\S]*?-->/g, "");
+  const who = (ctx.name || "") + " · " + new Date().toLocaleDateString("tr-TR");
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="280" height="150"><text x="14" y="84" transform="rotate(-24 140 75)" font-family="sans-serif" font-size="14" font-weight="600" fill="#888">' + esc(who) + '</text></svg>';
+  const bg = "position:fixed;inset:0;z-index:2147483647;pointer-events:none;opacity:.1;background-image:url('data:image/svg+xml," + encodeURIComponent(svg) + "')";
+  const guardJs = '(function(){var P=function(v){try{parent.postMessage({v:v},"*")}catch(e){}};' +
+    '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu")P("Sag tik")},true)});' +
+    'addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;if(e.key==="F12"||(c&&["u","s","p"].indexOf(k)>-1)||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>-1)){e.preventDefault();P("Kisayol: "+e.key)}},true);' +
+    'var S=' + JSON.stringify(bg) + ',ob=new MutationObserver(function(){var w=document.getElementById("wm");if(!w)return mk();if(w.getAttribute("style")!==S){mk();P("Filigran degistirildi")}});' +
+    'var mk=function(){var w=document.getElementById("wm");if(!w){w=document.createElement("div");w.id="wm";document.body.appendChild(w)}w.setAttribute("style",S);ob.observe(w,{attributes:true})};' +
+    'var ready=function(){mk();ob.observe(document.body,{childList:true})};' +
+    'if(document.body)ready();else document.addEventListener("DOMContentLoaded",ready);' +
+    'setInterval(function(){var t=performance.now();debugger;if(performance.now()-t>100)P("DevTools (iframe)")},1500)})()';
+  const css = '<style>*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}@media print{html{display:none!important}}</style>';
+  const inj = '<meta name="copyright" content="MSA - Tüm hakları saklıdır"><meta name="x-viewer" content="' + esc(ctx.uid) + '">' + css + wrap(guardJs);
+  const mark = [...ctx.uid].map(c => c.charCodeAt(0).toString(2).padStart(8, "0")).join("").replace(/0/g, "\u200b").replace(/1/g, "\u200c");
+  const hid = '<div style="position:absolute;width:0;height:0;overflow:hidden">©' + mark + '</div>';
+  if (/<head[^>]*>/i.test(html)) html = html.replace(/<head[^>]*>/i, m => m + inj);
+  else if (/<html[^>]*>/i.test(html)) html = html.replace(/<html[^>]*>/i, m => m + "<head>" + inj + "</head>");
+  else html = inj + html;
+  html = /<body[^>]*>/i.test(html) ? html.replace(/<body[^>]*>/i, m => m + hid) : html + hid;
+  return html;
+}
+
+async function openHtml(id, h) {
+  const S = ctx.S;
+  if (needMail() && h.by !== ctx.uid) { location.hash = "#/profile"; return toast("Paylaşılan HTML'leri açmak için profilinden e-posta ekle."); }
+  if (!ctx.admin && h.by !== ctx.uid && S.access[id] !== "granted") {
+    if (S.access[id] === "requested") return toast("İsteğin admin onayını bekliyor.");
+    await setDoc(doc(db, "access", ctx.uid + "_" + id), { uid: ctx.uid, name: ctx.name, htmlId: id, title: h.title, status: "requested", ts: serverTimestamp() });
+    S.access[id] = "requested";
+    notify("access_request", { detail: h.title }); 
+    return toast("Açma isteği admine gönderildi.");
+  }
+  const b = await getDoc(doc(db, "htmlBodies", id));
+  if (!b.exists()) return toast("İçerik bulunamadı.");
+  frame.srcdoc = (h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html) : b.data().html) + (ctx.admin ? "" : HOOK);
+  viewer.hidden = false; document.body.style.overflow = "hidden";
+  guard(true);
+}
+
+/* Yorumlar */
+function cmRender() {
+  const L = (ctx.cl || []).filter(c => ctx.admin || !c.deleted), by = (a, b) => ms(a.ts) - ms(b.ts);
+  const it = (c, l) => `<div class="cmi l${l}">${avHtml(c.uid, c.name, "av xs")}<b>${esc(c.name)}</b>${c.deleted ? ' <em class="bd st-blocked">kullanıcı sildi</em>' : ""} <small>${fmt(c.ts)}</small><p>${esc(c.text)}</p><div><button data-a="rep" data-id="${l ? c.parent : c.id}" data-n="${esc(c.name)}">Cevapla</button>${c.uid === ctx.uid || ctx.admin ? `<button data-a="cdel" data-id="${c.id}">Sil</button>` : ""}</div></div>`;
+  $("#cml").innerHTML = L.filter(c => !c.parent).sort(by).map(c => it(c, 0) + L.filter(r => r.parent === c.id).sort(by).map(r => it(r, 1)).join("")).join("") || '<p class="muted">Henüz yorum yok.</p>';
+  $("#rep").hidden = !ctx.rep;
+  $("#rep").textContent = ctx.rep ? "Cevap: " + ctx.rep.n + " (iptal için dokun)" : "";
+}
+function openComments(id, h) {
+  ctx.cm = id; ctx.rep = null; ctx.cl = [];
+  $("#cmt").textContent = h.title; $("#cm").hidden = false; cmRender();
+  ctx.cu?.();
+  ctx.cu = onSnapshot(query(collection(db, "comments"), where("htmlId", "==", id)), s => { ctx.cl = s.docs.map(d => ({ id: d.id, ...d.data() })); cmRender(); }, () => {});
+}
+function closeComments() { ctx.cu?.(); ctx.cu = null; ctx.cm = null; $("#cm").hidden = true; }
+
+/* Olaylar */
+home.addEventListener("click", async e => {
+  const b = e.target.closest("[data-a],[data-t],[data-at]");
+  if (!b) return;
+  const d = b.dataset, id = d.id, S = ctx.S;
+  if (d.t) { ctx.tab = d.t; return render(); }
+  if (d.at) { ctx.at = d.at; if (d.at === "data") loadProf(); return render(); }
+  const h = [...S.htmls, ...S.mine].find(x => x.id === id);
+  try {
+    switch (d.a) {
+      case "open": if (h) await openHtml(id, h); break;
+      case "like": {
+        if (spam("l" + id, 1500)) break;
+        const k = doc(db, "likes", id + "_" + ctx.uid), on = S.likes.some(l => l.htmlId === id && l.uid === ctx.uid);
+        if (on) await deleteDoc(k); else await setDoc(k, { htmlId: id, uid: ctx.uid });
+        break;
+      }
+      case "fav": case "pin": {
+        const f = d.a === "fav" ? "favs" : "pins", on = S.prefs[f].includes(id);
+        await setDoc(doc(db, "prefs", ctx.uid), { [f]: on ? arrayRemove(id) : arrayUnion(id) }, { merge: true });
+        break;
+      }
+      case "edit": if (h) await openEditor(h); break;
+      case "cm": if (h) openComments(id, h); break;
+      case "cx": closeComments(); break;
+      case "rep": ctx.rep = { id, n: d.n }; cmRender(); $("#cmx").focus(); break;
+      case "rcancel": ctx.rep = null; cmRender(); break;
+      case "cdel": {
+        const c = (ctx.cl || []).find(x => x.id === id);
+        if (ctx.admin) { for (const r of (ctx.cl || []).filter(x => x.parent === id)) await deleteDoc(doc(db, "comments", r.id)); await deleteDoc(doc(db, "comments", id)); }
+        else { await updateDoc(doc(db, "comments", id), { deleted: true, deletedAt: serverTimestamp() }); }
+        break;
+      }
+      case "mex": await updateDoc(doc(db, "users", id), { mailExempt: d.v === "1" }); break;
+      case "udel": if (await ask(d.n + " ve tüm verileri kalıcı olarak silinsin mi?", "Sil")) { await wipeUser(id); toast("Kullanıcı silindi."); } break;
+      case "ust": await updateDoc(doc(db, "users", id), { status: d.v, ...(d.v === "approved" ? { violationAt: null } : {}) }); break;
+      case "hap": await updateDoc(doc(db, "htmls", id), { status: "approved" }); break;
+      case "hrej": await wipeHtml(id); break;
+      case "acc": await updateDoc(doc(db, "access", id), { status: d.v }); break;
+      case "nall": { const w = writeBatch(db); ctx.S.notifs.filter(n => !n.read).forEach(n => w.update(doc(db, "notifications", n.id), { read: true })); await w.commit(); break; }
+      case "nclr": if (await ask("Tüm bildirimler silinsin mi?", "Sil")) { await delCol(collection(db, "notifications")); toast("Bildirimler temizlendi."); } break;
+      case "nread":
+        await updateDoc(doc(db, "notifications", id), { read: true });
+        ctx.at = d.k === "new_user" ? "users" : d.k === "chat" ? "msgs" : "pend"; $("#notif").hidden = true;
+        if (location.hash === "#/admin") render(); else location.hash = "#/admin"; break;
+    }
+  } catch (x) { toast(trError(x)); }
+});
+
+home.addEventListener("submit", async e => {
+  const f = e.target.id;
+  if (f !== "addf" && f !== "cmf") return;
+  e.preventDefault();
+  try {
+    if (f === "cmf") {
+      const x = $("#cmx").value.trim();
+      if (!x || spam("c", 3000, x)) return;
+      await addDoc(collection(db, "comments"), { htmlId: ctx.cm, uid: ctx.uid, name: ctx.name, text: x, parent: ctx.rep?.id || null, ts: serverTimestamp() });
+      $("#cmx").value = ""; ctx.rep = null; cmRender();
+      return;
+    }
+    const t = $("#ht").value.trim(), d = $("#hd").value.trim(), h = $("#hh").value;
+    if (!t || !h.trim()) return setErr("add", "Başlık ve HTML gerekli.");
+    if (h.length > 900000) return setErr("add", "HTML çok büyük (en fazla ~900 KB).");
+    setErr("add");
+    const ref = doc(collection(db, "htmls")), w = writeBatch(db);
+    w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp() });
+    w.set(doc(db, "htmlBodies", ref.id), { html: h, by: ctx.uid });
+    await w.commit();
+    if (!ctx.admin) notify("html_pending", { detail: t });
+    toast(ctx.admin ? "Yayınlandı." : "Admin onayına gönderildi.");
+    location.hash = "#/mine";
+  } catch (x) { f === "addf" ? setErr("add", trError(x)) : toast(trError(x)); }
+});
+
+/* Sohbet */
+const bub = (m, mine) => `<div class="mg ${mine ? "u" : "a"}">${(() => { const id = m.from === "admin" ? ADMIN_UID : (ctx.admin ? ctx.ct : ctx.uid); return avHtml(id, m.from === "admin" ? "A" : (ctx.admin ? (ctx.S.users.find(u => u.id === ctx.ct)?.username || "") : ctx.name), "av xs"); })()}${esc(m.text)}${ctx.admin && m.id ? `<button class="mgx" data-a="mdel" data-id="${m.id}" aria-label="Sil">×</button>` : ""}</div>`;
+function chatDraw() {
+  const l = $("#chl"), c = ctx.S.chat?.userClearedAt || 0;
+  const m = (ctx.chd || []).map(d => d.data()).filter(x => ms(x.ts) > c);
+  l.innerHTML = m.map(x => bub(x, x.from === "user")).join("") || '<p class="muted">Admine bir mesaj yaz.</p>';
+  l.scrollTo(0, 1e9);
+}
+function chatOpen() {
+  $("#chat").hidden = false;
+  ctx.chu?.();
+  ctx.chu = onSnapshot(query(collection(db, "chats", ctx.uid, "msgs"), orderBy("ts")), s => { ctx.chd = s.docs; chatDraw(); }, () => {});
+  if (ctx.S.chat?.userUnread) setDoc(doc(db, "chats", ctx.uid), { userUnread: 0 }, { merge: true }).catch(() => {});
+}
+function chatClose() { ctx.chu?.(); ctx.chu = null; $("#chat").hidden = true; }
+$("#ask").onclick = () => {
+  if (ctx.admin) { location.hash === "#/admin" ? render() : location.hash = "#/admin"; }
+  else $("#chat").hidden ? chatOpen() : chatClose();
+};
+
+home.addEventListener("click", e => {
+  const b = e.target.closest("[data-a]");
+  if (!b) return;
+  const d = b.dataset;
+  if (d.a === "chx") chatClose();
+  if (d.a === "openchat") { $("#notif").hidden = true; chatOpen(); }
+  if (d.a === "ch") openAdminChat(d.id);
+});
+
+home.addEventListener("submit", async e => {
+  const f = e.target.id;
+  if (f !== "chf" && f !== "adf") return;
+  e.preventDefault();
+  const adm = f === "adf", inp = adm ? $("#adx") : $("#chi"), x = inp.value.trim(), u = adm ? ctx.ct : ctx.uid;
+  if (!x || !u || spam("m", 2000, x)) return;
+  inp.value = "";
+  try {
+    await addDoc(collection(db, "chats", u, "msgs"), { from: adm ? "admin" : "user", text: x, ts: serverTimestamp() });
+    await setDoc(doc(db, "chats", u), adm
+      ? { uid: u, name: ctx.S.users.find(z => z.id === u)?.username || "", last: x, lastBy: "admin", updated: serverTimestamp(), userUnread: increment(1), adminUnread: 0 }
+      : { uid: u, name: ctx.name, last: x, lastBy: "user", updated: serverTimestamp(), adminUnread: increment(1) }, { merge: true });
+    if (!adm) notify("chat", { detail: x.slice(0, 80) });
+  } catch (x2) { toast(trError(x2)); }
+});
+
+/* Kod editörü */
+const PAL = ["#6d4aff", "#2a7fff", "#22d3a6", "#ff5c8a", "#ffb020", "#ff6a3d", "#a855f7", "#e5e7eb"];
+const BSTY = ["beam", "solid", "neon", "gold", "dashed", "double"];
+const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
+let edT;
+
+function hl(s) {
+  const tag = t => {
+    const m = t.match(/^(<\/?!?)([\w:-]*)([\s\S]*?)(\/?>?)$/);
+    const a = m[3].replace(/([\w:@.-]+)(\s*=\s*)?("[^"]*"|'[^']*'|[^\s"'>]+)?|([\s\S])/g,
+      (x, n, q, v, o) => o !== undefined ? esc(o) : `<i class="a">${esc(n)}</i>${esc(q || "")}${v ? `<i class="s">${esc(v)}</i>` : ""}`);
+    return `<i class="t">${esc(m[1] + m[2])}</i>${a}<i class="t">${esc(m[4])}</i>`;
+  };
+  let o = "", i = 0;
+  while (i < s.length) {
+    if (s.startsWith("<!--", i)) {
+      let j = s.indexOf("-->", i); j = j < 0 ? s.length : j + 3;
+      o += `<i class="c">${esc(s.slice(i, j))}</i>`; i = j;
+    } else if (s[i] === "<" && /[\w\/!]/.test(s[i + 1] || "")) {
+      let j = i + 1, q = "";
+      for (; j < s.length; j++) {
+        const c = s[j];
+        if (q) { if (c === q) q = ""; } else if (c === '"' || c === "'") q = c; else if (c === ">") { j++; break; }
+      }
+      o += tag(s.slice(i, j)); i = j;
+    } else {
+      let j = s.indexOf("<", i + 1); if (j < 0) j = s.length;
+      o += esc(s.slice(i, j)); i = j;
+    }
+  }
+  return o;
+}
+
+function edSync() {
+  const v = edh.value;
+  edpre.innerHTML = hl(v) + "\n";
+  edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
+  clearTimeout(edT);
+  edT = setTimeout(() => edf.srcdoc = v, 300);
+}
+edh.addEventListener("input", edSync);
+edh.addEventListener("scroll", () => { edpre.scrollTop = edn.scrollTop = edh.scrollTop; edpre.scrollLeft = edh.scrollLeft; });
+edh.addEventListener("keydown", e => {
+  if (e.key === "Tab") { e.preventDefault(); edh.setRangeText("  ", edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
+});
+
+{
+  let d0 = 0, f0 = 13;
+  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  edh.addEventListener("touchstart", e => { if (e.touches.length === 2) { d0 = dist(e.touches); f0 = parseFloat(getComputedStyle(edb).getPropertyValue("--fs")) || 13; } }, { passive: true });
+  edh.addEventListener("touchmove", e => {
+    if (e.touches.length !== 2 || !d0) return;
+    e.preventDefault();
+    const f = Math.min(30, Math.max(9, Math.round(f0 * dist(e.touches) / d0 * 2) / 2));
+    edb.style.setProperty("--fs", f + "px"); edb.style.setProperty("--lh", Math.round(f * 1.55) + "px");
+  }, { passive: false });
+  edh.addEventListener("touchend", () => { d0 = 0; });
+}
+$$(".edtabs button").forEach(b => b.onclick = () => {
+  $$(".edtabs button").forEach(x => x.classList.toggle("on", x === b));
+  edb.classList.toggle("pv", b.dataset.ed === "prev");
+});
+
+async function openEditor(h) {
+  const isNew = !h;
+  if (isNew) h = { id: null, title: "", desc: "", by: ctx.uid };
+  const b = isNew ? null : await getDoc(doc(db, "htmlBodies", h.id)), code = b?.exists() ? b.data().html : "";
+  $("#edel").hidden = isNew;
+  ctx.ed = { id: h.id, h, code, isNew };
+  $("#edt").value = h.title; $("#edd").value = h.desc || "";
+  edh.value = code; edSync(); edf.srcdoc = code;
+  edb.classList.remove("pv");
+  $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
+  edb.hidden = false; document.body.style.overflow = "hidden";
+}
+function closeEditor() { edb.hidden = true; edf.srcdoc = ""; document.body.style.overflow = ""; }
+$("#edx").onclick = closeEditor;
+
+$("#eds").onclick = async () => {
+  const e = ctx.ed, t = $("#edt").value.trim(), d = $("#edd").value.trim(), code = edh.value;
+  if (!t || !code.trim()) return toast("Başlık ve HTML gerekli.");
+  if (code.length > 900000) return toast("HTML çok büyük (en fazla ~900 KB).");
+  try {
+    if (e.isNew) {
+      const ref = doc(collection(db, "htmls")), w = writeBatch(db);
+      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp() });
+      w.set(doc(db, "htmlBodies", ref.id), { html: code, by: ctx.uid });
+      await w.commit();
+      if (!ctx.admin) notify("html_pending", { detail: t });
+      closeEditor(); location.hash = "#/mine";
+      if (ctx.admin) toast("Yayınlandı."); else await inform("HTML admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylı bir içeriğin sonradan gizlice değiştirilip diğer kullanıcılara zararlı kod gösterilmesini önlemek için böyle yapıyoruz. Onaylanana kadar başkaları göremez.");
+      return;
+    }
+    const ch = t !== e.h.title || d !== (e.h.desc || "") || code !== e.code;
+    const st = {};
+    if (ch) {
+      const w = writeBatch(db);
+      if (ch) {
+        w.update(doc(db, "htmls", e.id), { title: t, desc: d, ...(ctx.admin ? {} : { status: "pending" }), ...st });
+        w.update(doc(db, "htmlBodies", e.id), { html: code });
+      } else w.update(doc(db, "htmls", e.id), st);
+      await w.commit();
+      if (ch && !ctx.admin) notify("html_pending", { detail: t });
+    }
+    closeEditor();
+    if (ch && !ctx.admin) await inform("Düzenlemen kaydedildi ve tekrar admin onayına gönderildi. '+WHY+'"); else toast("Kaydedildi.");
+  } catch (x) { toast(trError(x)); }
+};
+
+/* Spam, profil, notlar, arama, admin veri */
+const lastT = {};
+const spam = (k, gap, txt = "") => {
+  const n = Date.now(), l = lastT[k] || { t: 0, x: "" };
+  if (n - l.t < gap || (txt && txt === l.x)) { toast("Çok hızlı veya aynı mesaj. Biraz bekle."); return true; }
+  lastT[k] = { t: n, x: txt };
+  return false;
+};
+
+async function changePassword(cur, nw) {
+  const u = auth.currentUser;
+  await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, cur));
+  await updatePassword(u, nw);
+}
+
+const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
+const avHtml = () => "";
+const avatarBlock = () => "";
+const avatar = avatarBlock;
+function avatarUpd() { $("#sname").textContent = ctx.prof?.fullName || ctx.name || ""; }
+
+function homeGrid() {
+  const S = ctx.S, t = ctx.tab, q = (ctx.q || "").toLowerCase();
+  if (t === "notes") {
+    let n = S.notes.filter(x => !x.deleted);
+    if (q) n = n.filter(x => ((x.title || "") + " " + x.text).toLowerCase().includes(q));
+    n.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
+    return n.length ? n.map(x => `<div class="row2"><div><b>${x.pinned ? "📌 " : ""}${esc(x.title || "Başlıksız")}</b><small class="nt">${esc(x.text)}</small><small>${fmt(x.updatedAt)}</small></div><div class="btns"><button data-a="ngo" type="button">Notlarım'da aç</button></div></div>`).join("") : empty();
+  }
+  let l = t === "all" ? S.htmls : t === "html" ? S.mine : t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : [];
+  if (q) l = l.filter(h => (h.title + " " + (h.desc || "")).toLowerCase().includes(q));
+  const ad = "";
+  return l.length || ad
+    ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>`
+    : empty();
+}
+
+function notesList() {
+  const l = ctx.S.notes.filter(n => !n.deleted).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
+  return l.length ? l.map(n => `<div class="row2"><div><b>${n.pinned ? "📌 " : ""}${esc(n.title || "Başlıksız")}</b><small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="npin" data-id="${n.id}">${n.pinned ? "Sabiti kaldır" : "Sabitle"}</button><button data-a="nedit" data-id="${n.id}">Düzenle</button><button data-a="ndel" data-id="${n.id}">Sil</button></div></div>`).join("") : empty();
+}
+
+PAGES.home = () => `<input id="sq" class="sq" type="search" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off"><div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
+
+PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
+
+PAGES.settings = () => {
+  return `<div><h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
+};
+
+PAGES.profile = () => {
+  const p = ctx.prof || {};
+  return `<div class="pcard">${avatar()}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" readonly title="Kullanıcı adı Ayarlar'dan değiştirilir">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
+};
+
+home.addEventListener("input", e => {
+  if (e.target.id === "sq") { ctx.q = e.target.value; $("#hg").innerHTML = homeGrid(); }
+});
+
+home.addEventListener("click", async e => {
+  const b = e.target.closest("[data-a]");
+  if (!b) return;
+  const d = b.dataset, id = d.id, S = ctx.S;
+  try {
+    if (d.a === "trace") {
+      const t = $("#trin").value, out = $("#trout"), users = ctx.S.users, found = [];
+      const bits = [...t].filter(c => c === "\u200b" || c === "\u200c").map(c => c === "\u200c" ? 1 : 0);
+      for (let i = 0; i + 224 <= bits.length; i += 224) {
+        const uid = String.fromCharCode(...Array.from({ length: 28 }, (_, k) => parseInt(bits.slice(i + k * 8, i + k * 8 + 8).join(""), 2)));
+        if (!found.includes(uid)) found.push(uid);
+      }
+      const m = t.match(/name="x-viewer"\s+content="([^"]+)"/); if (m && !found.includes(m[1])) found.push(m[1]);
+      const nm = id => { const u = users.find(x => x.id === id); return u ? `${esc(u.username)}${u.fullName ? " (" + esc(u.fullName) + ")" : ""}` : "Kayıtlı kullanıcı bulunamadı (silinmiş olabilir)"; };
+      let h = found.map(id => `<div class="row2"><div><b>${nm(id)}</b><small>Kimlik: ${esc(id)}</small></div></div>`).join("");
+      const vis = [...t.matchAll(/([^\n·<>]{2,40}?) · (\d{1,2}\.\d{1,2}\.\d{4})/g)].map(x => x[1].trim() + " · " + x[2]);
+      if (vis.length) h += `<h3 class="sh">Görünür filigran</h3>` + [...new Set(vis)].map(v => `<div class="row2"><div><b>${esc(v)}</b></div></div>`).join("");
+      out.innerHTML = h || '<p class="empty">İz bulunamadı. (Kopyalarken gizli karakterler silinmiş olabilir; kaynak HTML dosyasını yapıştırmayı dene.)</p>';
+    }
+    if (d.a === "ngo") location.hash = "#/notes";
+    if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
+    if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
+    if (d.a === "ndel" && await ask("Bu not silinsin mi?", "Sil")) { await updateDoc(doc(db, "notes", id), { deleted: true, deletedAt: serverTimestamp() }); }
+    if (d.a === "andel") { await deleteDoc(doc(db, "announcements", id)); }
+    if (d.a === "del") {
+      const h = [...S.htmls, ...S.mine].find(x => x.id === id);
+      if (h && await ask("Bu HTML ve tüm yorum, beğeni, istekleri kalıcı olarak silinsin mi?", "Sil")) { await wipeHtml(id); toast("Silindi."); }
+    }
+    if (d.a === "dl") {
+      const bd = await getDoc(doc(db, "htmlBodies", id));
+      if (!bd.exists()) return toast("İçerik bulunamadı.");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([bd.data().html], { type: "text/html" }));
+      a.download = (d.n || id).replace(/[^\w\-]+/g, "_") + ".html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+    if (d.a === "ddel" && await ask("Kalıcı olarak silinsin mi? Veritabanından tamamen kaldırılır.", "Sil")) {
+      if (d.k === "htmls") await wipeHtml(id); else await deleteDoc(doc(db, d.k, id));
+      toast("Silindi.");
+    }
+    if (d.a === "pclr" && await ask("Bu kullanıcının profil geçmişi silinsin mi?", "Sil")) {
+      for (const i of ids(ctx.du || "all")) await delCol(collection(db, "profileHistory", i, "items")); if (ctx.dv) ctx.dv.prof = []; render();
+    }
+  } catch (x) { toast(trError(x)); }
+});
+
+function openAdminChat(id) {
+  ctx.ct = id; ctx.cmsgs = [];
+  ctx.cmu?.();
+  if (id) {
+    ctx.cmu = onSnapshot(query(collection(db, "chats", id, "msgs"), orderBy("ts")), s => { ctx.cmsgs = s.docs.map(x => ({ id: x.id, ...x.data() })); rf(); $("#adl")?.scrollTo(0, 1e9); }, () => {});
+    setDoc(doc(db, "chats", id), { adminUnread: 0 }, { merge: true }).catch(() => {});
+  }
+  render();
+}
+home.addEventListener("change", async e => {
+  if (e.target.id === "mu" && e.target.value) return openAdminChat(e.target.value);
+  if (e.target.id !== "du") return;
+  ctx.du = e.target.value || "all"; loadProf(); render();
+});
+
+home.addEventListener("submit", async e => {
+  const f = e.target.id;
+  if (!["pf", "pwf", "dlf", "nf", "anf"].includes(f)) return;
+  e.preventDefault();
+  try {
+    if (f === "pf") {
+      const n = { fullName: $("#pfn").value.trim(), username: $("#pun").value.trim(), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
+      if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username)) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
+      if (n.contactEmail && !okMail(n.contactEmail)) return setErr("pf", "Geçersiz e-posta.");
+      setErr("pf");
+      const o = { ...ctx.prof, username: ctx.name }, ch = Object.keys(n).filter(k => (o[k] || "") !== n[k]);
+      if (!ch.length) return toast("Değişiklik yok.");
+      let sent = false;
+      if (ch.includes("contactEmail") && n.contactEmail && isFake(auth.currentUser.email)) {
+        const u0 = auth.currentUser;
+        try { await verifyBeforeUpdateEmail(u0, n.contactEmail); sent = true; }
+        catch (x) {
+          if (x.code !== "auth/requires-recent-login") return setErr("pf", trError(x));
+          const pw = await askPass("Güvenlik için mevcut şifreni gir. Onay bağlantısı " + n.contactEmail + " adresine gönderilecek.");
+          if (!pw) return;
+          try { await reauthenticateWithCredential(u0, EmailAuthProvider.credential(u0.email, pw)); await verifyBeforeUpdateEmail(u0, n.contactEmail); sent = true; }
+          catch (y) { return setErr("pf", y.code === "auth/invalid-credential" || y.code === "auth/wrong-password" ? "Şifre hatalı." : trError(y)); }
+        }
+        setDoc(doc(db, "usernames", slug(ctx.name)), { uid: ctx.uid, email: n.contactEmail }).catch(() => {});
+      }
+      const w = writeBatch(db);
+      w.update(doc(db, "users", ctx.uid), Object.fromEntries(ch.map(k => [k, n[k]])));
+      ch.forEach(k => w.set(doc(collection(db, "profileHistory", ctx.uid, "items")), { field: k, old: o[k] || "", new: n[k], ts: serverTimestamp() }));
+      await w.commit();
+      if (ch.includes("username")) { await updateProfile(auth.currentUser, { displayName: n.username }); ctx.name = n.username; }
+      Object.assign(ctx.prof, Object.fromEntries(ch.map(k => [k, n[k]])));
+      $("#hname").textContent = ctx.name; avatarUpd(); render();
+      toast(sent ? "Onay bağlantısı e-postana gönderildi." : "Profil kaydedildi.");
+      if (sent) setErr("pf", "Onay e-postası " + n.contactEmail + " adresine gönderildi. Gelen kutunu ve spam klasörünü kontrol et.", true);
+    }
+    if (f === "pwf") {
+      const a = $("#pw0").value, b = $("#pw1").value, c = $("#pw2").value;
+      setErr("pw");
+      if (!a) return setErr("pw", "Mevcut şifreni gir.");
+      if (b.length < 8) return setErr("pw", "Yeni şifre en az 8 karakter olmalı.");
+      if (b !== c) return setErr("pw", "Şifreler eşleşmiyor.");
+      try { await changePassword(a, b); $("#pwf").reset(); toast("Şifre değiştirildi."); }
+      catch (x) { setErr("pw", x.code === "auth/invalid-credential" || x.code === "auth/wrong-password" ? "Mevcut şifre hatalı." : trError(x)); }
+    }
+    if (f === "dlf") {
+      const pw = $("#dpw").value;
+      setErr("dl");
+      if (!pw) return setErr("dl", "Şifreni gir.");
+      if (!await ask("Hesabın silinsin mi?", "Devam")) return;
+      if (!await ask("Son uyarı: hesabın kalıcı olarak silinecek ve geri alınamaz. Emin misin?", "Hesabı Sil")) return;
+      try {
+        const u = auth.currentUser, S = ctx.S, gone = { deleted: true, deletedAt: serverTimestamp() };
+        await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, pw));
+        const refs = [...S.mine.map(h => doc(db, "htmls", h.id)), ...S.notes.filter(n => !n.deleted).map(n => doc(db, "notes", n.id))];
+        for (let i = 0; i < refs.length; i += 400) { const w = writeBatch(db); refs.slice(i, i + 400).forEach(r => w.update(r, gone)); await w.commit(); }
+        await deleteDoc(doc(db, "prefs", ctx.uid)).catch(() => {});
+        await updateDoc(doc(db, "users", ctx.uid), { selfDeleted: true, selfDeletedAt: serverTimestamp() });
+        await deleteUser(u);
+      } catch (x) { setErr("dl", x.code === "auth/invalid-credential" || x.code === "auth/wrong-password" ? "Şifre hatalı." : trError(x)); }
+    }
+    if (f === "nf") {
+      const t = $("#nt").value.trim(), x = $("#nx").value.trim();
+      if (!x) return setErr("nf", "Not boş olamaz.");
+      setErr("nf");
+      if (ctx.nid) { await updateDoc(doc(db, "notes", ctx.nid), { title: t, text: x, updatedAt: serverTimestamp() }); ctx.nid = null; }
+      else { await addDoc(collection(db, "notes"), { uid: ctx.uid, title: t, text: x, pinned: false, deleted: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); }
+      render();
+    }
+    if (f === "anf" && ctx.admin) {
+      const x = $("#anx").value.trim();
+      if (!x) return;
+      await addDoc(collection(db, "announcements"), { text: x, by: ctx.uid, ts: serverTimestamp() });
+      $("#anx").value = "";
+      toast("Duyuru gönderildi.");
+    }
+  } catch (x) { toast(trError(x)); }
+});
+
+$("#edel").onclick = async () => {
+  if (!await ask(ctx.admin ? "Bu HTML ve tüm yorum, beğeni, istekleri kalıcı olarak silinsin mi?" : "Bu HTML silinsin mi? Admin arşivinde saklanır.", "Sil")) return;
+  try {
+    if (ctx.admin) await wipeHtml(ctx.ed.id); else await updateDoc(doc(db, "htmls", ctx.ed.id), { deleted: true, deletedAt: serverTimestamp() });
+    closeEditor(); toast("Silindi.");
+  } catch (x) { toast(trError(x)); }
+};
+
+home.addEventListener("click", async e => {
+  const b = e.target.closest("[data-a]");
+  if (!b) return;
+  const d = b.dataset;
+  try {
+    if (d.a === "chclear" && await ask("Sohbet senin ekranından temizlensin mi? Admin mesajları görmeye devam eder.", "Temizle")) await setDoc(doc(db, "chats", ctx.uid), { uid: ctx.uid, userClearedAt: Date.now() }, { merge: true });
+    if (d.a === "mdel" && ctx.admin) await deleteDoc(doc(db, "chats", ctx.ct, "msgs", d.id));
+    if (d.a === "cdelall" && ctx.admin && ctx.ct && await ask("Bu sohbet veritabanından tamamen silinsin mi?", "Sil")) {
+      const w = writeBatch(db);
+      ctx.cmsgs.forEach(m => w.delete(doc(db, "chats", ctx.ct, "msgs", m.id)));
+      w.delete(doc(db, "chats", ctx.ct));
+      await w.commit();
+      ctx.cmu?.(); ctx.cmu = null; ctx.ct = ""; ctx.cmsgs = [];
+      render();
+    }
+  } catch (x) { toast(trError(x)); }
+});
+function askPass(msg) {
+  return new Promise(res => {
+    const d = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), p = $("#dlgp");
+    $("#dlgt").textContent = msg; p.value = ""; p.hidden = false; y.textContent = "Devam"; d.hidden = false;
+    const end = v => { d.hidden = true; p.hidden = true; y.onclick = n.onclick = d.onclick = p.onkeydown = null; res(v); };
+    y.onclick = () => end(p.value || null); n.onclick = () => end(null);
+    d.onclick = e => { if (e.target === d) end(null); };
+    p.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); end(p.value || null); } };
+    p.focus();
+  });
+}
+function inform(msg) {
+  return new Promise(res => {
+    const d = $("#dlg"), y = $("#dlgy"), n = $("#dlgn");
+    $("#dlgt").textContent = msg; y.textContent = "Tamam"; n.hidden = true; d.hidden = false;
+    const end = () => { d.hidden = true; n.hidden = false; y.onclick = d.onclick = null; res(); };
+    y.onclick = end; d.onclick = e => { if (e.target === d) end(); };
+  });
+}
+function ask(msg, ok = "Evet") {
+  return new Promise(res => {
+    const d = $("#dlg"), y = $("#dlgy"), n = $("#dlgn");
+    $("#dlgt").textContent = msg; y.textContent = ok; d.hidden = false;
+    const end = v => { d.hidden = true; y.onclick = n.onclick = d.onclick = null; res(v); };
+    y.onclick = () => end(true); n.onclick = () => end(false);
+    d.onclick = e => { if (e.target === d) end(false); };
+    y.focus();
+  });
+}
+const beat = () => { if (ctx.uid && !document.hidden) updateDoc(doc(db, "users", ctx.uid), { lastSeen: serverTimestamp() }).catch(() => {}); };
+setInterval(beat, 180000);
+document.addEventListener("visibilitychange", beat);
+addEventListener("hashchange", route);
+$("#collapse").onclick = () => shell.classList.toggle("collapsed");
+$("#burger").onclick = () => shell.classList.add("open");
+$("#scrim").onclick = () => shell.classList.remove("open");
+$("#bell").onclick = e => {
+  e.stopPropagation();
+  const n = $("#notif"); n.hidden = !n.hidden;
+  if (!n.hidden && !ctx.admin && ctx.S.ann.some(a => ms(a.ts) > (ctx.S.prefs.annSeen || 0))) setDoc(doc(db, "prefs", ctx.uid), { annSeen: Date.now() }, { merge: true }).catch(() => {});
+};
+document.addEventListener("click", e => { if (!e.target.closest("#notif")) $("#notif").hidden = true; });
+
+startSession(({ screen, user, data }) => {
+  if (screen === "verify") $("#vmail").textContent = user.email;
+  if (screen === "pending") $('[data-view="pending"] .sub').textContent = data?.violationAt ? "Güvenlik ihlali nedeniyle hesabın tekrar admin onayına alındı. Onaylandığında içeri girebilirsin." : "Kaydın admine bildirildi. Onaylandığında otomatik olarak içeri alınacaksın.";
+  if (screen === "home") buildHome(user, data); else clearHome();
+  show(screen);
+  if (screen === "auth" && goneMsg) { setErr("form", goneMsg); goneMsg = ""; }
+  splash.classList.add("off");
+});
 </script>
-</body></html>
+</body>
+</html>
