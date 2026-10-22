@@ -248,6 +248,7 @@ h1{font-size:26px}h2{font-size:22px}
 .sw{width:24px;height:24px;padding:0;border:2px solid transparent;border-radius:50%;cursor:pointer}
 .sw.on{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
 .edst select{height:34px;padding:0 12px;border:0;border-radius:999px;background:#fff;color:#000;font:500 13px var(--font-b)}
+.edup{display:flex;flex-wrap:wrap;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line)}
 .edtabs{display:none}
 .edb{display:flex;flex:1;min-height:0}
 .edc{display:flex;flex:1;min-width:0;border-right:1px solid var(--line);background:#0d0d15}
@@ -258,6 +259,7 @@ h1{font-size:26px}h2{font-size:22px}
 #edn{flex:none;width:46px;padding:12px 8px;overflow:hidden;border-right:1px solid var(--line);color:#5b5f73;text-align:right;white-space:pre;user-select:none}
 #edpre,#edh{position:absolute;inset:0;margin:0;padding:12px;border:0;white-space:pre;word-wrap:normal;tab-size:2;overflow:auto;scrollbar-width:none}
 #edh::-webkit-scrollbar{display:none}
+#edfb[hidden]{display:none}#edfb{flex-wrap:wrap}#edfb input{flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
 #edpre{overflow:hidden;color:#cfd3e6;pointer-events:none}
 #edh{resize:none;outline:0;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}
 #edh,#edn{touch-action:pan-x pan-y}
@@ -363,17 +365,18 @@ select{color-scheme:dark}
 .addf,.pcard{max-width:none!important}
 .logobox{margin-left:-22px}
 #hav{overflow:hidden}.av.hv{width:100%;height:100%;margin:0;font-size:15px}
+.avadm{position:relative;box-shadow:inset 0 0 0 2px #d4af37;animation:admpulse 3.6s ease-in-out infinite}
+.avadm::after{content:"";position:absolute;inset:0;border-radius:50%;padding:2px;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.95) 50%,transparent 65%) 100% 0/300% 100% no-repeat;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:admsweep 3.6s ease-in-out infinite}
+@keyframes admpulse{0%,45%,100%{box-shadow:inset 0 0 0 2px #d4af37,0 0 0 0 rgba(245,215,122,0)}22%{box-shadow:inset 0 0 0 2px #f5d77a,0 0 10px 1px rgba(245,215,122,.55)}}
+@keyframes admsweep{0%{background-position:100% 0}45%,100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.avadm,.avadm::after{animation:none}}
 .card2.fr{position:relative}
 .card2.fr-beam::before,.card2.fr-rainbow::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;background:conic-gradient(from var(--angle),transparent 0 45%,var(--cc,#6d4aff) 78%,#fff);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 3s linear infinite}
 .card2.fr-rainbow::before{background:conic-gradient(from var(--angle),#ff5c8a,#ffb020,#22d3a6,#2a7fff,#a855f7,#ff5c8a);animation-duration:4s}
 .card2.fr-neon{border-color:var(--cc,#6d4aff);animation:nbp 1.8s ease-in-out infinite alternate}
 @keyframes nbp{from{box-shadow:0 0 4px var(--cc),inset 0 0 4px var(--cc)}to{box-shadow:0 0 20px var(--cc),inset 0 0 12px var(--cc)}}
-.post{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
-.post>div{min-width:0;flex:1}.post p{margin:4px 0 6px;white-space:pre-wrap;word-break:break-word}
-.post .av{width:38px;height:38px}.post .link{padding:0;font-size:12px}
-.pc{text-align:right}
-.kvl{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13px;line-height:1.45;cursor:pointer}
-.kvl input{all:revert;flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:#6d4aff}
+.kvl{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;line-height:1.45;cursor:pointer}
+.kvl input{all:revert;flex:none;width:18px;height:18px;margin:0;accent-color:#6d4aff}
 .kvl .link{display:inline;padding:0;color:#b9a4ff;text-decoration:underline}
 .kvs{margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
 #kvkkm{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
@@ -445,7 +448,7 @@ select{color-scheme:dark}
           <div class="field"><svg class="ic"><use href="#i-lock"/></svg><input id="password2" type="password" placeholder="Şifre tekrar" autocomplete="new-password"><button type="button" class="eye" aria-label="Şifreyi göster/gizle"><svg class="ic"><use href="#i-eye"/></svg></button></div>
           <p class="err" id="e-password2"></p>
         </div>
-        <div class="fg"><label class="kvl"><input type="checkbox" id="kvkk"><span>Aydınlatma Metni'ni okudum; kişisel verilerimin işlenmesini ve yurt dışındaki sunucularda (Google Firebase) saklanmasını kabul ediyorum. <button type="button" class="link" data-kvkk>Tamamını oku</button></span></label>
+        <div class="fg"><label class="kvl"><input type="checkbox" id="kvkk"><span><button type="button" class="link" data-kvkk>Aydınlatma Metni'ni okudum</button></span></label>
           <p class="err" id="e-kvkk"></p></div></div></div>
 
         <div class="collapse login-only"><div><div class="row"><button type="button" id="forgot" class="link">Şifremi unuttum</button></div></div></div>
@@ -515,6 +518,8 @@ select{color-scheme:dark}
 <div id="ed" hidden>
   <div class="edtop"><input id="edt" placeholder="Başlık" maxlength="80"><input id="edd" placeholder="Açıklama" maxlength="200"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
   <div class="edst"><span class="muted">Çerçeve</span><div id="edpal"></div><select id="edfs"><option value="">Yok</option><option value="beam">Dönen ışın</option><option value="neon">Neon nabız</option><option value="rainbow">Gökkuşağı</option></select></div>
+  <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">Dosyadan yükle (.html)</button><button class="btn-ghost sm" id="edpaste" type="button">Panodan yapıştır</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edundo" type="button" title="Geri al">↶</button><button class="btn-ghost sm" id="edredo" type="button" title="Yinele">↷</button><button class="btn-ghost sm" id="edfbt" type="button">Bul/Değiştir</button></div>
+  <div class="edup" id="edfb" hidden><input id="edfind" placeholder="Bul" autocomplete="off"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button class="btn-ghost sm" id="edfn" type="button">Sonraki</button><button class="btn-ghost sm" id="edfr" type="button">Değiştir</button><button class="btn-ghost sm" id="edfa" type="button">Tümü</button></div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
   <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts" title="Önizleme"></iframe></div></div>
 </div>
@@ -798,11 +803,11 @@ const IC = {
   trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>'
 };
 const ROUTES = {
-  home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], posts: ["Gönderiler", "msg"], profile: ["Profil", "user"],
+  home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], profile: ["Profil", "user"],
   add: ["HTML Ekle", "code"], mine: ["HTML'lerim", "folder"], notes: ["Notlarım", "note"],
   settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"]
 };
-const TABS = [["all", "Tümü"], ["posts", "Gönderiler"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
+const TABS = [["all", "Tümü"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
 const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
 const NT = {
   new_user: n => `${esc(n.username)} kayıt oldu`,
@@ -832,7 +837,7 @@ function hcard(h) {
   const lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
+  return `<div class="card2${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
 
@@ -843,11 +848,12 @@ function adminPage() {
     const U = [...S.users].sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
     const ub = u => {
       const B = (v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(u.username)}">${t}</button>`;
-      if (u.id === ADMIN_UID) return "";
+      const vbtn = `<button data-a="vtog" data-id="${u.id}">${vb(u.id) ? "Tiki kaldır" : "Onaylı tik ver"}</button>`;
+      if (u.id === ADMIN_UID) return vbtn;
       const m = u.status === "pending" ? B("approved", "Onayla") + B("rejected", "Reddet") : u.status === "approved" ? B("blocked", "Engelle") : B("approved", "Engeli kaldır");
-      return m + `<button data-a="mex" data-id="${u.id}" data-v="${u.mailExempt ? "" : "1"}" data-n="${esc(u.username)}">${u.mailExempt ? "E-posta zorunlu yap" : "E-posta muaf"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
+      return m + vbtn + `<button data-a="mex" data-id="${u.id}" data-v="${u.mailExempt ? "" : "1"}" data-n="${esc(u.username)}">${u.mailExempt ? "E-posta zorunlu yap" : "E-posta muaf"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
     };
-    return tabs + (U.map(u => `<div class="row2"><div>${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}</b> <em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5 ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.mailExempt ? " · e-posta muaf" : ""} · Son giriş: ${fmt(u.lastLogin)} · Son görülme: ${fmt(u.lastSeen)}</small></div><div class="btns ub">${ub(u)}</div></div>`).join("") || empty());
+    return tabs + (U.map(u => `<div class="row2"><div>${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}${vb(u.id)}</b> <em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5 ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.mailExempt ? " · e-posta muaf" : ""} · Son giriş: ${fmt(u.lastLogin)} · Son görülme: ${fmt(u.lastSeen)}</small></div><div class="btns ub">${ub(u)}</div></div>`).join("") || empty());
   }
   if (at === "data") {
     const du = ctx.du || "all", all = du === "all", D = ctx.dv;
@@ -912,7 +918,6 @@ async function wipeUser(id) {
   for (const h of hs.docs) await wipeHtml(h.id);
   await delCol(query(col("htmlBodies"), where("by", "==", id)));
   await delCol(query(col("notes"), where("uid", "==", id)));
-  await delCol(query(col("posts"), where("uid", "==", id)));
   await deleteDoc(doc(db, "profiles", id)).catch(() => {});
   const cs = await getDocs(query(col("comments"), where("uid", "==", id)));
   for (const c of cs.docs) await delCol(query(col("comments"), where("parent", "==", c.id)));
@@ -959,7 +964,7 @@ function render() {
   $("#adl")?.scrollTo(0, 1e9);
 }
 const rf = () => {
-  if (ctx.r === "home" && $("#hg")) { if (ctx.tab === "posts" && $("#ptf")) { $("#ptl").innerHTML = postsList(); return; } $("#hg").innerHTML = homeGrid(); return; }
+  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); return; }
   if (ctx.r === "notes" && $("#nl")) { $("#nl").innerHTML = notesList(); return; }
   if (["favs", "mine", "admin"].includes(ctx.r)) render();
 };
@@ -1012,12 +1017,17 @@ function startData() {
   sub(c("likes"), s => { S.likes = map(s); rf(); });
   sub(c("profiles"), s => {
     S.profiles = Object.fromEntries(s.docs.map(d => [d.id, d.data()]));
-    avatarUpd(); rf(); if (ctx.r === "profile") render(); else if ($("#ptl")) $("#ptl").innerHTML = postsList();
+    avatarUpd(); rf(); if (ctx.r === "profile") render();
     if (ctx.cm) cmRender(); if (!$("#chat").hidden) chatDraw();
   });
-  sub(query(c("posts"), orderBy("ts", "desc"), limit(100)), s => { S.posts = map(s); if ($("#ptl")) $("#ptl").innerHTML = postsList(); });
   sub(query(c("notes"), where("uid", "==", ctx.uid)), s => { S.notes = map(s); rf(); });
   sub(query(c("announcements"), orderBy("ts", "desc"), limit(20)), s => { S.ann = map(s); rf(); notifRender(); });
+  sub(doc(db, "settings", "ui"), s => {
+    const on = s.data()?.adminRing !== false, ch = S.ui.adminRing !== on;
+    S.ui = { adminRing: on };
+    if (ch) { avatarUpd(); render(); if (ctx.cm) cmRender(); if (!$("#chat").hidden) chatDraw(); }
+  });
+  sub(doc(db, "settings", "badges"), s => { S.badges = s.data()?.uids || []; avatarUpd(); render(); if (ctx.cm) cmRender(); });
   sub(doc(db, "prefs", ctx.uid), s => { S.prefs = { favs: [], pins: [], ...s.data() }; rf(); notifRender(); });
   sub(query(c("access"), where("uid", "==", ctx.uid)), s => { S.access = {}; s.docs.forEach(d => S.access[d.data().htmlId] = d.data().status); });
   if (!ctx.admin) sub(doc(db, "chats", ctx.uid), s => { S.chat = s.data() || {}; notifRender(); if (!$("#chat").hidden) chatDraw(); if (!$("#chat").hidden && S.chat.userUnread) setDoc(doc(db, "chats", ctx.uid), { userUnread: 0 }, { merge: true }).catch(() => {}); });
@@ -1037,10 +1047,10 @@ function buildHome(user, data) {
   if (ctx.uid === user.uid) { ctx.name = name; ctx.prof = data || {}; $("#hname").textContent = name; avatarUpd(); return; }
   ctx = {
     uid: user.uid, admin: user.uid === ADMIN_UID, name, email: user.email, prof: data || {}, tab: "all", at: "users", subs: [], ct: "", cmsgs: [], q: "", nid: null, du: "all", dv: null,
-    S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
+    S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, ui: { adminRing: true }, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
   };
   $("#hname").textContent = name; avatarUpd();
-  $("#nav").innerHTML = ["home", "favs", "posts", "profile", "add", "mine", "notes"].map(navItem).join("");
+  $("#nav").innerHTML = ["home", "favs", "profile", "add", "mine", "notes"].map(navItem).join("");
   { const a = $("#ask"); a.classList.toggle("gold", !!ctx.admin); a.title = ctx.admin ? "Yönetim Paneli" : "Admine Soru Sor"; a.innerHTML = ctx.admin ? `<svg class="ic" viewBox="0 0 24 24">${IC.shield}</svg>` : '<svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>'; }
   $("#navb").innerHTML = '<a href="#" class="lo" data-lo><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="lb">Çıkış Yap</span></a>' + navItem("settings");
   $("#navb [data-lo]").onclick = async e => { e.preventDefault(); if (await ask("Çıkış yapılsın mı?", "Çıkış yap")) logout(); };
@@ -1170,7 +1180,7 @@ async function openHtml(id, h) {
 /* Yorumlar */
 function cmRender() {
   const L = (ctx.cl || []).filter(c => ctx.admin || !c.deleted), by = (a, b) => ms(a.ts) - ms(b.ts);
-  const it = (c, l) => `<div class="cmi l${l}">${avHtml(c.uid, c.name, "av xs")}<b>${esc(c.name)}</b>${c.deleted ? ' <em class="bd st-blocked">kullanıcı sildi</em>' : ""} <small>${fmt(c.ts)}</small><p>${esc(c.text)}</p><div><button data-a="rep" data-id="${l ? c.parent : c.id}" data-n="${esc(c.name)}">Cevapla</button>${c.uid === ctx.uid || ctx.admin ? `<button data-a="cdel" data-id="${c.id}">Sil</button>` : ""}</div></div>`;
+  const it = (c, l) => `<div class="cmi l${l}">${avHtml(c.uid, c.name, "av xs")}<b>${esc(c.name)}${vb(c.uid)}</b>${c.deleted ? ' <em class="bd st-blocked">kullanıcı sildi</em>' : ""} <small>${fmt(c.ts)}</small><p>${esc(c.text)}</p><div><button data-a="rep" data-id="${l ? c.parent : c.id}" data-n="${esc(c.name)}">Cevapla</button>${c.uid === ctx.uid || ctx.admin ? `<button data-a="cdel" data-id="${c.id}">Sil</button>` : ""}</div></div>`;
   $("#cml").innerHTML = L.filter(c => !c.parent).sort(by).map(c => it(c, 0) + L.filter(r => r.parent === c.id).sort(by).map(r => it(r, 1)).join("")).join("") || '<p class="muted">Henüz yorum yok.</p>';
   $("#rep").hidden = !ctx.rep;
   $("#rep").textContent = ctx.rep ? "Cevap: " + ctx.rep.n + " (iptal için dokun)" : "";
@@ -1340,12 +1350,75 @@ function hl(s) {
 
 function edSync() {
   const v = edh.value;
-  edpre.innerHTML = hl(v) + "\n";
+  edpre.innerHTML = (v.length > 120000 ? esc(v) : hl(v)) + "\n";
   edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
   clearTimeout(edT);
   edT = setTimeout(() => edf.srcdoc = v, 300);
+  try { clearTimeout(ht); ht = setTimeout(hpush, 500); } catch {}
 }
 edh.addEventListener("input", edSync);
+/* Yapıştırma: biçimsiz düz metin, temizlenmiş kod */
+const cleanCode = t => t.replace(/\r\n?/g, "\n").replace(/[\u200B\u2060\uFEFF]/g, "").replace(/\u00A0/g, " ").replace(/=\s*[“”„]([^“”„"<>\n]*)[“”„]/g, '="$1"');
+function edInsert(t) { edh.setRangeText(cleanCode(t), edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
+edh.addEventListener("paste", e => {
+  const t = e.clipboardData && e.clipboardData.getData("text/plain");
+  if (t == null || t === "") return;
+  e.preventDefault(); edInsert(t);
+});
+$("#edpaste").onclick = async () => {
+  try { const t = await navigator.clipboard.readText(); if (!t) return toast("Panoda metin yok."); edInsert(t); edh.focus(); }
+  catch { toast("Pano erişimi reddedildi. Kod kutusuna uzun basıp yapıştırabilir veya dosyadan yükleyebilirsin."); }
+};
+async function edLoad(f) {
+  if (f.size > 900000) return toast("Dosya çok büyük (en fazla ~900 KB).");
+  try {
+    const buf = await f.arrayBuffer(); let t;
+    try { t = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { t = new TextDecoder("windows-1254").decode(buf); }
+    edh.value = cleanCode(t); edh.scrollTop = edh.scrollLeft = 0; edSync();
+    if (!$("#edt").value.trim()) { const m = t.match(/<title[^>]*>([\s\S]*?)<\/title>/i); $("#edt").value = ((m && m[1].trim()) || f.name.replace(/\.[^.]+$/, "")).slice(0, 80); }
+    edb.classList.remove("pv"); $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
+    toast("Dosya yüklendi.");
+  } catch { toast("Dosya okunamadı."); }
+}
+$("#edfile").onclick = () => $("#edfin").click();
+$("#edfin").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) edLoad(f); };
+edb.addEventListener("dragover", e => e.preventDefault());
+edb.addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) edLoad(f); });
+/* Geri al/yinele, bul-değiştir, otomatik kapanış etiketi */
+let hist = [], hi = -1, ht;
+const hpush = () => { clearTimeout(ht); if (hist[hi]?.v === edh.value) return; hist.splice(hi + 1); hist.push({ v: edh.value, s: edh.selectionStart }); if (hist.length > 200) hist.shift(); hi = hist.length - 1; };
+const hgo = d => { hpush(); const n = hi + d; if (n < 0 || n >= hist.length) return; hi = n; edh.value = hist[n].v; edh.setSelectionRange(hist[n].s, hist[n].s); edSync(); edh.focus(); };
+const hreset = () => { clearTimeout(ht); hist = [{ v: edh.value, s: 0 }]; hi = 0; };
+edh.addEventListener("input", e => {
+  clearTimeout(ht); ht = setTimeout(hpush, 500);
+  if (e.inputType && e.inputType.startsWith("insert") && e.inputType !== "insertFromPaste" && e.data && e.data.endsWith(">")) {
+    const pos = edh.selectionStart, m = edh.value.slice(0, pos).match(/<([a-zA-Z][\w-]*)(\s[^<>]*)?>$/);
+    if (m && !(m[2] || "").trim().endsWith("/") && !/^(br|img|input|meta|link|hr|area|base|col|embed|source|track|wbr|param)$/i.test(m[1])) {
+      hpush(); edh.setRangeText("</" + m[1] + ">", pos, pos, "start"); edSync();
+    }
+  }
+});
+$("#edundo").onclick = () => hgo(-1); $("#edredo").onclick = () => hgo(1);
+edh.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && !e.altKey) { const k = e.key.toLowerCase(); if (k === "z") { e.preventDefault(); hgo(e.shiftKey ? 1 : -1); } else if (k === "y") { e.preventDefault(); hgo(1); } }
+});
+$("#edfbt").onclick = () => { const b = $("#edfb"); b.hidden = !b.hidden; if (!b.hidden) $("#edfind").focus(); };
+const edNext = () => {
+  const f = $("#edfind").value; if (!f) return false;
+  const v = edh.value; let i = v.indexOf(f, edh.selectionEnd); if (i < 0) i = v.indexOf(f); if (i < 0) { toast("Bulunamadı."); return false; }
+  edh.focus(); edh.setSelectionRange(i, i + f.length);
+  edh.scrollTop = Math.max(0, (v.slice(0, i).split("\n").length - 3) * (parseFloat(getComputedStyle(edh).lineHeight) || 18)); return true;
+};
+$("#edfn").onclick = edNext;
+$("#edfr").onclick = () => {
+  const f = $("#edfind").value; if (!f) return;
+  if (edh.value.slice(edh.selectionStart, edh.selectionEnd) === f) { hpush(); edh.setRangeText($("#edrep").value, edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
+  edNext();
+};
+$("#edfa").onclick = () => {
+  const f = $("#edfind").value; if (!f) return; const n = edh.value.split(f).length - 1; if (!n) return toast("Bulunamadı.");
+  hpush(); edh.value = edh.value.split(f).join($("#edrep").value); edSync(); toast(n + " yer değiştirildi.");
+};
 edh.addEventListener("scroll", () => { edpre.scrollTop = edn.scrollTop = edh.scrollTop; edpre.scrollLeft = edh.scrollLeft; });
 edh.addEventListener("keydown", e => {
   if (e.key === "Tab") { e.preventDefault(); edh.setRangeText("  ", edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
@@ -1378,7 +1451,7 @@ async function openEditor(h) {
   $("#edel").hidden = isNew;
   ctx.ed = { id: h.id, h, code, isNew, fs: FRS.includes(h.fs) ? h.fs : "", fc: PAL.includes(h.fc) ? h.fc : PAL[0] };
   $("#edt").value = h.title; $("#edd").value = h.desc || ""; $("#edfs").value = ctx.ed.fs;
-  edh.value = code; edPal(); edSync(); edf.srcdoc = code;
+  edh.value = code; edPal(); edSync(); edf.srcdoc = code; hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
   edb.hidden = false; document.body.style.overflow = "hidden";
@@ -1433,11 +1506,13 @@ async function changePassword(cur, nw) {
   await updatePassword(u, nw);
 }
 
+const VB = '<svg viewBox="0 0 24 24" width="16" height="16" fill="#1DA1F2" aria-label="Onaylı Hesap" style="vertical-align:-3px;margin-left:3px"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>';
+const vb = uid => (ctx.S?.badges || []).includes(uid) ? VB : "";
 const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
   const ph = avPh(uid), L = ph ? "" : esc((name || "?").charAt(0).toUpperCase());
-  if (uid === ADMIN_UID) return `<span class="${cls}" style="border:2px solid transparent;background:${ph ? `url('${ph}') center/cover padding-box` : "linear-gradient(#16161d,#16161d) padding-box"},conic-gradient(from var(--angle),rgba(245,215,122,.12) 0 45%,#f5d77a 78%,#fff) border-box;color:#f5d77a;animation:spin 3s linear infinite">${L}</span>`;
+  if (uid === ADMIN_UID && ctx.S?.ui?.adminRing !== false) return `<span class="${cls} avadm" style="${ph ? `background:url('${ph}') center/cover` : "background:#16161d;color:#f5d77a"}">${L}</span>`;
   return `<span class="${cls}" style="${ph ? `background:url('${ph}') center/cover` : "background:rgba(255,255,255,.12);color:#fff"}">${L}</span>`;
 };
 function toAvatar(file) {
@@ -1459,7 +1534,6 @@ home.addEventListener("change", async e => {
   try { await setDoc(doc(db, "profiles", ctx.uid), { photoURL: await toAvatar(e.target.files[0]) }); toast("Fotoğraf kaydedildi."); }
   catch (x) { toast(trError(x)); }
 });
-home.addEventListener("input", e => { if (e.target.id === "ptx") $("#ptc").textContent = e.target.value.length + "/280"; });
 const avatar = avatarBlock;
 function avatarUpd() {
   $("#sname").textContent = ctx.prof?.fullName || ctx.name || "";
@@ -1468,7 +1542,6 @@ function avatarUpd() {
 
 function homeGrid() {
   const S = ctx.S, t = ctx.tab, q = (ctx.q || "").toLowerCase();
-  if (t === "posts") return postsBlock();
   if (t === "notes") {
     let n = S.notes.filter(x => !x.deleted);
     if (q) n = n.filter(x => ((x.title || "") + " " + x.text).toLowerCase().includes(q));
@@ -1493,15 +1566,10 @@ PAGES.home = () => `<input id="sq" class="sq" type="search" placeholder="HTML ar
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
 PAGES.settings = () => {
-  return `<div><h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
+  const ring = ctx.admin ? `<h3 class="sh">Altın halka</h3><div class="addf"><p class="muted">Profil fotoğrafındaki sabit altın halka ve nabız gibi geçen ışın. Sadece sen değiştirebilirsin.</p><button class="btn-ghost" data-a="ringtog" type="button">${ctx.S.ui.adminRing === false ? "Kapalı — Aç" : "Açık — Kapat"}</button></div>` : "";
+  return `<div>${ring}<h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
 };
 
-function postsList() {
-  const P = ctx.S.posts || [];
-  return P.length ? P.map(p => `<div class="post">${avHtml(p.uid, p.name)}<div><b>${esc(p.name)}</b> <small class="muted">${fmt(p.ts)}</small><p>${esc(p.text)}</p>${ctx.admin || p.uid === ctx.uid ? `<button class="link" data-a="ptdel" data-id="${p.id}" type="button">Sil</button>` : ""}</div></div>`).join("") : empty();
-}
-const postsBlock = () => `<form id="ptf" class="addf"><textarea id="ptx" maxlength="280" placeholder="Ne düşünüyorsun?" style="height:90px"></textarea><div class="pc"><small id="ptc" class="muted">0/280</small></div><p class="err" id="e-ptf"></p><button class="btn2" type="submit"><span class="lbl">Paylaş</span><i class="spin"></i></button></form><div id="ptl">${postsList()}</div>`;
-PAGES.posts = postsBlock;
 
 PAGES.profile = () => {
   const p = ctx.prof || {};
@@ -1533,7 +1601,8 @@ home.addEventListener("click", async e => {
     }
     if (d.a === "avpick") $("#avf").click();
     if (d.a === "avrm") await deleteDoc(doc(db, "profiles", ctx.uid));
-    if (d.a === "ptdel" && await ask("Gönderi silinsin mi?", "Sil")) await deleteDoc(doc(db, "posts", id));
+    if (d.a === "vtog" && ctx.admin) { const b = ctx.S.badges || []; await setDoc(doc(db, "settings", "badges"), { uids: b.includes(d.id) ? b.filter(x => x !== d.id) : [...b, d.id] }, { merge: true }); }
+    if (d.a === "ringtog" && ctx.admin) await setDoc(doc(db, "settings", "ui"), { adminRing: ctx.S.ui.adminRing === false }, { merge: true });
     if (d.a === "ngo") location.hash = "#/notes";
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
     if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
@@ -1579,15 +1648,9 @@ home.addEventListener("change", async e => {
 
 home.addEventListener("submit", async e => {
   const f = e.target.id;
-  if (!["pf", "pwf", "dlf", "nf", "anf", "ptf"].includes(f)) return;
+  if (!["pf", "pwf", "dlf", "nf", "anf"].includes(f)) return;
   e.preventDefault();
   try {
-    if (f === "ptf") {
-      const x = $("#ptx").value.trim();
-      if (!x || spam("pt", 5000, x)) return;
-      await addDoc(collection(db, "posts"), { uid: ctx.uid, name: ctx.name, text: x.slice(0, 280), ts: serverTimestamp() });
-      $("#ptx").value = ""; $("#ptc").textContent = "0/280"; return;
-    }
     if (f === "pf") {
       const n = { fullName: $("#pfn").value.trim(), username: $("#pun").value.trim(), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
       if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username)) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
