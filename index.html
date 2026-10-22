@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MSA</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
@@ -359,6 +361,17 @@ h1{font-size:26px}h2{font-size:22px}
 .addf input[readonly]{opacity:.7}
 select{color-scheme:dark}
 .addf,.pcard{max-width:none!important}
+.logobox{margin-left:-22px}
+#hav{overflow:hidden}.av.hv{width:100%;height:100%;margin:0;font-size:15px}
+.card2.fr{position:relative}
+.card2.fr-beam::before,.card2.fr-rainbow::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;background:conic-gradient(from var(--angle),transparent 0 45%,var(--cc,#6d4aff) 78%,#fff);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 3s linear infinite}
+.card2.fr-rainbow::before{background:conic-gradient(from var(--angle),#ff5c8a,#ffb020,#22d3a6,#2a7fff,#a855f7,#ff5c8a);animation-duration:4s}
+.card2.fr-neon{border-color:var(--cc,#6d4aff);animation:nbp 1.8s ease-in-out infinite alternate}
+@keyframes nbp{from{box-shadow:0 0 4px var(--cc),inset 0 0 4px var(--cc)}to{box-shadow:0 0 20px var(--cc),inset 0 0 12px var(--cc)}}
+.post{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.post>div{min-width:0;flex:1}.post p{margin:4px 0 6px;white-space:pre-wrap;word-break:break-word}
+.post .av{width:38px;height:38px}.post .link{padding:0;font-size:12px}
+.pc{text-align:right}
 .kvl{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13px;line-height:1.45;cursor:pointer}
 .kvl input{all:revert;flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:#6d4aff}
 .kvl .link{display:inline;padding:0;color:#b9a4ff;text-decoration:underline}
@@ -433,7 +446,6 @@ select{color-scheme:dark}
           <p class="err" id="e-password2"></p>
         </div>
         <div class="fg"><label class="kvl"><input type="checkbox" id="kvkk"><span>Aydınlatma Metni'ni okudum; kişisel verilerimin işlenmesini ve yurt dışındaki sunucularda (Google Firebase) saklanmasını kabul ediyorum. <button type="button" class="link" data-kvkk>Tamamını oku</button></span></label>
-          <p class="kvs">Ad soyad, kullanıcı adı, isteğe bağlı e-posta ve paylaştığın içerikler üyelik ve güvenlik amacıyla işlenir. Korumalı içerikleri açarken kullanıcı adın filigran olarak görünür. Hesabını silince verilerin tamamen silinir.</p>
           <p class="err" id="e-kvkk"></p></div></div></div>
 
         <div class="collapse login-only"><div><div class="row"><button type="button" id="forgot" class="link">Şifremi unuttum</button></div></div></div>
@@ -495,18 +507,20 @@ select{color-scheme:dark}
     </div>
   </div>
   <button class="fab" id="ask" type="button" title="Admine Soru Sor" aria-label="Admine Soru Sor"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
-<div id="kvkkm" hidden><div class="kvb"><div class="kvh"><b>Aydınlatma Metni (KVKK)</b><button type="button" class="ib" id="kvx" aria-label="Kapat">✕</button></div><div id="kvt"></div></div></div>
 <div id="dlg" hidden><div class="dlgb"><p id="dlgt"></p><input id="dlgp" class="sq" type="password" placeholder="Şifren" autocomplete="current-password" hidden style="margin:0 0 16px"><div class="dlga"><button class="btn-ghost" id="dlgn" type="button">Vazgeç</button><button class="dlgy" id="dlgy" type="button">Evet</button></div></div></div>
 <div id="warn" hidden><div><h2>⚠️ Güvenlik ihlali</h2><p>Geliştirici araçları, yasak kısayol veya sağ tık kullanımı tespit edildi.</p><p id="warnt"></p><p><b>Bu işlem admine bildirildi ve oturumun kapatılıyor.</b></p></div></div>
 <div id="viewer" hidden><button id="vx" type="button">Çıkış</button><iframe id="vf" sandbox="allow-scripts" title="HTML"></iframe></div>
 <div id="cm" hidden><div class="cmp"><div class="cmh"><b id="cmt"></b><button class="ib" data-a="cx" type="button" aria-label="Kapat">×</button></div><div id="cml"></div><form id="cmf"><p id="rep" class="muted" data-a="rcancel" hidden></p><textarea id="cmx" maxlength="500" placeholder="Yorum yaz..."></textarea><button class="btn-ghost sm" type="submit">Gönder</button></form></div></div>
-<div id="chat" hidden><div class="ch1"><b>Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
+<div id="chat" hidden><div class="ch1"><b id="chn">Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
 <div id="ed" hidden>
   <div class="edtop"><input id="edt" placeholder="Başlık" maxlength="80"><input id="edd" placeholder="Açıklama" maxlength="200"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
+  <div class="edst"><span class="muted">Çerçeve</span><div id="edpal"></div><select id="edfs"><option value="">Yok</option><option value="beam">Dönen ışın</option><option value="neon">Neon nabız</option><option value="rainbow">Gökkuşağı</option></select></div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
   <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts" title="Önizleme"></iframe></div></div>
 </div>
 </section>
+
+<div id="kvkkm" hidden><div class="kvb"><div class="kvh"><b>Aydınlatma Metni (KVKK)</b><button type="button" class="ib" id="kvx" aria-label="Kapat">✕</button></div><div id="kvt"></div></div></div>
 
 <script type="module">
 const firebaseConfig = {
@@ -784,11 +798,11 @@ const IC = {
   trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>'
 };
 const ROUTES = {
-  home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], profile: ["Profil", "user"],
+  home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], posts: ["Gönderiler", "msg"], profile: ["Profil", "user"],
   add: ["HTML Ekle", "code"], mine: ["HTML'lerim", "folder"], notes: ["Notlarım", "note"],
   settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"]
 };
-const TABS = [["all", "Tümü"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
+const TABS = [["all", "Tümü"], ["posts", "Gönderiler"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
 const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
 const NT = {
   new_user: n => `${esc(n.username)} kayıt oldu`,
@@ -818,7 +832,7 @@ function hcard(h) {
   const lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2" data-a="open" data-id="${h.id}"><div><div class="by"><span class="n">${esc(h.byName || "")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
+  return `<div class="card2${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
 
@@ -855,10 +869,10 @@ function adminPage() {
   }
   if (at === "msgs") {
     const C = [...S.chats].sort((a, b) => ms(b.updated) - ms(a.updated));
-    const list = C.map(c => `<div class="row2${c.id === ctx.ct ? " sel" : ""}" data-a="ch" data-id="${c.id}"><div><b>${esc(c.name)}</b>${c.adminUnread ? ` <em class="bd st-pending">${c.adminUnread} yeni</em>` : ""}<small>${esc(c.last)}</small></div><small>${fmt(c.updated)}</small></div>`).join("");
+    const list = C.map(c => `<div class="row2${c.id === ctx.ct ? " sel" : ""}" data-a="ch" data-id="${c.id}"><div>${avHtml(c.id, c.name, "av sm")}<b>${esc(c.name)}</b>${c.adminUnread ? ` <em class="bd st-pending">${c.adminUnread} yeni</em>` : ""}<small>${esc(c.last)}</small></div><small>${fmt(c.updated)}</small></div>`).join("");
     const mu = '<option value="">Yeni mesaj: kullanıcı seç</option>' + S.users.filter(u => u.id !== ADMIN_UID && u.status === "approved").map(u => `<option value="${u.id}"${u.id === ctx.ct ? " selected" : ""}>${esc(u.username || u.email)}</option>`).join("");
     const cn = ctx.ct ? esc(S.users.find(u => u.id === ctx.ct)?.username || S.chats.find(c => c.id === ctx.ct)?.name || "") : "";
-    const conv = ctx.ct ? `<h3 class="sh">${cn}</h3><div id="adl" class="chl">${ctx.cmsgs.map(m => bub(m, m.from === "admin")).join("")}</div><form id="adf" class="chf"><input id="adx" maxlength="500" placeholder="Cevap yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form><button class="btn-ghost sm" data-a="cdelall" type="button" style="margin-top:10px">Sohbeti tamamen sil</button>` : "";
+    const conv = ctx.ct ? `<h3 class="sh">${avHtml(ctx.ct, cn, "av sm")}${cn}</h3><div id="adl" class="chl">${ctx.cmsgs.map(m => bub(m, m.from === "admin")).join("")}</div><form id="adf" class="chf"><input id="adx" maxlength="500" placeholder="Cevap yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form><button class="btn-ghost sm" data-a="cdelall" type="button" style="margin-top:10px">Sohbeti tamamen sil</button>` : "";
     return tabs + `<div class="lf"><select id="mu">${mu}</select></div>` + (list || empty()) + conv;
   }
   if (at === "pend") {
@@ -898,6 +912,8 @@ async function wipeUser(id) {
   for (const h of hs.docs) await wipeHtml(h.id);
   await delCol(query(col("htmlBodies"), where("by", "==", id)));
   await delCol(query(col("notes"), where("uid", "==", id)));
+  await delCol(query(col("posts"), where("uid", "==", id)));
+  await deleteDoc(doc(db, "profiles", id)).catch(() => {});
   const cs = await getDocs(query(col("comments"), where("uid", "==", id)));
   for (const c of cs.docs) await delCol(query(col("comments"), where("parent", "==", c.id)));
   await delCol(query(col("comments"), where("uid", "==", id)));
@@ -943,7 +959,7 @@ function render() {
   $("#adl")?.scrollTo(0, 1e9);
 }
 const rf = () => {
-  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); return; }
+  if (ctx.r === "home" && $("#hg")) { if (ctx.tab === "posts" && $("#ptf")) { $("#ptl").innerHTML = postsList(); return; } $("#hg").innerHTML = homeGrid(); return; }
   if (ctx.r === "notes" && $("#nl")) { $("#nl").innerHTML = notesList(); return; }
   if (["favs", "mine", "admin"].includes(ctx.r)) render();
 };
@@ -994,6 +1010,12 @@ function startData() {
   sub(query(c("htmls"), where("status", "==", "approved")), s => { S.htmls = map(s).filter(x => !x.deleted); rf(); });
   sub(query(c("htmls"), where("by", "==", ctx.uid)), s => { S.mine = map(s).filter(x => !x.deleted); rf(); });
   sub(c("likes"), s => { S.likes = map(s); rf(); });
+  sub(c("profiles"), s => {
+    S.profiles = Object.fromEntries(s.docs.map(d => [d.id, d.data()]));
+    avatarUpd(); rf(); if (ctx.r === "profile") render(); else if ($("#ptl")) $("#ptl").innerHTML = postsList();
+    if (ctx.cm) cmRender(); if (!$("#chat").hidden) chatDraw();
+  });
+  sub(query(c("posts"), orderBy("ts", "desc"), limit(100)), s => { S.posts = map(s); if ($("#ptl")) $("#ptl").innerHTML = postsList(); });
   sub(query(c("notes"), where("uid", "==", ctx.uid)), s => { S.notes = map(s); rf(); });
   sub(query(c("announcements"), orderBy("ts", "desc"), limit(20)), s => { S.ann = map(s); rf(); notifRender(); });
   sub(doc(db, "prefs", ctx.uid), s => { S.prefs = { favs: [], pins: [], ...s.data() }; rf(); notifRender(); });
@@ -1018,7 +1040,7 @@ function buildHome(user, data) {
     S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
   };
   $("#hname").textContent = name; avatarUpd();
-  $("#nav").innerHTML = ["home", "favs", "profile", "add", "mine", "notes"].map(navItem).join("");
+  $("#nav").innerHTML = ["home", "favs", "posts", "profile", "add", "mine", "notes"].map(navItem).join("");
   { const a = $("#ask"); a.classList.toggle("gold", !!ctx.admin); a.title = ctx.admin ? "Yönetim Paneli" : "Admine Soru Sor"; a.innerHTML = ctx.admin ? `<svg class="ic" viewBox="0 0 24 24">${IC.shield}</svg>` : '<svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>'; }
   $("#navb").innerHTML = '<a href="#" class="lo" data-lo><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="lb">Çıkış Yap</span></a>' + navItem("settings");
   $("#navb [data-lo]").onclick = async e => { e.preventDefault(); if (await ask("Çıkış yapılsın mı?", "Çıkış yap")) logout(); };
@@ -1239,6 +1261,7 @@ home.addEventListener("submit", async e => {
 /* Sohbet */
 const bub = (m, mine) => `<div class="mg ${mine ? "u" : "a"}">${(() => { const id = m.from === "admin" ? ADMIN_UID : (ctx.admin ? ctx.ct : ctx.uid); return avHtml(id, m.from === "admin" ? "A" : (ctx.admin ? (ctx.S.users.find(u => u.id === ctx.ct)?.username || "") : ctx.name), "av xs"); })()}${esc(m.text)}${ctx.admin && m.id ? `<button class="mgx" data-a="mdel" data-id="${m.id}" aria-label="Sil">×</button>` : ""}</div>`;
 function chatDraw() {
+  $("#chn").innerHTML = avHtml(ADMIN_UID, "A", "av sm") + "Admin ile Sohbet";
   const l = $("#chl"), c = ctx.S.chat?.userClearedAt || 0;
   const m = (ctx.chd || []).map(d => d.data()).filter(x => ms(x.ts) > c);
   l.innerHTML = m.map(x => bub(x, x.from === "user")).join("") || '<p class="muted">Admine bir mesaj yaz.</p>';
@@ -1282,6 +1305,7 @@ home.addEventListener("submit", async e => {
 });
 
 /* Kod editörü */
+const FRS = ["beam", "neon", "rainbow"];
 const PAL = ["#6d4aff", "#2a7fff", "#22d3a6", "#ff5c8a", "#ffb020", "#ff6a3d", "#a855f7", "#e5e7eb"];
 const BSTY = ["beam", "solid", "neon", "gold", "dashed", "double"];
 const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
@@ -1339,6 +1363,9 @@ edh.addEventListener("keydown", e => {
   }, { passive: false });
   edh.addEventListener("touchend", () => { d0 = 0; });
 }
+const edPal = () => $("#edpal").innerHTML = PAL.map(c => `<button type="button" class="sw${c === ctx.ed.fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("");
+$("#edpal").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { ctx.ed.fc = b.dataset.c; edPal(); } };
+$("#edfs").onchange = e => { ctx.ed.fs = e.target.value; };
 $$(".edtabs button").forEach(b => b.onclick = () => {
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x === b));
   edb.classList.toggle("pv", b.dataset.ed === "prev");
@@ -1349,9 +1376,9 @@ async function openEditor(h) {
   if (isNew) h = { id: null, title: "", desc: "", by: ctx.uid };
   const b = isNew ? null : await getDoc(doc(db, "htmlBodies", h.id)), code = b?.exists() ? b.data().html : "";
   $("#edel").hidden = isNew;
-  ctx.ed = { id: h.id, h, code, isNew };
-  $("#edt").value = h.title; $("#edd").value = h.desc || "";
-  edh.value = code; edSync(); edf.srcdoc = code;
+  ctx.ed = { id: h.id, h, code, isNew, fs: FRS.includes(h.fs) ? h.fs : "", fc: PAL.includes(h.fc) ? h.fc : PAL[0] };
+  $("#edt").value = h.title; $("#edd").value = h.desc || ""; $("#edfs").value = ctx.ed.fs;
+  edh.value = code; edPal(); edSync(); edf.srcdoc = code;
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
   edb.hidden = false; document.body.style.overflow = "hidden";
@@ -1366,7 +1393,7 @@ $("#eds").onclick = async () => {
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
-      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp() });
+      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc } : {}) });
       w.set(doc(db, "htmlBodies", ref.id), { html: code, by: ctx.uid });
       await w.commit();
       if (!ctx.admin) notify("html_pending", { detail: t });
@@ -1375,8 +1402,9 @@ $("#eds").onclick = async () => {
       return;
     }
     const ch = t !== e.h.title || d !== (e.h.desc || "") || code !== e.code;
-    const st = {};
-    if (ch) {
+    const fchg = e.fs !== (e.h.fs || "") || (e.fs && e.fc !== (e.h.fc || PAL[0]));
+    const st = fchg ? { fs: e.fs, fc: e.fc } : {};
+    if (ch || fchg) {
       const w = writeBatch(db);
       if (ch) {
         w.update(doc(db, "htmls", e.id), { title: t, desc: d, ...(ctx.admin ? {} : { status: "pending" }), ...st });
@@ -1406,13 +1434,41 @@ async function changePassword(cur, nw) {
 }
 
 const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
-const avHtml = () => "";
-const avatarBlock = () => "";
+const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
+const avHtml = (uid, name, cls = "av") => {
+  const ph = avPh(uid), L = ph ? "" : esc((name || "?").charAt(0).toUpperCase());
+  if (uid === ADMIN_UID) return `<span class="${cls}" style="border:2px solid transparent;background:${ph ? `url('${ph}') center/cover padding-box` : "linear-gradient(#16161d,#16161d) padding-box"},conic-gradient(from var(--angle),rgba(245,215,122,.12) 0 45%,#f5d77a 78%,#fff) border-box;color:#f5d77a;animation:spin 3s linear infinite">${L}</span>`;
+  return `<span class="${cls}" style="${ph ? `background:url('${ph}') center/cover` : "background:rgba(255,255,255,.12);color:#fff"}">${L}</span>`;
+};
+function toAvatar(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), u = URL.createObjectURL(file);
+    img.onload = () => {
+      const S = 160, c = document.createElement("canvas"); c.width = c.height = S;
+      const m = Math.min(img.width, img.height);
+      c.getContext("2d").drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, S, S);
+      URL.revokeObjectURL(u); res(c.toDataURL("image/jpeg", .82));
+    };
+    img.onerror = () => rej(new Error("Görsel okunamadı."));
+    img.src = u;
+  });
+}
+const avatarBlock = () => `<button class="avbtn" type="button" data-a="avpick" aria-label="Profil fotoğrafı">${avHtml(ctx.uid, ctx.name, "avbig")}</button><p class="muted" style="margin:0 0 12px;font-size:12px">Fotoğraf eklemek için simgeye dokun.</p>${avPh(ctx.uid) ? '<button type="button" class="btn-ghost sm" data-a="avrm" style="margin-bottom:14px">Fotoğrafı kaldır</button>' : ""}<input id="avf" type="file" accept="image/*" hidden>`;
+home.addEventListener("change", async e => {
+  if (e.target.id !== "avf" || !e.target.files[0]) return;
+  try { await setDoc(doc(db, "profiles", ctx.uid), { photoURL: await toAvatar(e.target.files[0]) }); toast("Fotoğraf kaydedildi."); }
+  catch (x) { toast(trError(x)); }
+});
+home.addEventListener("input", e => { if (e.target.id === "ptx") $("#ptc").textContent = e.target.value.length + "/280"; });
 const avatar = avatarBlock;
-function avatarUpd() { $("#sname").textContent = ctx.prof?.fullName || ctx.name || ""; }
+function avatarUpd() {
+  $("#sname").textContent = ctx.prof?.fullName || ctx.name || "";
+  const h = $("#hav"); if (h) h.innerHTML = avHtml(ctx.uid, ctx.name, "av hv");
+}
 
 function homeGrid() {
   const S = ctx.S, t = ctx.tab, q = (ctx.q || "").toLowerCase();
+  if (t === "posts") return postsBlock();
   if (t === "notes") {
     let n = S.notes.filter(x => !x.deleted);
     if (q) n = n.filter(x => ((x.title || "") + " " + x.text).toLowerCase().includes(q));
@@ -1439,6 +1495,13 @@ PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Baş
 PAGES.settings = () => {
   return `<div><h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
 };
+
+function postsList() {
+  const P = ctx.S.posts || [];
+  return P.length ? P.map(p => `<div class="post">${avHtml(p.uid, p.name)}<div><b>${esc(p.name)}</b> <small class="muted">${fmt(p.ts)}</small><p>${esc(p.text)}</p>${ctx.admin || p.uid === ctx.uid ? `<button class="link" data-a="ptdel" data-id="${p.id}" type="button">Sil</button>` : ""}</div></div>`).join("") : empty();
+}
+const postsBlock = () => `<form id="ptf" class="addf"><textarea id="ptx" maxlength="280" placeholder="Ne düşünüyorsun?" style="height:90px"></textarea><div class="pc"><small id="ptc" class="muted">0/280</small></div><p class="err" id="e-ptf"></p><button class="btn2" type="submit"><span class="lbl">Paylaş</span><i class="spin"></i></button></form><div id="ptl">${postsList()}</div>`;
+PAGES.posts = postsBlock;
 
 PAGES.profile = () => {
   const p = ctx.prof || {};
@@ -1468,6 +1531,9 @@ home.addEventListener("click", async e => {
       if (vis.length) h += `<h3 class="sh">Görünür filigran</h3>` + [...new Set(vis)].map(v => `<div class="row2"><div><b>${esc(v)}</b></div></div>`).join("");
       out.innerHTML = h || '<p class="empty">İz bulunamadı. (Kopyalarken gizli karakterler silinmiş olabilir; kaynak HTML dosyasını yapıştırmayı dene.)</p>';
     }
+    if (d.a === "avpick") $("#avf").click();
+    if (d.a === "avrm") await deleteDoc(doc(db, "profiles", ctx.uid));
+    if (d.a === "ptdel" && await ask("Gönderi silinsin mi?", "Sil")) await deleteDoc(doc(db, "posts", id));
     if (d.a === "ngo") location.hash = "#/notes";
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
     if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
@@ -1513,9 +1579,15 @@ home.addEventListener("change", async e => {
 
 home.addEventListener("submit", async e => {
   const f = e.target.id;
-  if (!["pf", "pwf", "dlf", "nf", "anf"].includes(f)) return;
+  if (!["pf", "pwf", "dlf", "nf", "anf", "ptf"].includes(f)) return;
   e.preventDefault();
   try {
+    if (f === "ptf") {
+      const x = $("#ptx").value.trim();
+      if (!x || spam("pt", 5000, x)) return;
+      await addDoc(collection(db, "posts"), { uid: ctx.uid, name: ctx.name, text: x.slice(0, 280), ts: serverTimestamp() });
+      $("#ptx").value = ""; $("#ptc").textContent = "0/280"; return;
+    }
     if (f === "pf") {
       const n = { fullName: $("#pfn").value.trim(), username: $("#pun").value.trim(), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
       if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username)) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
@@ -1567,6 +1639,7 @@ home.addEventListener("submit", async e => {
         const refs = [...S.mine.map(h => doc(db, "htmls", h.id)), ...S.notes.filter(n => !n.deleted).map(n => doc(db, "notes", n.id))];
         for (let i = 0; i < refs.length; i += 400) { const w = writeBatch(db); refs.slice(i, i + 400).forEach(r => w.update(r, gone)); await w.commit(); }
         await deleteDoc(doc(db, "prefs", ctx.uid)).catch(() => {});
+        await deleteDoc(doc(db, "profiles", ctx.uid)).catch(() => {});
         await updateDoc(doc(db, "users", ctx.uid), { selfDeleted: true, selfDeletedAt: serverTimestamp() });
         await deleteUser(u);
       } catch (x) { setErr("dl", x.code === "auth/invalid-credential" || x.code === "auth/wrong-password" ? "Şifre hatalı." : trError(x)); }
