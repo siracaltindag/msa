@@ -176,6 +176,7 @@ h1{font-size:26px}h2{font-size:22px}
 .fab:hover{transform:scale(1.08);box-shadow:0 14px 40px rgba(109,74,255,.55)}
 .fab .ic{width:26px;height:26px}
 .card2{cursor:pointer}
+.card2.xp{aspect-ratio:auto;gap:12px}.card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
 .card2 b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.25}
 .card2 small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:var(--muted);font:400 12px var(--font-b)}
 .acts{display:flex;gap:2px;margin:0 -6px -6px}
@@ -259,7 +260,7 @@ h1{font-size:26px}h2{font-size:22px}
 #edn{flex:none;width:46px;padding:12px 8px;overflow:hidden;border-right:1px solid var(--line);color:#5b5f73;text-align:right;white-space:pre;user-select:none}
 #edpre,#edh{position:absolute;inset:0;margin:0;padding:12px;border:0;white-space:pre;word-wrap:normal;tab-size:2;overflow:auto;scrollbar-width:none}
 #edh::-webkit-scrollbar{display:none}
-#edfb[hidden]{display:none}#edfb{flex-wrap:wrap}#edfb input{flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
+#edundo,#edredo{font-weight:900;font-size:20px;min-width:44px}#edfb[hidden]{display:none}#edfb{flex-wrap:wrap}#edfb input{flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
 #edpre{overflow:hidden;color:#cfd3e6;pointer-events:none}
 #edh{resize:none;outline:0;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}
 #edh,#edn{touch-action:pan-x pan-y}
@@ -300,7 +301,8 @@ h1{font-size:26px}h2{font-size:22px}
 .tick small{display:block;color:var(--muted)}
 .row2 small.nt{margin:4px 0;color:var(--text);font-size:14px;white-space:pre-wrap;word-break:break-word}
 #warn{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px;background:rgba(12,0,6,.96);text-align:center}
-#warn h2{margin:0 0 12px;color:var(--err);font-size:28px}
+#warn{background:#9b0000!important;animation:wpulse 1s infinite alternate}@keyframes wpulse{from{background:#7a0000}to{background:#d10000}}
+#warn h2{margin:0 0 16px;color:#fff;font-size:clamp(34px,10vw,56px);line-height:1.1;letter-spacing:1px;text-shadow:0 0 18px #000}#warn .wl{font-size:20px;font-weight:800}
 #warn p{max-width:420px;margin:8px auto;color:#fff}
 .chh{display:flex;align-items:center;gap:8px}
 .mgx{margin-left:8px;padding:0;border:0;background:none;color:inherit;opacity:.6;cursor:pointer}
@@ -511,12 +513,12 @@ select{color-scheme:dark}
   </div>
   <button class="fab" id="ask" type="button" title="Admine Soru Sor" aria-label="Admine Soru Sor"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
 <div id="dlg" hidden><div class="dlgb"><p id="dlgt"></p><input id="dlgp" class="sq" type="password" placeholder="Şifren" autocomplete="current-password" hidden style="margin:0 0 16px"><div class="dlga"><button class="btn-ghost" id="dlgn" type="button">Vazgeç</button><button class="dlgy" id="dlgy" type="button">Evet</button></div></div></div>
-<div id="warn" hidden><div><h2>⚠️ Güvenlik ihlali</h2><p>Geliştirici araçları, yasak kısayol veya sağ tık kullanımı tespit edildi.</p><p id="warnt"></p><p><b>Bu işlem admine bildirildi ve oturumun kapatılıyor.</b></p></div></div>
+<div id="warn" hidden><div><h2>⛔ GÜVENLİK İHLALİ ⛔</h2><p class="wl">Yetkisiz inceleme girişimi tespit edildi.</p><p>Geliştirici araçları, Eruda gibi konsollar, yasak kısayollar ve sağ tık kullanımı bu sistemde kesinlikle yasaktır. Paylaşılan içerikler korumalıdır; içeriği incelemek, kopyalamak veya çalmaya çalışmak ihlaldir.</p><p id="warnt"></p><p><b>Bu işlem kayda alındı ve admine bildirildi. Hesabın tekrar admin onayına alındı ve oturumun kapatılıyor.</b></p><p id="warnc" class="wl"></p></div></div>
 <div id="viewer" hidden><button id="vx" type="button">Çıkış</button><iframe id="vf" sandbox="allow-scripts" title="HTML"></iframe></div>
 <div id="cm" hidden><div class="cmp"><div class="cmh"><b id="cmt"></b><button class="ib" data-a="cx" type="button" aria-label="Kapat">×</button></div><div id="cml"></div><form id="cmf"><p id="rep" class="muted" data-a="rcancel" hidden></p><textarea id="cmx" maxlength="500" placeholder="Yorum yaz..."></textarea><button class="btn-ghost sm" type="submit">Gönder</button></form></div></div>
 <div id="chat" hidden><div class="ch1"><b id="chn">Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
 <div id="ed" hidden>
-  <div class="edtop"><input id="edt" placeholder="Başlık" maxlength="80"><input id="edd" placeholder="Açıklama" maxlength="200"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
+  <div class="edtop"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
   <div class="edst"><span class="muted">Çerçeve</span><div id="edpal"></div><select id="edfs"><option value="">Yok</option><option value="beam">Dönen ışın</option><option value="neon">Neon nabız</option><option value="rainbow">Gökkuşağı</option></select></div>
   <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">Dosyadan yükle (.html)</button><button class="btn-ghost sm" id="edpaste" type="button">Panodan yapıştır</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edundo" type="button" title="Geri al">↶</button><button class="btn-ghost sm" id="edredo" type="button" title="Yinele">↷</button><button class="btn-ghost sm" id="edfbt" type="button">Bul/Değiştir</button></div>
   <div class="edup" id="edfb" hidden><input id="edfind" placeholder="Bul" autocomplete="off"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button class="btn-ghost sm" id="edfn" type="button">Sonraki</button><button class="btn-ghost sm" id="edfr" type="button">Değiştir</button><button class="btn-ghost sm" id="edfa" type="button">Tümü</button></div>
@@ -834,10 +836,10 @@ const empty = () => '<p class="empty">Henüz içerik yok.</p>';
 
 function hcard(h) {
   const S = ctx.S, n = S.likes.filter(l => l.htmlId === h.id).length;
-  const lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
+  const xp = ctx.xp?.has(h.id) ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
+  return `<div class="card2${xp}${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
 
@@ -1072,15 +1074,17 @@ function clearHome() {
 }
 
 /* HTML görüntüleme + koruma */
-const HOOK = '<script>addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();parent.postMessage({x:1},"*")},true)<\/script>';
+const HOOK = '<script>addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();((e.pointerType==="touch"||e.pointerType==="pen"||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents))||parent.postMessage({x:1},"*"))},true)<\/script>';
 const isBad = e => {
   const k = (e.key || "").toLowerCase(), c = e.ctrlKey || e.metaKey;
   return e.key === "F12" || (c && (k === "u" || k === "s")) || (c && e.shiftKey && ["i", "j", "c"].includes(k));
 };
 const onKey = e => { if (isBad(e)) { e.preventDefault(); violate("Kısayol: " + e.key); } };
-const onCtx = e => { e.preventDefault(); violate("Sağ tık"); };
+const touchy = e => e.pointerType === "touch" || e.pointerType === "pen" || !!e.sourceCapabilities?.firesTouchEvents;
+const onCtx = e => { e.preventDefault(); if (!touchy(e)) violate("Sağ tık"); };
 function devtools() {
   if (matchMedia("(pointer:fine)").matches && (outerWidth - innerWidth > 200 || outerHeight - innerHeight > 260)) return violate("DevTools (boyut)");
+  if (window.eruda || window.VConsole || document.getElementById("eruda") || document.querySelector(".eruda-container,#__vconsole,script[src*=eruda i],script[src*=vconsole i]")) return violate("Eruda/vConsole");
   const t = performance.now(); debugger;
   if (performance.now() - t > 100) violate("DevTools (debugger)");
 }
@@ -1100,15 +1104,31 @@ async function violate(d) {
   if (ctx.admin || vio || !ctx.uid) return;
   vio = true;
   const uid = ctx.uid;
+  try { localStorage.setItem("msa_vio", JSON.stringify({ uid, d })); } catch {}
   exitViewer();
   $("#warnt").textContent = "Tespit edilen: " + d;
   $("#warn").hidden = false;
-  await Promise.race([notify("violation", { detail: d }), sleep(2500)]);
-  await Promise.race([updateDoc(doc(db, "users", uid), { status: "pending", violationAt: serverTimestamp() }).catch(() => {}), sleep(2500)]);
-  await sleep(4000);
+  const ok = await Promise.race([
+    Promise.all([notify("violation", { detail: d }), updateDoc(doc(db, "users", uid), { status: "pending", violationAt: serverTimestamp() }).then(() => true).catch(() => false)]).then(r => r[1]),
+    sleep(3000).then(() => false)
+  ]);
+  if (ok) try { localStorage.removeItem("msa_vio"); } catch {}
   await logout();
+  for (let i = 10; i > 0; i--) { $("#warnc").textContent = "Oturum kapatıldı. Bu ekran " + i + " saniye sonra kapanacak..."; await sleep(1000); }
   $("#warn").hidden = true;
   vio = false;
+}
+/* Yazılamayan ihlal cihazda kalır: sayfa yenilense/çevrimdışı olsa da hesap girişte onaya alınır */
+{
+  let f = null; try { f = JSON.parse(localStorage.getItem("msa_vio")); } catch {}
+  if (f) { $("#warnt").textContent = "Tespit edilen: " + f.d; $("#warnc").textContent = ""; $("#warn").hidden = false; setTimeout(() => { if (!vio) $("#warn").hidden = true; }, 10000); }
+  onAuthStateChanged(auth, async u => {
+    let g = null; try { g = JSON.parse(localStorage.getItem("msa_vio")); } catch {}
+    if (!u || !g || g.uid !== u.uid) return;
+    if (u.uid === ADMIN_UID) { try { localStorage.removeItem("msa_vio"); } catch {} return; }
+    const ok = await updateDoc(doc(db, "users", u.uid), { status: "pending", violationAt: serverTimestamp() }).then(() => true).catch(() => false);
+    if (ok) { notify("violation", { detail: g.d }); try { localStorage.removeItem("msa_vio"); } catch {} }
+  });
 }
 function exitViewer() { frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
 $("#vx").onclick = exitViewer;
@@ -1142,7 +1162,7 @@ function protect(html) {
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="280" height="150"><text x="14" y="84" transform="rotate(-24 140 75)" font-family="sans-serif" font-size="14" font-weight="600" fill="#888">' + esc(who) + '</text></svg>';
   const bg = "position:fixed;inset:0;z-index:2147483647;pointer-events:none;opacity:.1;background-image:url('data:image/svg+xml," + encodeURIComponent(svg) + "')";
   const guardJs = '(function(){var P=function(v){try{parent.postMessage({v:v},"*")}catch(e){}};' +
-    '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu")P("Sag tik")},true)});' +
+    '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu"&&!(e.pointerType==="touch"||e.pointerType==="pen"||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents)))P("Sag tik")},true)});' +
     'addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;if(e.key==="F12"||(c&&["u","s","p"].indexOf(k)>-1)||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>-1)){e.preventDefault();P("Kisayol: "+e.key)}},true);' +
     'var S=' + JSON.stringify(bg) + ',ob=new MutationObserver(function(){var w=document.getElementById("wm");if(!w)return mk();if(w.getAttribute("style")!==S){mk();P("Filigran degistirildi")}});' +
     'var mk=function(){var w=document.getElementById("wm");if(!w){w=document.createElement("div");w.id="wm";document.body.appendChild(w)}w.setAttribute("style",S);ob.observe(w,{attributes:true})};' +
@@ -1203,7 +1223,11 @@ home.addEventListener("click", async e => {
   const h = [...S.htmls, ...S.mine].find(x => x.id === id);
   try {
     switch (d.a) {
-      case "open": if (h) await openHtml(id, h); break;
+      case "open":
+        if (!h) break;
+        if (ctx.ct && ctx.ci === id) { clearTimeout(ctx.ct); ctx.ct = null; await openHtml(id, h); }
+        else { clearTimeout(ctx.ct); ctx.ci = id; ctx.ct = setTimeout(() => { ctx.ct = null; (ctx.xp ||= new Set()); ctx.xp.has(id) ? ctx.xp.delete(id) : ctx.xp.add(id); b.classList.toggle("xp"); }, 260); }
+        break;
       case "like": {
         if (spam("l" + id, 1500)) break;
         const k = doc(db, "likes", id + "_" + ctx.uid), on = S.likes.some(l => l.htmlId === id && l.uid === ctx.uid);
@@ -1375,7 +1399,7 @@ async function edLoad(f) {
     const buf = await f.arrayBuffer(); let t;
     try { t = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { t = new TextDecoder("windows-1254").decode(buf); }
     edh.value = cleanCode(t); edh.scrollTop = edh.scrollLeft = 0; edSync();
-    if (!$("#edt").value.trim()) { const m = t.match(/<title[^>]*>([\s\S]*?)<\/title>/i); $("#edt").value = ((m && m[1].trim()) || f.name.replace(/\.[^.]+$/, "")).slice(0, 80); }
+    { const e = ctx.ed; if (!(e.mt ?? e.h.title)) { const m = t.match(/<title[^>]*>([\s\S]*?)<\/title>/i); e.mt = ((m && m[1].trim()) || f.name.replace(/\.[^.]+$/, "")).slice(0, 80); } }
     edb.classList.remove("pv"); $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
     toast("Dosya yüklendi.");
   } catch { toast("Dosya okunamadı."); }
@@ -1387,7 +1411,17 @@ edb.addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer
 /* Geri al/yinele, bul-değiştir, otomatik kapanış etiketi */
 let hist = [], hi = -1, ht;
 const hpush = () => { clearTimeout(ht); if (hist[hi]?.v === edh.value) return; hist.splice(hi + 1); hist.push({ v: edh.value, s: edh.selectionStart }); if (hist.length > 200) hist.shift(); hi = hist.length - 1; };
-const hgo = d => { hpush(); const n = hi + d; if (n < 0 || n >= hist.length) return; hi = n; edh.value = hist[n].v; edh.setSelectionRange(hist[n].s, hist[n].s); edSync(); edh.focus(); };
+const hgo = d => {
+  hpush(); const n = hi + d; if (n < 0 || n >= hist.length) return;
+  const o = edh.value, v = hist[n].v, st = edh.scrollTop, sl = edh.scrollLeft;
+  let a = 0; const m = Math.min(o.length, v.length); while (a < m && o[a] === v[a]) a++;
+  let b = 0; while (b < m - a && o[o.length - 1 - b] === v[v.length - 1 - b]) b++;
+  const c = v.length - b; hi = n;
+  edh.focus({ preventScroll: true }); edh.value = v; edh.setSelectionRange(c, c); edSync();
+  const lh = parseFloat(getComputedStyle(edh).lineHeight) || 18, y = v.slice(0, c).split("\n").length * lh;
+  edh.scrollLeft = sl;
+  edh.scrollTop = (y < st + lh || y > st + edh.clientHeight - 2 * lh) ? Math.max(0, y - edh.clientHeight / 2) : st;
+};
 const hreset = () => { clearTimeout(ht); hist = [{ v: edh.value, s: 0 }]; hi = 0; };
 edh.addEventListener("input", e => {
   clearTimeout(ht); ht = setTimeout(hpush, 500);
@@ -1450,7 +1484,7 @@ async function openEditor(h) {
   const b = isNew ? null : await getDoc(doc(db, "htmlBodies", h.id)), code = b?.exists() ? b.data().html : "";
   $("#edel").hidden = isNew;
   ctx.ed = { id: h.id, h, code, isNew, fs: FRS.includes(h.fs) ? h.fs : "", fc: PAL.includes(h.fc) ? h.fc : PAL[0] };
-  $("#edt").value = h.title; $("#edd").value = h.desc || ""; $("#edfs").value = ctx.ed.fs;
+  $("#edfs").value = ctx.ed.fs;
   edh.value = code; edPal(); edSync(); edf.srcdoc = code; hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
@@ -1460,9 +1494,11 @@ function closeEditor() { edb.hidden = true; edf.srcdoc = ""; document.body.style
 $("#edx").onclick = closeEditor;
 
 $("#eds").onclick = async () => {
-  const e = ctx.ed, t = $("#edt").value.trim(), d = $("#edd").value.trim(), code = edh.value;
-  if (!t || !code.trim()) return toast("Başlık ve HTML gerekli.");
+  const e = ctx.ed, code = edh.value;
+  if (!code.trim()) return toast("HTML gerekli.");
   if (code.length > 900000) return toast("HTML çok büyük (en fazla ~900 KB).");
+  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? ""); if (!mm) return;
+  e.mt = mm.t; e.md = mm.d; const t = mm.t, d = mm.d;
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
@@ -1767,6 +1803,19 @@ function inform(msg) {
     $("#dlgt").textContent = msg; y.textContent = "Tamam"; n.hidden = true; d.hidden = false;
     const end = () => { d.hidden = true; n.hidden = false; y.onclick = d.onclick = null; res(); };
     y.onclick = end; d.onclick = e => { if (e.target === d) end(); };
+  });
+}
+function askMeta(t, d) {
+  return new Promise(res => {
+    const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
+    const i = document.createElement("input"), x = document.createElement("textarea");
+    i.className = "sq"; i.maxLength = 80; i.placeholder = "Başlık"; i.value = t; i.style.margin = "0 0 10px";
+    x.className = "sq"; x.maxLength = 200; x.placeholder = "Açıklama"; x.value = d; x.style.cssText = "margin:0 0 16px;height:120px;padding:12px 16px;border-radius:18px;resize:vertical;max-width:none";
+    a.before(i, x); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
+    const end = v => { dl.hidden = true; i.remove(); x.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
+    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim() }); };
+    n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
+    i.focus();
   });
 }
 function ask(msg, ok = "Evet") {
