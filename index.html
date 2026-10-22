@@ -1038,7 +1038,7 @@ function startData() {
     S.ui = nu;
     if (ch) { avatarUpd(); render(); if (ctx.cm) cmRender(); if (!$("#chat").hidden) chatDraw(); }
   });
-  sub(doc(db, "settings", "badges"), s => { S.badges = s.data()?.uids || []; S.bcol = s.data()?.col || {}; rf(); if (ctx.cm) cmRender(); });
+  sub(doc(db, "settings", "badges"), s => { S.badges = s.data()?.uids || []; S.bcol = s.data()?.col || {}; rf(); if (ctx.r === "profile") render(); if (ctx.cm) cmRender(); });
   sub(doc(db, "prefs", ctx.uid), s => { S.prefs = { favs: [], pins: [], ...s.data() }; rf(); notifRender(); });
   sub(query(c("access"), where("uid", "==", ctx.uid)), s => { S.access = {}; s.docs.forEach(d => S.access[d.data().htmlId] = d.data().status); });
   if (!ctx.admin) sub(doc(db, "chats", ctx.uid), s => { S.chat = s.data() || {}; notifRender(); if (!$("#chat").hidden) chatDraw(); if (!$("#chat").hidden && S.chat.userUnread) setDoc(doc(db, "chats", ctx.uid), { userUnread: 0 }, { merge: true }).catch(() => {}); });
@@ -1558,9 +1558,9 @@ async function changePassword(cur, nw) {
   await updatePassword(u, nw);
 }
 
-const COL = { gri: "#9aa4af", beyaz: "#ffffff", altin: "#d4af37", kirmizi: "#e0245e", mavi: "#1DA1F2", elmas: "#7df9ff" };
-const COLN = { gri: "Gri", beyaz: "Beyaz", altin: "Altın", kirmizi: "Kırmızı", mavi: "Mavi", elmas: "Elmas" };
-const vbSvg = k => `<svg viewBox="0 0 24 24" width="16" height="16" fill="${COL[k] || COL.mavi}" aria-label="Onaylı Hesap" style="vertical-align:-3px;margin-left:3px${k === "elmas" ? ";filter:drop-shadow(0 0 3px #7df9ff)" : ""}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
+const COL = { gri: "#9aa4af", beyaz: "#ffffff", altin: "#d4af37", kirmizi: "#e0245e", mavi: "#1DA1F2" };
+const COLN = { gri: "Gri", beyaz: "Beyaz", altin: "Altın", kirmizi: "Kırmızı", mavi: "Mavi" };
+const vbSvg = k => `<svg viewBox="0 0 24 24" width="16" height="16" fill="${COL[k] || COL.mavi}" aria-label="Onaylı Hesap" style="vertical-align:-3px;margin-left:3px"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
 const vb = uid => (ctx.S?.badges || []).includes(uid) ? vbSvg(ctx.S.bcol?.[uid]) : "";
 const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
@@ -1620,17 +1620,24 @@ PAGES.home = () => `<input id="sq" class="sq" type="search" placeholder="HTML ar
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
 PAGES.settings = () => {
-  const chip = (a, v, t, on, c) => `<button type="button" data-a="${a}" data-v="${v}" style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;margin:4px 6px 0 0;border-radius:999px;border:2px solid ${on ? (c || "#fff") : "var(--line)"};background:transparent;color:var(--text);cursor:pointer">${c ? `<i style="width:12px;height:12px;border-radius:50%;background:${c}"></i>` : ""}${t}</button>`;
-  const cc = (a, cur) => Object.keys(COL).map(k => chip(a, k, COLN[k], cur === k, COL[k])).join("");
-  const UI = ctx.S.ui, bOn = (ctx.S.badges || []).includes(ADMIN_UID);
-  const ring = ctx.admin ? `<h3 class="sh">Admin çerçevesi</h3><div class="addf"><p class="muted">Profil fotoğrafındaki halka. Sadece sen değiştirebilirsin.</p><button class="btn-ghost" data-a="ringtog" type="button">${UI.adminRing === false ? "Kapalı — Aç" : "Açık — Kapat"}</button><p class="muted" style="margin-top:12px">Renk</p>${cc("ringcol", UI.rc)}<p class="muted" style="margin-top:12px">Kalınlık</p>${[[2, "İnce"], [3, "Orta"], [4, "Kalın"]].map(([v, t]) => chip("ringw", v, t, (UI.rw || 2) === v)).join("")}<p class="muted" style="margin-top:12px">Işın efekti</p><button class="btn-ghost" data-a="ringsh" type="button">${UI.sh === false ? "Kapalı — Aç" : "Açık — Kapat"}</button></div><h3 class="sh">Onaylı tik</h3><div class="addf"><button class="btn-ghost" data-a="vtog" data-id="${ADMIN_UID}" type="button">${bOn ? "Açık — Kapat" : "Kapalı — Aç"}</button><p class="muted" style="margin-top:12px">Renk</p>${cc("vcol", ctx.S.bcol?.[ADMIN_UID] || "mavi")}</div>` : "";
-  return `<div>${ring}<h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
+  return `<div><h3 class="sh">Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form><h3 class="sh">Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form><h3 class="sh">Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK)</button></div>`;
 };
 
 
+function adminBlock() {
+  if (!ctx.admin) return "";
+  const UI = ctx.S.ui, bOn = (ctx.S.badges || []).includes(ADMIN_UID), rOn = UI.adminRing !== false, sOn = UI.sh !== false;
+  const btn = "display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;margin:4px 8px 0 0;border-radius:999px;background:transparent;color:var(--text);cursor:pointer";
+  const dot = (a, on, t, id = "") => `<button type="button" data-a="${a}"${id ? ` data-id="${id}"` : ""} style="${btn};border:1px solid var(--line)"><i style="width:12px;height:12px;border-radius:50%;background:${on ? "#2ecc71" : "#5b5f73"}"></i>${t}</button>`;
+  const cur = rOn ? UI.rc : (ctx.S.bcol?.[ADMIN_UID] || "mavi");
+  const pal = Object.keys(COL).map(k => `<button type="button" data-a="pal" data-v="${k}" style="${btn};border:2px solid ${cur === k ? COL[k] : "var(--line)"}"><i style="width:12px;height:12px;border-radius:50%;background:${COL[k]}"></i>${COLN[k]}</button>`).join("");
+  const wd = [[2, "İnce"], [3, "Orta"], [4, "Kalın"]].map(([v, t]) => `<button type="button" data-a="ringw" data-v="${v}" style="${btn};border:2px solid ${(UI.rw || 2) === v ? "#fff" : "var(--line)"}">${t}</button>`).join("");
+  return `<h3 class="sh">Admin görünümü</h3><div class="addf"><p class="muted">Yeşil noktası yanan özelliklere, aşağıdan seçtiğin renk uygulanır.</p>${dot("ringtog", rOn, "Halka")}${dot("vtog", bOn, "Onaylı tik", ADMIN_UID)}${dot("ringsh", sOn, "Işın efekti")}<p class="muted" style="margin-top:12px">Renk</p>${pal}<p class="muted" style="margin-top:12px">Halka kalınlığı</p>${wd}</div>`;
+}
+
 PAGES.profile = () => {
   const p = ctx.prof || {};
-  return `<div class="pcard">${avatar()}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" readonly title="Kullanıcı adı Ayarlar'dan değiştirilir">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
+  return `<div class="pcard">${avatar()}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" readonly title="Kullanıcı adı Ayarlar'dan değiştirilir">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>` + adminBlock();
 };
 
 home.addEventListener("input", e => {
@@ -1659,10 +1666,12 @@ home.addEventListener("click", async e => {
     if (d.a === "avpick") $("#avf").click();
     if (d.a === "avrm") await deleteDoc(doc(db, "profiles", ctx.uid));
     if (d.a === "vtog" && ctx.admin) { const b = ctx.S.badges || []; await setDoc(doc(db, "settings", "badges"), { uids: b.includes(d.id) ? b.filter(x => x !== d.id) : [...b, d.id] }, { merge: true }); }
-    if (ctx.admin && d.a === "ringcol") await setDoc(doc(db, "settings", "ui"), { ringColor: d.v }, { merge: true });
+    if (ctx.admin && d.a === "pal") {
+      if (ctx.S.ui.adminRing !== false) await setDoc(doc(db, "settings", "ui"), { ringColor: d.v }, { merge: true });
+      if ((ctx.S.badges || []).includes(ADMIN_UID)) await setDoc(doc(db, "settings", "badges"), { col: { [ADMIN_UID]: d.v } }, { merge: true });
+    }
     if (ctx.admin && d.a === "ringw") await setDoc(doc(db, "settings", "ui"), { ringW: +d.v }, { merge: true });
     if (ctx.admin && d.a === "ringsh") await setDoc(doc(db, "settings", "ui"), { shine: ctx.S.ui.sh === false }, { merge: true });
-    if (ctx.admin && d.a === "vcol") await setDoc(doc(db, "settings", "badges"), { col: { [ADMIN_UID]: d.v } }, { merge: true });
     if (d.a === "ringtog" && ctx.admin) await setDoc(doc(db, "settings", "ui"), { adminRing: ctx.S.ui.adminRing === false }, { merge: true });
     if (d.a === "ngo") location.hash = "#/notes";
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
