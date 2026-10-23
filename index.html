@@ -178,7 +178,8 @@ h1{font-size:26px}h2{font-size:22px}
 .fab:hover{transform:scale(1.08);box-shadow:0 14px 40px rgba(109,74,255,.55)}
 .fab .ic{width:26px;height:26px}
 .card2{cursor:pointer}
-.card2.xp{aspect-ratio:auto;gap:12px}.card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
+.card2.xp{aspect-ratio:auto;gap:12px}
+.card2 .openb{display:none}.card2.xp .openb{display:block;width:100%;min-height:42px;margin-top:4px;border:0;border-radius:12px;background:#14532d;color:#fff;font-weight:700;font-size:15px;cursor:pointer}.card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
 .card2 b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.25}
 .card2 small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:var(--muted);font:400 12px var(--font-b)}
 .acts{display:flex;gap:2px;margin:0 -6px -6px}
@@ -845,7 +846,7 @@ function hcard(h) {
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div></div>`;
+  return `<div class="card2${xp}${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
 
@@ -1239,9 +1240,10 @@ home.addEventListener("click", async e => {
   try {
     switch (d.a) {
       case "uxp": ctx.uxp = ctx.uxp === id ? null : id; render(); break;
+      case "openh": if (h) { ctx.xid = null; $$(".card2.xp").forEach(c => c.classList.remove("xp")); await openHtml(id, h); } break;
       case "open":
         if (!h) break;
-        if (ctx.xid === id) { ctx.xid = null; b.classList.remove("xp"); await openHtml(id, h); }
+        if (ctx.xid === id) { ctx.xid = null; b.classList.remove("xp"); }
         else { $$(".card2.xp").forEach(c => c.classList.remove("xp")); ctx.xid = id; b.classList.add("xp"); }
         break;
       case "like": {
@@ -1566,7 +1568,7 @@ const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCod
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
   const ph = avPh(uid), L = ph ? "" : esc((name || "?").charAt(0).toUpperCase());
-  if (uid === ADMIN_UID && ctx.S?.ui?.adminRing !== false) { const u = ctx.S.ui, hx = COL[u.rc] || COL.altin; return `<span class="${cls} avadm${u.sh === false ? " nosh" : ""}" style="--rc:${hx};--rg:${hx}8c;--rw:${u.rw || 2}px;${ph ? `background:url('${ph}') center/cover` : `background:#16161d;color:${hx}`}">${L}</span>`; }
+  if (uid === ADMIN_UID && ctx.S?.ui?.adminRing !== false) { const u = ctx.S.ui, hx = COL[u.rc] || COL.altin; return `<span class="${cls} avadm${u.sh === false ? " nosh" : ""}" style="--rc:${hx};--rg:${hx}8c;--rw:2px;${ph ? `background:url('${ph}') center/cover` : `background:#16161d;color:${hx}`}">${L}</span>`; }
   return `<span class="${cls}" style="${ph ? `background:url('${ph}') center/cover` : "background:rgba(255,255,255,.12);color:#fff"}">${L}</span>`;
 };
 function toAvatar(file) {
@@ -1631,8 +1633,7 @@ function adminBlock() {
   const dot = (a, on, t, id = "") => `<button type="button" data-a="${a}"${id ? ` data-id="${id}"` : ""} style="${btn};border:1px solid var(--line)"><i style="width:12px;height:12px;border-radius:50%;background:${on ? "#2ecc71" : "#5b5f73"}"></i>${t}</button>`;
   const cur = rOn ? UI.rc : (ctx.S.bcol?.[ADMIN_UID] || "mavi");
   const pal = Object.keys(COL).map(k => `<button type="button" data-a="pal" data-v="${k}" style="${btn};border:2px solid ${cur === k ? COL[k] : "var(--line)"}"><i style="width:12px;height:12px;border-radius:50%;background:${COL[k]}"></i>${COLN[k]}</button>`).join("");
-  const wd = [[2, "İnce"], [3, "Orta"], [4, "Kalın"]].map(([v, t]) => `<button type="button" data-a="ringw" data-v="${v}" style="${btn};border:2px solid ${(UI.rw || 2) === v ? "#fff" : "var(--line)"}">${t}</button>`).join("");
-  return `<h3 class="sh">Admin görünümü</h3><div class="addf"><p class="muted">Yeşil noktası yanan özelliklere, aşağıdan seçtiğin renk uygulanır.</p>${dot("ringtog", rOn, "Halka")}${dot("vtog", bOn, "Onaylı tik", ADMIN_UID)}${dot("ringsh", sOn, "Işın efekti")}<p class="muted" style="margin-top:12px">Renk</p>${pal}<p class="muted" style="margin-top:12px">Halka kalınlığı</p>${wd}</div>`;
+  return `<h3 class="sh">Admin görünümü</h3><div class="addf"><p class="muted">Yeşil noktası yanan özelliklere, aşağıdan seçtiğin renk uygulanır.</p>${dot("ringtog", rOn, "Halka")}${dot("vtog", bOn, "Onaylı tik", ADMIN_UID)}${dot("ringsh", sOn, "Işın efekti")}<p class="muted" style="margin-top:12px">Renk</p>${pal}</div>`;
 }
 
 PAGES.profile = () => {
@@ -1670,7 +1671,6 @@ home.addEventListener("click", async e => {
       if (ctx.S.ui.adminRing !== false) await setDoc(doc(db, "settings", "ui"), { ringColor: d.v }, { merge: true });
       if ((ctx.S.badges || []).includes(ADMIN_UID)) await setDoc(doc(db, "settings", "badges"), { col: { [ADMIN_UID]: d.v } }, { merge: true });
     }
-    if (ctx.admin && d.a === "ringw") await setDoc(doc(db, "settings", "ui"), { ringW: +d.v }, { merge: true });
     if (ctx.admin && d.a === "ringsh") await setDoc(doc(db, "settings", "ui"), { shine: ctx.S.ui.sh === false }, { merge: true });
     if (d.a === "ringtog" && ctx.admin) await setDoc(doc(db, "settings", "ui"), { adminRing: ctx.S.ui.adminRing === false }, { merge: true });
     if (d.a === "ngo") location.hash = "#/notes";
