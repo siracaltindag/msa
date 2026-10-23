@@ -521,7 +521,7 @@ select{color-scheme:dark}
   <button class="fab" id="ask" type="button" title="Admine Soru Sor" aria-label="Admine Soru Sor"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
 <div id="dlg" hidden><div class="dlgb"><p id="dlgt"></p><input id="dlgp" class="sq" type="password" placeholder="Şifren" autocomplete="current-password" hidden style="margin:0 0 16px"><div class="dlga"><button class="btn-ghost" id="dlgn" type="button">Vazgeç</button><button class="dlgy" id="dlgy" type="button">Evet</button></div></div></div>
 <div id="warn" hidden><div><h2>⛔ GÜVENLİK İHLALİ ⛔</h2><p class="wl">Yetkisiz inceleme girişimi tespit edildi.</p><p>Geliştirici araçları, Eruda gibi konsollar, yasak kısayollar ve sağ tık kullanımı bu sistemde kesinlikle yasaktır. Paylaşılan içerikler korumalıdır; içeriği incelemek, kopyalamak veya çalmaya çalışmak ihlaldir.</p><p id="warnt"></p><p><b>Bu işlem kayda alındı ve admine bildirildi. Hesabın tekrar admin onayına alındı ve oturumun kapatılıyor.</b></p><p id="warnc" class="wl"></p></div></div>
-<div id="viewer" hidden><button id="vx" type="button">Çıkış</button><iframe id="vf" sandbox="allow-scripts" title="HTML"></iframe></div>
+<div id="viewer" hidden><button id="vx" type="button">Çıkış</button><iframe id="vf" sandbox="allow-scripts allow-downloads allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox" title="HTML"></iframe></div>
 <div id="cm" hidden><div class="cmp"><div class="cmh"><b id="cmt"></b><button class="ib" data-a="cx" type="button" aria-label="Kapat">×</button></div><div id="cml"></div><form id="cmf"><p id="rep" class="muted" data-a="rcancel" hidden></p><textarea id="cmx" maxlength="500" placeholder="Yorum yaz..."></textarea><button class="btn-ghost sm" type="submit">Gönder</button></form></div></div>
 <div id="chat" hidden><div class="ch1"><b id="chn">Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
 <div id="ed" hidden>
@@ -530,7 +530,7 @@ select{color-scheme:dark}
   <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">Dosyadan yükle (.html)</button><button class="btn-ghost sm" id="edpaste" type="button">Panodan yapıştır</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edundo" type="button" title="Geri al">↶</button><button class="btn-ghost sm" id="edredo" type="button" title="Yinele">↷</button><button class="btn-ghost sm" id="edfbt" type="button">Bul/Değiştir</button></div>
   <div class="edup" id="edfb" hidden><input id="edfind" placeholder="Bul" autocomplete="off"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button class="btn-ghost sm" id="edfn" type="button">Sonraki</button><button class="btn-ghost sm" id="edfr" type="button">Değiştir</button><button class="btn-ghost sm" id="edfa" type="button">Tümü</button></div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
-  <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts" title="Önizleme"></iframe></div></div>
+  <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts allow-downloads allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox" title="Önizleme"></iframe></div></div>
 </div>
 </section>
 
@@ -1105,9 +1105,46 @@ function guard(on) {
   clearInterval(gt);
   if (on) gt = setInterval(devtools, 1500);
 }
+/* Sandbox içindeki HTML'ler için localStorage/sessionStorage köprüsü (veri üst sayfada, kullanıcı+HTML bazında saklanır) */
+const SHIMJS = '(function(){var D=__D__,post=function(m){try{parent.postMessage({ls:m},"*")}catch(e){}};' +
+  'function mk(st,persist){var A={getItem:function(k){return Object.prototype.hasOwnProperty.call(st,k)?st[k]:null},' +
+  'setItem:function(k,v){k=String(k);v=String(v);st[k]=v;if(persist)post({s:[k,v]})},' +
+  'removeItem:function(k){k=String(k);delete st[k];if(persist)post({r:k})},' +
+  'clear:function(){for(var k in st)delete st[k];if(persist)post({c:1})},' +
+  'key:function(i){var K=Object.keys(st);return i<K.length?K[i]:null}};' +
+  'return new Proxy(A,{get:function(t,p){if(p==="length")return Object.keys(st).length;if(p in t)return t[p];return typeof p==="string"&&Object.prototype.hasOwnProperty.call(st,p)?st[p]:undefined},' +
+  'set:function(t,p,v){A.setItem(p,v);return true},deleteProperty:function(t,p){A.removeItem(p);return true},' +
+  'has:function(t,p){return p in t||Object.prototype.hasOwnProperty.call(st,p)},ownKeys:function(){return Object.keys(st)},' +
+  'getOwnPropertyDescriptor:function(t,p){return Object.prototype.hasOwnProperty.call(st,p)?{value:st[p],enumerable:true,configurable:true,writable:true}:undefined}})}' +
+  'var L=mk(D,true),X=mk({},false);' +
+  'try{Object.defineProperty(window,"localStorage",{configurable:true,get:function(){return L}});Object.defineProperty(window,"sessionStorage",{configurable:true,get:function(){return X}})}catch(e){}})()';
+const withShim = (html, data = {}) => {
+  const tag = "<script>" + SHIMJS.replace("__D__", () => JSON.stringify(data).replace(/</g, "\\u003c")) + "<\/script>";
+  if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, m => m + tag);
+  if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, m => m + "<head>" + tag + "</head>");
+  return tag + html;
+};
+function lsSave(m) {
+  const k = ctx.lsKey; if (!k) return;
+  try {
+    const o = JSON.parse(localStorage.getItem(k) || "{}");
+    if (m.c) for (const x in o) delete o[x]; else if (m.r != null) delete o[m.r]; else if (Array.isArray(m.s)) o[String(m.s[0]).slice(0, 200)] = String(m.s[1]);
+    const j = JSON.stringify(o); if (j.length < 4e6) { localStorage.setItem(k, j); localStorage.setItem(k + "_d", "1"); clearTimeout(fst); fst = setTimeout(fsPush, 1500); }
+  } catch {}
+}
+let fst;
+async function fsPush() {
+  clearTimeout(fst);
+  const k = ctx.lsKey, id = ctx.lsId, uid = ctx.uid; if (!k || !id || !uid) return;
+  let o; try { o = JSON.parse(localStorage.getItem(k) || "{}"); } catch { return; }
+  if (JSON.stringify(o).length > 9e5) return;
+  try { await setDoc(doc(db, "htmlData", uid + "_" + id), { uid, htmlId: id, data: o, ts: serverTimestamp() }); localStorage.removeItem(k + "_d"); } catch {}
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden && ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); });
 addEventListener("message", e => {
   if (viewer.hidden || e.source !== frame.contentWindow) return;
   const d = e.data || {};
+  if (d.ls) return lsSave(d.ls);
   if (d.v) violate(String(d.v).slice(0, 80)); else if (d.x) violate("Sağ tık"); else if (isBad({ key: d.k, ctrlKey: d.c, metaKey: d.m, shiftKey: d.s })) violate("Kısayol: " + d.k);
 });
 async function violate(d) {
@@ -1140,7 +1177,7 @@ async function violate(d) {
     if (ok) { notify("violation", { detail: g.d }); try { localStorage.removeItem("msa_vio"); } catch {} }
   });
 }
-function exitViewer() { frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
+function exitViewer() { if (ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
 $("#vx").onclick = exitViewer;
 
 function kvkkHtml() {
@@ -1202,7 +1239,15 @@ async function openHtml(id, h) {
   }
   const b = await getDoc(doc(db, "htmlBodies", id));
   if (!b.exists()) return toast("İçerik bulunamadı.");
-  frame.srcdoc = (h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html) : b.data().html) + (ctx.admin ? "" : HOOK);
+  ctx.lsKey = "msa_ls_" + ctx.uid + "_" + id; ctx.lsId = id; let ld = {}; try { ld = JSON.parse(localStorage.getItem(ctx.lsKey) || "{}"); } catch {}
+  if (!localStorage.getItem(ctx.lsKey + "_d")) {
+    try {
+      const r = await getDoc(doc(db, "htmlData", ctx.uid + "_" + id));
+      if (r.exists()) { ld = r.data().data || {}; localStorage.setItem(ctx.lsKey, JSON.stringify(ld)); }
+      else if (Object.keys(ld).length) fsPush();
+    } catch {}
+  }
+  frame.srcdoc = withShim((h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html) : b.data().html) + (ctx.admin ? "" : HOOK), ld);
   viewer.hidden = false; document.body.style.overflow = "hidden";
   guard(true);
 }
@@ -1395,7 +1440,7 @@ function edSync() {
   edpre.innerHTML = (v.length > 120000 ? esc(v) : hl(v)) + "\n";
   edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
   clearTimeout(edT);
-  edT = setTimeout(() => edf.srcdoc = v, 300);
+  edT = setTimeout(() => edf.srcdoc = withShim(v), 300);
   try { clearTimeout(ht); ht = setTimeout(hpush, 500); } catch {}
 }
 edh.addEventListener("input", edSync);
@@ -1503,7 +1548,7 @@ async function openEditor(h) {
   $("#edel").hidden = isNew;
   ctx.ed = { id: h.id, h, code, isNew, fs: FRS.includes(h.fs) ? h.fs : "", fc: PAL.includes(h.fc) ? h.fc : PAL[0] };
   $("#edfs").value = ctx.ed.fs;
-  edh.value = code; edPal(); edSync(); edf.srcdoc = code; hreset();
+  edh.value = code; edPal(); edSync(); edf.srcdoc = withShim(code); hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
   edb.hidden = false; document.body.style.overflow = "hidden";
