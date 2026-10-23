@@ -309,6 +309,7 @@ body.vw *,body.vw *::before,body.vw *::after,body.vw::after{animation-play-state
 #warn{background:#9b0000;animation:wpulse 1s infinite alternate}@keyframes wpulse{from{background:#7a0000}to{background:#d10000}}
 #warn h2{margin:0 0 16px;color:#fff;font-size:clamp(34px,10vw,56px);line-height:1.1;letter-spacing:1px;text-shadow:0 0 18px #000}#warn .wl{font-size:20px;font-weight:800}
 #warn p{max-width:420px;margin:8px auto;color:#fff}
+#warnok{margin-top:16px;min-height:50px;padding:0 40px;border:0;border-radius:999px;background:#fff;color:#9b0000;font-weight:800;font-size:17px;cursor:pointer}
 .chh{display:flex;align-items:center;gap:8px}
 .mgx{margin-left:8px;padding:0;border:0;background:none;color:inherit;opacity:.6;cursor:pointer}
 .logo{height:64px}
@@ -537,7 +538,7 @@ select{color-scheme:dark}
 
 <div id="kvkkm" hidden><div class="kvb"><div class="kvh"><b>Aydınlatma Metni (KVKK)</b><button type="button" class="ib" id="kvx" aria-label="Kapat">✕</button></div><div id="kvt"></div></div></div>
 
-<div id="warn" hidden><div><h2>⛔ GÜVENLİK İHLALİ ⛔</h2><p class="wl">Yetkisiz inceleme girişimi tespit edildi.</p><p>Geliştirici araçları, Eruda gibi konsollar, yasak kısayollar ve sağ tık kullanımı bu sistemde kesinlikle yasaktır. Paylaşılan içerikler korumalıdır; içeriği incelemek, kopyalamak veya çalmaya çalışmak ihlaldir.</p><p id="warnt"></p><p><b>Bu işlem kayda alındı ve admine bildirildi. Hesabın tekrar admin onayına alındı ve oturumun kapatılıyor.</b></p><p id="warnc" class="wl"></p></div></div>
+<div id="warn" hidden><div><h2>⛔ GÜVENLİK İHLALİ ⛔</h2><p class="wl">Yetkisiz inceleme girişimi tespit edildi.</p><p>Geliştirici araçları, Eruda gibi konsollar, yasak kısayollar ve sağ tık kullanımı bu sistemde kesinlikle yasaktır. Paylaşılan içerikler korumalıdır; içeriği incelemek, kopyalamak veya çalmaya çalışmak ihlaldir.</p><p id="warnt"></p><p><b>Bu işlem kayda alındı ve admine bildirildi. Hesabın tekrar admin onayına alındı ve oturumun kapatılıyor.</b></p><p id="warnc" class="wl"></p><button id="warnok" type="button" hidden>Anladım</button></div></div>
 
 <script type="module">
 const firebaseConfig = {
@@ -1164,14 +1165,16 @@ async function violate(d) {
   ]);
   if (ok) try { localStorage.removeItem("msa_vio"); } catch {}
   await logout();
-  for (let i = 10; i > 0; i--) { $("#warnc").textContent = "Oturum kapatıldı. Bu ekran " + i + " saniye sonra kapanacak..."; await sleep(1000); }
-  $("#warn").hidden = true;
+  $("#warnc").textContent = "Oturum kapatıldı.";
+  $("#warnok").hidden = false;
+  await new Promise(r => { $("#warnok").onclick = r; });
+  $("#warnok").hidden = true; $("#warn").hidden = true;
   vio = false;
 }
 /* Yazılamayan ihlal cihazda kalır: sayfa yenilense/çevrimdışı olsa da hesap girişte onaya alınır */
 {
   let f = null; try { f = JSON.parse(localStorage.getItem("msa_vio")); } catch {}
-  if (f) { $("#warnt").textContent = "Tespit edilen: " + f.d; $("#warnc").textContent = ""; $("#warn").hidden = false; setTimeout(() => { if (!vio) $("#warn").hidden = true; }, 10000); }
+  if (f) { $("#warnt").textContent = "Tespit edilen: " + f.d; $("#warnc").textContent = "Bu cihazda güvenlik ihlali kaydedildi."; $("#warn").hidden = false; $("#warnok").hidden = false; $("#warnok").onclick = () => { $("#warnok").hidden = true; $("#warn").hidden = true; }; }
   onAuthStateChanged(auth, async u => {
     let g = null; try { g = JSON.parse(localStorage.getItem("msa_vio")); } catch {}
     if (!u || !g || g.uid !== u.uid) return;
