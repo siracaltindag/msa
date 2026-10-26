@@ -178,8 +178,9 @@ h1{font-size:26px}h2{font-size:22px}
 .fab:hover{transform:scale(1.08);box-shadow:0 14px 40px rgba(109,74,255,.55)}
 .fab .ic{width:26px;height:26px}
 .card2{cursor:pointer}
-.card2.xp{aspect-ratio:auto;gap:12px}
-.card2 .openb{display:none}.card2.xp .openb{display:block;width:100%;min-height:42px;margin-top:4px;border:0;border-radius:12px;background:#14532d;color:#fff;font-weight:700;font-size:15px;cursor:pointer}.card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
+.card2.xp{--xc:#14532d;aspect-ratio:auto;gap:12px;background:#14141d!important;border:1px solid var(--xc)!important;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+.xph{aspect-ratio:1;visibility:hidden}
+.card2 .openb{display:none}.card2.xp .openb{display:block;width:100%;min-height:42px;margin-top:4px;border:0;border-radius:12px;background:var(--xc,#14532d);color:#fff;font-weight:700;font-size:15px;cursor:pointer}.card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
 .card2 b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.25}
 .card2 small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:var(--muted);font:400 12px var(--font-b)}
 .acts{display:flex;gap:2px;margin:0 -6px -6px}
@@ -245,6 +246,7 @@ body.vw *,body.vw *::before,body.vw *::after,body.vw::after{animation-play-state
 .bs-dashed{border:2px dashed var(--cc)}
 .bs-double{border:5px double var(--cc)}
 .beam.cc{--b1:var(--cc);--b2:var(--cc);--g:color-mix(in srgb,var(--cc) 55%,transparent)}
+html.edo::after{content:"";position:fixed;inset:0;background:#0a0a11;z-index:69}
 #ed{--fs:13px;--lh:20px;position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:#0a0a11}
 .edtop{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--line)}
 .edtop input{flex:1;min-width:140px;height:40px;padding:0 16px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
@@ -265,7 +267,23 @@ body.vw *,body.vw *::before,body.vw *::after,body.vw::after{animation-play-state
 #edn{flex:none;width:46px;padding:12px 8px;overflow:hidden;border-right:1px solid var(--line);color:#5b5f73;text-align:right;white-space:pre;user-select:none}
 #edpre,#edh{position:absolute;inset:0;margin:0;padding:12px;border:0;white-space:pre;word-wrap:normal;tab-size:2;overflow:auto;scrollbar-width:none}
 #edh::-webkit-scrollbar{display:none}
-#edundo,#edredo{font-weight:900;font-size:20px;min-width:44px}#edfb[hidden]{display:none}#edfb{flex-wrap:wrap}#edfb input{flex:1;min-width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
+#eds{background:#1f9d55;border-color:#1f9d55;color:#fff;font-weight:700}#edx{background:#d6293e;border-color:#d6293e;color:#fff;font-weight:700}
+#edfile{background:#2a7fff;border-color:#2a7fff;color:#fff;font-weight:700}#edpaste{background:#6d4aff;border-color:#6d4aff;color:#fff;font-weight:700}#edfbt{background:#d4af37;border-color:#d4af37;color:#241a00;font-weight:700}
+#edfn{background:#2a7fff;border-color:#2a7fff;color:#fff}#edfr{background:#1f9d55;border-color:#1f9d55;color:#fff}#edfa{background:#d4af37;border-color:#d4af37;color:#241a00}#edfn,#edfr,#edfa{font-weight:700}
+.edhead{overflow:hidden;max-height:420px;transition:max-height .25s var(--ease)}#ed.hc .edhead{max-height:0;border:0}
+.edhb{display:none;justify-content:flex-end;padding:2px 10px;border-bottom:1px solid var(--line)}#ed.hc .edhb{display:flex}#edhd{height:26px;padding:0 12px;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:var(--text);font:600 12px var(--font-b);cursor:pointer}
+#edfb{padding:6px 10px 4px;border-bottom:1px solid var(--line);background:#0a0a11}
+#edfb .fr{display:flex;gap:6px;margin-bottom:6px}
+#edfb input{flex:1;min-width:0;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font:16px var(--font-b);outline:0}
+#edfb button{height:36px;min-width:40px;padding:0 12px;border:0;border-radius:999px;color:#fff;font-weight:700;cursor:pointer}
+#edfp,#edfn{background:#2a7fff}#edfx{background:#d6293e}#edfa{color:#241a00!important}
+#edfi{font:600 13px var(--font-b);color:var(--gold-light);min-height:16px;padding:0 4px 2px}
+#edmk{font:var(--fs)/var(--lh) ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:0;position:absolute;inset:0;margin:0;padding:12px;border:0;white-space:pre;word-wrap:normal;tab-size:2;overflow:hidden;color:transparent;pointer-events:none}
+#edmk mark{color:transparent;background:rgba(217,119,6,.38);border-radius:3px}#edmk mark.mc{background:#d97706;box-shadow:0 0 0 2px #d97706}#edmk .cl{background:rgba(109,74,255,.26)}
+#edn .cln{color:#ffc400;font-weight:800}
+#edur{position:fixed;right:10px;top:calc(var(--vt,0px) + 6px);z-index:72;display:flex;gap:6px}#edur button{width:40px;height:32px;padding:0;border-radius:999px;font-size:18px;font-weight:800;line-height:1;background:#0f766e;border:1px solid #0f766e;color:#fff;cursor:pointer}
+.edtabs{padding-right:100px}
+html.edo *,html.edo *::before,html.edo *::after,html.edo::after,html.edo::before{animation-play-state:paused!important}
 #edpre{overflow:hidden;color:#cfd3e6;pointer-events:none}
 #edh{resize:none;outline:0;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}
 #edh,#edn{touch-action:pan-x pan-y}
@@ -527,12 +545,20 @@ select{color-scheme:dark}
 <div id="cm" hidden><div class="cmp"><div class="cmh"><b id="cmt"></b><button class="ib" data-a="cx" type="button" aria-label="Kapat">×</button></div><div id="cml"></div><form id="cmf"><p id="rep" class="muted" data-a="rcancel" hidden></p><textarea id="cmx" maxlength="500" placeholder="Yorum yaz..."></textarea><button class="btn-ghost sm" type="submit">Gönder</button></form></div></div>
 <div id="chat" hidden><div class="ch1"><b id="chn">Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
 <div id="ed" hidden>
+  <div class="edhead">
   <div class="edtop"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
   <div class="edst"><span class="muted">Çerçeve</span><div id="edpal"></div><select id="edfs"><option value="">Yok</option><option value="beam">Dönen ışın</option><option value="neon">Neon nabız</option><option value="rainbow">Gökkuşağı</option></select></div>
-  <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">Dosyadan yükle (.html)</button><button class="btn-ghost sm" id="edpaste" type="button">Panodan yapıştır</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edundo" type="button" title="Geri al">↶</button><button class="btn-ghost sm" id="edredo" type="button" title="Yinele">↷</button><button class="btn-ghost sm" id="edfbt" type="button">Bul/Değiştir</button></div>
-  <div class="edup" id="edfb" hidden><input id="edfind" placeholder="Bul" autocomplete="off"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button class="btn-ghost sm" id="edfn" type="button">Sonraki</button><button class="btn-ghost sm" id="edfr" type="button">Değiştir</button><button class="btn-ghost sm" id="edfa" type="button">Tümü</button></div>
+  <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">🗂️ Yükle</button><button class="btn-ghost sm" id="edpaste" type="button">🗒️ Panodan</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edfbt" type="button">🔎 Bul</button></div>
+  </div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
-  <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts allow-downloads allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox" title="Önizleme"></iframe></div></div>
+  <div class="edhb"><button id="edhd" type="button">☰ Araçlar</button></div>
+  <div id="edfb" hidden>
+    <div class="fr"><input id="edfind" placeholder="Bul" autocomplete="off" enterkeyhint="search"><button id="edfp" type="button" aria-label="Önceki">▲</button><button id="edfn" type="button" aria-label="Sonraki">▼</button><button id="edfx" type="button" aria-label="Kapat">✕</button></div>
+    <div class="fr"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button id="edfr" type="button">Değiştir</button><button id="edfa" type="button">Tümü</button></div>
+    <div id="edfi"></div>
+  </div>
+  <div class="edb"><div class="edc"><div id="edn"></div><div class="edw"><pre id="edmk" aria-hidden="true"></pre><pre id="edpre" aria-hidden="true"></pre><textarea id="edh" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea></div></div><div class="edprev"><iframe id="edf" sandbox="allow-scripts allow-downloads allow-modals allow-forms allow-popups allow-popups-to-escape-sandbox" title="Önizleme"></iframe></div></div>
+  <div id="edur"><button type="button" id="edundo" title="Geri al" aria-label="Geri al">↶</button><button type="button" id="edredo" title="Yinele" aria-label="Yinele">↷</button></div>
 </div>
 </section>
 
@@ -978,9 +1004,40 @@ function render() {
     if (on) { const l = on.offsetLeft, r = l + on.offsetWidth; if (l < t.scrollLeft) t.scrollLeft = l - 8; else if (r > t.scrollLeft + t.clientWidth) t.scrollLeft = r - t.clientWidth + 8; }
   }
   $("#adl")?.scrollTo(0, 1e9);
+  xpRestore();
+}
+/* Kart genişletme: kart yerinde bir boşluk (xph) bırakıp diğer kartların üstüne biner, arkası bulanır */
+function xpOff() {
+  $$(".xph,.xbk").forEach(n => n.remove());
+  $$(".card2.xp").forEach(c => { c.classList.remove("xp"); ["position", "left", "top", "width", "height", "zIndex", "transition", "overflow"].forEach(k => c.style[k] = ""); });
+  ctx.xid = null;
+}
+function xpOn(c) {
+  const g = c.parentElement, gr = g.getBoundingClientRect(), r = c.getBoundingClientRect(), cs = getComputedStyle(g);
+  if (cs.position === "static") g.style.position = "relative";
+  const pl = parseFloat(cs.paddingLeft) || 0, W = g.clientWidth - pl - (parseFloat(cs.paddingRight) || 0);
+  const L = r.left - gr.left - (parseFloat(cs.borderLeftWidth) || 0), T = r.top - gr.top - (parseFloat(cs.borderTopWidth) || 0);
+  const ph = document.createElement("div"); ph.className = "xph"; c.before(ph);
+  const set = (el, l, t, w, h, m = 0) => Object.assign(el.style, { left: (l - m) + "px", top: (t - m) + "px", width: (w + 2 * m) + "px", height: (h + 2 * m) + "px" });
+  c.classList.add("xp");
+  Object.assign(c.style, { position: "absolute", zIndex: "30", transition: "none", overflow: "hidden" });
+  set(c, pl, T, W, 0); c.style.height = "auto"; const H = c.offsetHeight;
+  set(c, L, T, r.width, r.height);
+  void c.offsetWidth;
+  const tr = "left .3s var(--ease),top .3s var(--ease),width .3s var(--ease),height .3s var(--ease)";
+  c.style.transition = tr;
+  set(c, pl, T, W, H);
+  ctx.xid = c.dataset.id;
+  setTimeout(() => { if (c.classList.contains("xp")) { c.style.transition = "none"; c.style.height = "auto"; c.style.overflow = ""; } }, 340);
+}
+function xpRestore() {
+  if (!ctx.xid) return;
+  const c = $(`.card2[data-id="${ctx.xid}"]`);
+  if (!c) { ctx.xid = null; return; }
+  c.classList.remove("xp"); xpOn(c);
 }
 const rf = () => {
-  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); return; }
+  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); xpRestore(); return; }
   if (ctx.r === "notes" && $("#nl")) { $("#nl").innerHTML = notesList(); return; }
   if (["favs", "mine", "admin"].includes(ctx.r)) render();
 };
@@ -1279,7 +1336,7 @@ document.addEventListener("click", e => {
   if (!ctx.xid) return;
   const c = e.target.closest(".card2");
   if (c && c.dataset.id === ctx.xid) return;
-  ctx.xid = null; $$(".card2.xp").forEach(x => x.classList.remove("xp"));
+  xpOff();
 });
 home.addEventListener("click", async e => {
   const b = e.target.closest("[data-a],[data-t],[data-at]");
@@ -1291,11 +1348,10 @@ home.addEventListener("click", async e => {
   try {
     switch (d.a) {
       case "uxp": ctx.uxp = ctx.uxp === id ? null : id; render(); break;
-      case "openh": if (h) { ctx.xid = null; $$(".card2.xp").forEach(c => c.classList.remove("xp")); await openHtml(id, h); } break;
+      case "openh": if (h) { xpOff(); await openHtml(id, h); } break;
       case "open":
         if (!h) break;
-        if (ctx.xid === id) { ctx.xid = null; b.classList.remove("xp"); }
-        else { $$(".card2.xp").forEach(c => c.classList.remove("xp")); ctx.xid = id; b.classList.add("xp"); }
+        if (ctx.xid === id) xpOff(); else { xpOff(); xpOn(b); }
         break;
       case "like": {
         if (spam("l" + id, 1500)) break;
@@ -1447,6 +1503,7 @@ function edSync() {
   edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
   clearTimeout(edT);
   edT = setTimeout(() => edf.srcdoc = withShim(v), 300);
+  if (typeof edFind === "function" && !$("#edfb").hidden) edFind(true);
   try { clearTimeout(ht); ht = setTimeout(hpush, 500); } catch {}
 }
 edh.addEventListener("input", edSync);
@@ -1505,24 +1562,73 @@ $("#edundo").onclick = () => hgo(-1); $("#edredo").onclick = () => hgo(1);
 edh.addEventListener("keydown", e => {
   if ((e.ctrlKey || e.metaKey) && !e.altKey) { const k = e.key.toLowerCase(); if (k === "z") { e.preventDefault(); hgo(e.shiftKey ? 1 : -1); } else if (k === "y") { e.preventDefault(); hgo(1); } }
 });
-$("#edfbt").onclick = () => { const b = $("#edfb"); b.hidden = !b.hidden; if (!b.hidden) $("#edfind").focus(); };
-const edNext = () => {
-  const f = $("#edfind").value; if (!f) return false;
-  const v = edh.value; let i = v.indexOf(f, edh.selectionEnd); if (i < 0) i = v.indexOf(f); if (i < 0) { toast("Bulunamadı."); return false; }
-  edh.focus(); edh.setSelectionRange(i, i + f.length);
-  edh.scrollTop = Math.max(0, (v.slice(0, i).split("\n").length - 3) * (parseFloat(getComputedStyle(edh).lineHeight) || 18)); return true;
-};
-$("#edfn").onclick = edNext;
+const vvFit = () => { const vv = window.visualViewport; if (vv && !edb.hidden) edb.style.setProperty("--vt", vv.offsetTop + "px"); };
+if (window.visualViewport) { visualViewport.addEventListener("resize", vvFit); visualViewport.addEventListener("scroll", vvFit); }
+/* Bul: eşleşmeleri renklendirir, satır numarasını gösterir, oraya kaydırır */
+const edmk = $("#edmk");
+let fm = [], fi = 0;
+const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function edFind(keep) {
+  const bar = !$("#edfb").hidden, f = $("#edfind").value, v = edh.value;
+  fm = [];
+  if (bar && f) { const re = new RegExp(escRe(f), "gi"); let m; while ((m = re.exec(v)) && fm.length < 5000) { fm.push(m.index); if (!m[0].length) re.lastIndex++; } }
+  if (!keep) fi = 0;
+  fi = Math.max(0, Math.min(fi, fm.length - 1));
+  edMark();
+}
+function edMark() {
+  const bar = !$("#edfb").hidden, f = $("#edfind").value, v = edh.value;
+  if (!bar || !f || !fm.length) {
+    edmk.innerHTML = ""; $("#edfi").textContent = bar && f ? "Bulunamadı" : "";
+    if (edn.querySelector("b")) edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
+    return;
+  }
+  const cur = fm[fi], L = f.length, ls = v.lastIndexOf("\n", cur - 1) + 1;
+  let le = v.indexOf("\n", cur); if (le < 0) le = v.length;
+  const seg = (a, b) => { let o = "", q = a; for (const i of fm) { if (i + L <= a) continue; if (i >= b) break; o += esc(v.slice(q, i)) + `<mark class="${i === cur ? "mc" : ""}">` + esc(v.slice(i, i + L)) + "</mark>"; q = i + L; } return o + esc(v.slice(q, b)); };
+  edmk.innerHTML = seg(0, ls) + '<span class="cl">' + seg(ls, le) + "</span>" + seg(le, v.length) + "\n";
+  const line = v.slice(0, cur).split("\n").length;
+  $("#edfi").textContent = (fi + 1) + "/" + fm.length + " · Satır " + line + " · Sütun " + (cur - ls + 1);
+  edn.innerHTML = Array.from({ length: v.split("\n").length }, (_, i) => i + 1 === line ? '<b class="cln">' + (i + 1) + "</b>" : i + 1).join("\n");
+  edmk.scrollTop = edh.scrollTop; edmk.scrollLeft = edh.scrollLeft; edn.scrollTop = edh.scrollTop;
+}
+function edGo() {
+  if (!fm.length) return;
+  const v = edh.value, cur = fm[fi], ls = v.lastIndexOf("\n", cur - 1) + 1, line = v.slice(0, cur).split("\n").length;
+  const cs = getComputedStyle(edh), lh = parseFloat(cs.lineHeight) || 20;
+  const cx = document.createElement("canvas").getContext("2d"); cx.font = cs.fontSize + " " + cs.fontFamily;
+  const x = (cur - ls) * cx.measureText("0").width;
+  edh.scrollTop = Math.max(0, (line - 1) * lh - edh.clientHeight * 0.2);
+  if (x < edh.scrollLeft || x > edh.scrollLeft + edh.clientWidth - 80) edh.scrollLeft = Math.max(0, x - edh.clientWidth / 3);
+}
+const edStep = d => { if (!fm.length) return; fi = (fi + d + fm.length) % fm.length; edMark(); edGo(); };
+$("#edfbt").onclick = () => { const b = $("#edfb"); b.hidden = !b.hidden; if (!b.hidden) { hHead(true); $("#edfind").focus(); } edFind(); edGo(); };
+$("#edfx").onclick = () => { $("#edfb").hidden = true; edFind(); };
+$("#edfind").addEventListener("input", () => { edFind(); edGo(); });
+$("#edfind").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); edStep(e.shiftKey ? -1 : 1); } });
+$("#edfn").onclick = () => edStep(1); $("#edfp").onclick = () => edStep(-1);
 $("#edfr").onclick = () => {
-  const f = $("#edfind").value; if (!f) return;
-  if (edh.value.slice(edh.selectionStart, edh.selectionEnd) === f) { hpush(); edh.setRangeText($("#edrep").value, edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
-  edNext();
+  if (!fm.length) return;
+  hpush(); const i = fm[fi], f = $("#edfind").value;
+  edh.value = edh.value.slice(0, i) + $("#edrep").value + edh.value.slice(i + f.length); edSync(); edGo();
 };
 $("#edfa").onclick = () => {
-  const f = $("#edfind").value; if (!f) return; const n = edh.value.split(f).length - 1; if (!n) return toast("Bulunamadı.");
-  hpush(); edh.value = edh.value.split(f).join($("#edrep").value); edSync(); toast(n + " yer değiştirildi.");
+  const f = $("#edfind").value; if (!f || !fm.length) return toast("Bulunamadı.");
+  const n = fm.length; hpush(); edh.value = edh.value.replace(new RegExp(escRe(f), "gi"), () => $("#edrep").value); edSync(); toast(n + " yer değiştirildi.");
 };
-edh.addEventListener("scroll", () => { edpre.scrollTop = edn.scrollTop = edh.scrollTop; edpre.scrollLeft = edh.scrollLeft; });
+/* Kod yazarken üst araçlar daralır, yukarı kaydırınca ya da ☰ ile açılır */
+let hLock = 0, hLast = 0, tch = 0;
+["touchstart", "touchmove", "wheel"].forEach(ev => edh.addEventListener(ev, () => { tch = Date.now() + 1200; }, { passive: true }));
+const hHead = on => { edb.classList.toggle("hc", on); hLock = Date.now() + 350; };
+edh.addEventListener("focus", () => hHead(true));
+edh.addEventListener("scroll", () => {
+  if (Date.now() < hLock || Date.now() > tch) { hLast = edh.scrollTop; return; }
+  const t = edh.scrollTop;
+  if (t <= 4 || t < hLast - 6) { if (edb.classList.contains("hc")) hHead(false); } else if (t > hLast + 6 && !edb.classList.contains("hc")) hHead(true);
+  hLast = t;
+});
+$("#edhd").onclick = () => hHead(false);
+edh.addEventListener("scroll", () => { edpre.scrollTop = edmk.scrollTop = edn.scrollTop = edh.scrollTop; edpre.scrollLeft = edmk.scrollLeft = edh.scrollLeft; });
 edh.addEventListener("keydown", e => {
   if (e.key === "Tab") { e.preventDefault(); edh.setRangeText("  ", edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
 });
@@ -1557,9 +1663,9 @@ async function openEditor(h) {
   edh.value = code; edPal(); edSync(); edf.srcdoc = withShim(code); hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
-  edb.hidden = false; document.body.style.overflow = "hidden";
+  edb.hidden = false; document.body.style.overflow = "hidden"; document.documentElement.classList.add("edo"); vvFit();
 }
-function closeEditor() { edb.hidden = true; edf.srcdoc = ""; document.body.style.overflow = ""; }
+function closeEditor() { document.documentElement.classList.remove("edo"); edb.classList.remove("hc"); $("#edfb").hidden = true; edb.hidden = true; edf.srcdoc = ""; document.body.style.overflow = ""; }
 $("#edx").onclick = closeEditor;
 
 $("#eds").onclick = async () => {
