@@ -30,7 +30,7 @@ body::after{content:"";position:fixed;inset:-50%;z-index:-1;pointer-events:none;
 #splash{position:fixed;inset:0;z-index:40;display:grid;place-items:center;transition:opacity .5s}
 #splash.off{opacity:0;pointer-events:none}
 #splash img{height:48px;width:auto;animation:zoomg 2s ease-in-out infinite}
-@keyframes zoomg{0%,100%{transform:scale(.85);opacity:.5;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}50%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}52%{transform:scale(1.15) translate(-3px,1px) skewX(-6deg);opacity:1;filter:blur(0) drop-shadow(-3px 0 #b9a4ff) drop-shadow(3px 0 #00e5ff)}54%{transform:scale(1.15) translate(3px,-1px) skewX(5deg);opacity:1;filter:blur(0) drop-shadow(3px 0 #b9a4ff) drop-shadow(-3px 0 #00e5ff)}56%{transform:scale(1.15) translate(-2px,0));opacity:1;filter:blur(0) drop-shadow(-2px 0 #b9a4ff) drop-shadow(2px 0 #00e5ff)}58%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}}
+@keyframes zoomg{0%,100%{transform:scale(.85);opacity:.5;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}50%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}52%{transform:scale(1.15) translate(-3px,1px) skewX(-6deg);opacity:1;filter:blur(0) drop-shadow(-3px 0 #b9a4ff) drop-shadow(3px 0 #00e5ff)}54%{transform:scale(1.15) translate(3px,-1px) skewX(5deg);opacity:1;filter:blur(0) drop-shadow(3px 0 #b9a4ff) drop-shadow(-3px 0 #00e5ff)}56%{transform:scale(1.15) translate(-2px,0);opacity:1;filter:blur(0) drop-shadow(-2px 0 #b9a4ff) drop-shadow(2px 0 #00e5ff)}58%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}}
 @media (prefers-reduced-motion:reduce){#splash img{animation:none}}
 @keyframes breathe{50%{opacity:.35;transform:scale(.94)}}
 
@@ -95,15 +95,17 @@ h1{font-size:26px}h2{font-size:22px}
 .link:hover{color:#fff}
 
 .btn-wrap{position:relative;margin-top:10px;--spin:3s}
-.btn-wrap::before{content:"";position:absolute;inset:-2px;border-radius:999px;background:conic-gradient(from var(--angle),transparent 0 50%,#fff 72%,#b9a4ff 86%,var(--blue) 100%);filter:blur(16px);opacity:.5;animation:spin var(--spin) linear infinite;transition:opacity .4s}
+.btn-wrap::before{content:"";position:absolute;inset:-2px;border-radius:999px;background:conic-gradient(from var(--angle),transparent 0 50%,#6d4aff 66%,#fff 78%,#b9a4ff 88%,var(--blue) 100%);filter:blur(16px);opacity:.5;animation:spin var(--spin) linear infinite;transition:opacity .4s}
 .btn-wrap:hover::before{opacity:.95}
+.btn-wrap.loading::before{opacity:.95;filter:blur(18px) saturate(1.4)}
+.btn-wrap.loading .btn::before{filter:drop-shadow(0 0 8px rgba(109,74,255,.95))}
 .btn-wrap.fast{--spin:.3s}
 .btn{position:relative;display:block;width:100%;height:54px;border:0;border-radius:999px;background:transparent;color:#000;font:600 16px var(--font-h);cursor:pointer;isolation:isolate}
-.btn::before{content:"";position:absolute;inset:-3px;border-radius:999px;z-index:-2;background:conic-gradient(from var(--angle),transparent 0 50%,#fff 72%,#b9a4ff 86%,var(--blue) 100%);animation:spin var(--spin) linear infinite}
+.btn::before{content:"";position:absolute;inset:-3px;border-radius:999px;z-index:-2;background:conic-gradient(from var(--angle),transparent 0 50%,#6d4aff 66%,#fff 78%,#b9a4ff 88%,var(--blue) 100%);animation:spin var(--spin) linear infinite}
 .btn::after{content:"";position:absolute;inset:0;border-radius:999px;z-index:-1;background:#fff}
-.btn-wrap.flash .btn::after{animation:flash .5s ease-out}
+.btn-wrap.flash .btn::after{animation:none}
 @keyframes spin{to{--angle:360deg}}
-@keyframes flash{0%{box-shadow:0 0 0 0 #fff}30%{box-shadow:0 0 40px 14px rgba(255,255,255,.95)}100%{box-shadow:0 0 0 0 #fff}}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(109,74,255,0)}30%{box-shadow:0 0 36px 12px rgba(109,74,255,.9),0 0 64px 22px rgba(42,127,255,.5)}100%{box-shadow:0 0 0 0 rgba(109,74,255,0)}}
 .lbl{transition:opacity .2s}
 .spin{position:absolute;inset:0;width:20px;height:20px;margin:auto;border:2px solid rgba(0,0,0,.15);border-top-color:#000;border-radius:50%;opacity:0;animation:rot .7s linear infinite}
 .loading .spin{opacity:1}
@@ -271,7 +273,9 @@ html.edo::after{content:"";position:fixed;inset:0;background:#0a0a11;z-index:69}
 #edfile{background:#2a7fff;border-color:#2a7fff;color:#fff;font-weight:700}#edpaste{background:#6d4aff;border-color:#6d4aff;color:#fff;font-weight:700}#edfbt{background:#d4af37;border-color:#d4af37;color:#241a00;font-weight:700}
 #edfn{background:#2a7fff;border-color:#2a7fff;color:#fff}#edfr{background:#1f9d55;border-color:#1f9d55;color:#fff}#edfa{background:#d4af37;border-color:#d4af37;color:#241a00}#edfn,#edfr,#edfa{font-weight:700}
 .edhead{overflow:hidden;max-height:420px;transition:max-height .25s var(--ease)}#ed.hc .edhead{max-height:0;border:0}
-.edhb{display:none;justify-content:flex-end;padding:2px 10px;border-bottom:1px solid var(--line)}#ed.hc .edhb{display:flex}#edhd{height:26px;padding:0 12px;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:var(--text);font:600 12px var(--font-b);cursor:pointer}
+.edhb{display:flex;justify-content:center;padding:0;border-bottom:1px solid var(--line)}#edhd{width:56px;height:20px;border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}#edhd::before{content:"";width:8px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(2px) rotate(-135deg);transition:transform .25s}#ed.hc #edhd::before{transform:translateY(-2px) rotate(45deg)}
+.edup .btn-ghost{height:28px!important;padding:0 10px!important;font-size:12px!important}.edup{gap:6px;padding:6px 10px}
+#edur button.off{background:#3a3f4b;border-color:#3a3f4b;color:#7d8494;opacity:.6;cursor:default}
 #edfb{padding:6px 10px 4px;border-bottom:1px solid var(--line);background:#0a0a11}
 #edfb .fr{display:flex;gap:6px;margin-bottom:6px}
 #edfb input{flex:1;min-width:0;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font:16px var(--font-b);outline:0}
@@ -283,6 +287,7 @@ html.edo::after{content:"";position:fixed;inset:0;background:#0a0a11;z-index:69}
 #edn .cln{color:#ffc400;font-weight:800}
 #edur{position:fixed;right:10px;top:calc(var(--vt,0px) + 6px);z-index:72;display:flex;gap:6px}#edur button{width:40px;height:32px;padding:0;border-radius:999px;font-size:18px;font-weight:800;line-height:1;background:#0f766e;border:1px solid #0f766e;color:#fff;cursor:pointer}
 .edtabs{padding-right:100px}
+html.edo #dlg,html.edo #dlg *{animation:none!important}
 html.edo *,html.edo *::before,html.edo *::after,html.edo::after,html.edo::before{animation-play-state:paused!important}
 #edpre{overflow:hidden;color:#cfd3e6;pointer-events:none}
 #edh{resize:none;outline:0;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff}
@@ -405,9 +410,51 @@ select{color-scheme:dark}
 .card2.fr-rainbow::before{background:conic-gradient(from var(--angle),#ff5c8a,#ffb020,#22d3a6,#2a7fff,#a855f7,#ff5c8a);animation-duration:4s}
 .card2.fr-neon{border-color:var(--cc,#6d4aff);animation:nbp 1.8s ease-in-out infinite alternate}
 @keyframes nbp{from{box-shadow:0 0 4px var(--cc),inset 0 0 4px var(--cc)}to{box-shadow:0 0 20px var(--cc),inset 0 0 12px var(--cc)}}
-.kvl{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;line-height:1.45;cursor:pointer}
-.kvl input{all:revert;flex:none;width:18px;height:18px;margin:0;accent-color:#6d4aff}
-.kvl .link{display:inline;padding:0;color:#b9a4ff;text-decoration:underline}
+.card2.fr-aurora::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;background:linear-gradient(120deg,var(--cc,#6d4aff) 0%,#fff 25%,var(--cc,#6d4aff) 50%,rgba(255,255,255,.25) 75%,var(--cc,#6d4aff) 100%) 0 0/200% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:aur 5s linear infinite}
+.card2.fr-aurora::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:0 0 24px -2px var(--cc,#6d4aff);opacity:.15;animation:aurg 3.5s ease-in-out infinite alternate}
+@keyframes aur{to{background-position:200% 0}}
+@keyframes aurg{to{opacity:.6}}
+.card2.fr-spark::before,.card2.fr-spark::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:drop-shadow(0 0 3px var(--cc,#6d4aff))}
+.card2.fr-spark::before{background:repeating-conic-gradient(from var(--angle),#fff 0 2deg,var(--cc,#6d4aff) 2deg 6deg,transparent 6deg 38deg);animation:spin 7s linear infinite,twk 1.6s ease-in-out infinite alternate}
+.card2.fr-spark::after{background:repeating-conic-gradient(from var(--angle),#fff 0 1.5deg,transparent 1.5deg 23deg);animation:spin 4.5s linear infinite reverse,twk 1.1s ease-in-out infinite alternate-reverse}
+@keyframes twk{from{opacity:.35}to{opacity:1}}
+.card2.fr-wave{border-color:var(--cc,#6d4aff)}
+.card2.fr-wave::before,.card2.fr-wave::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:wv 2.6s ease-out infinite}
+.card2.fr-wave::after{animation-delay:1.3s}
+@keyframes wv{0%{box-shadow:0 0 0 0 var(--cc,#6d4aff);opacity:.75}100%{box-shadow:0 0 0 16px var(--cc,#6d4aff);opacity:0}}
+@media (prefers-reduced-motion:reduce){.card2.fr-aurora::before,.card2.fr-aurora::after,.card2.fr-spark::before,.card2.fr-spark::after,.card2.fr-wave::before,.card2.fr-wave::after{animation:none}}
+
+/* Giriş ekranı: kristaller ve neon alan çizgisi */
+#stage .card{position:relative;z-index:1}
+.crys{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.crys i{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);opacity:.45;background:linear-gradient(60deg,transparent 50%,rgba(255,255,255,.2) 50%),linear-gradient(135deg,rgba(185,164,255,.6),rgba(0,229,255,.28));clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:cfl var(--d) ease-in-out infinite alternate}
+@keyframes cfl{from{transform:translateY(0) rotate(var(--r))}to{transform:translateY(-28px) rotate(calc(var(--r) + 40deg))}}
+#view-auth h1{animation:lgl 3s linear infinite}
+/* Koyu cam form alanları, cam buton ve buğu lekeleri */
+#stage .card{background:rgba(255,255,255,.07)}
+#stage .field input{background:rgba(255,255,255,.1);color:#f2f2f7;border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#view-auth .field input::placeholder,#stage .field input::placeholder{color:rgba(255,255,255,.5)}
+#stage .field input:focus{border-color:rgba(185,164,255,.75)}
+#stage .field input:-webkit-autofill{-webkit-text-fill-color:#f2f2f7;caret-color:#fff;-webkit-box-shadow:0 0 0 60px #34344c inset;transition:background-color 9999s}
+#stage .ic{stroke:#b4b4c6}
+#stage .field:focus-within>.ic{stroke:var(--violet)}
+#stage .btn{color:#fff}
+#stage .btn::after{background:linear-gradient(135deg,#3b3b62,#2c2c4a)}
+#stage .spin{border-color:rgba(255,255,255,.22);border-top-color:#fff}
+.crys b{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);border-radius:50%;background:radial-gradient(circle,var(--c),transparent 70%);opacity:.7;animation:blb var(--d) ease-in-out infinite alternate}
+@keyframes blb{to{transform:translate(30px,-24px) scale(1.15)}}
+@keyframes lgl{0%,80%,100%{transform:none;filter:none}82%{transform:translate(-3px,1px) skewX(-6deg);filter:drop-shadow(-3px 0 #b9a4ff) drop-shadow(3px 0 #00e5ff)}84%{transform:translate(3px,-1px) skewX(5deg);filter:drop-shadow(3px 0 #b9a4ff) drop-shadow(-3px 0 #00e5ff)}86%,92%{transform:translate(-2px,0) skewX(-3deg);filter:drop-shadow(-2px 0 #b9a4ff) drop-shadow(2px 0 #00e5ff)}95%{transform:translate(2px,-1px) skewX(2deg);filter:drop-shadow(2px 0 #b9a4ff) drop-shadow(-2px 0 #00e5ff)}97%{transform:translate(-1px,0);filter:drop-shadow(-1px 0 #b9a4ff) drop-shadow(1px 0 #00e5ff)}}
+@media (prefers-reduced-motion:reduce){.crys i,.crys b,#view-auth h1{animation:none}}
+
+.kvl{display:flex;gap:12px;align-items:center;padding:13px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);font-size:14px;line-height:1.45;cursor:pointer;transition:border-color .3s,background .3s,box-shadow .3s}
+.kvl:hover{border-color:rgba(185,164,255,.45)}
+.kvl:has(input:checked){border-color:rgba(109,74,255,.7);background:rgba(109,74,255,.1);box-shadow:0 0 18px rgba(109,74,255,.25)}
+.kvl input{appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;margin:0;border-radius:7px;border:2px solid #6b6b78;background:transparent;display:grid;place-items:center;cursor:pointer;transition:background .25s,border-color .25s,transform .25s}
+.kvl input::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg) scale(0);transition:transform .25s var(--ease)}
+.kvl input:checked{background:linear-gradient(135deg,#6d4aff,#2a7fff);border-color:transparent}
+.kvl input:checked::after{transform:translateY(-1px) rotate(45deg) scale(1)}
+.kvl input:active{transform:scale(.88)}
+.kvl .link{display:inline;padding:0;color:#b9a4ff;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .kvs{margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
 #kvkkm{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .kvb{width:min(680px,100%);max-height:88dvh;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:20px;background:#16161d}
@@ -437,6 +484,7 @@ select{color-scheme:dark}
 <div id="splash"><img src="msa-logo.png" alt="MSA"></div>
 
 <main id="stage" hidden>
+  <div class="crys" aria-hidden="true"><b style="--x:22%;--y:28%;--s:340px;--c:rgba(109,74,255,.55);--d:13s"></b><b style="--x:78%;--y:62%;--s:360px;--c:rgba(42,127,255,.5);--d:16s"></b><b style="--x:48%;--y:88%;--s:280px;--c:rgba(0,229,255,.32);--d:11s"></b><b style="--x:70%;--y:12%;--s:260px;--c:rgba(168,85,247,.4);--d:14s"></b><i style="--x:8%;--y:12%;--s:34px;--r:10deg;--d:6s"></i><i style="--x:82%;--y:8%;--s:26px;--r:-20deg;--d:7.5s"></i><i style="--x:90%;--y:45%;--s:40px;--r:30deg;--d:8s"></i><i style="--x:5%;--y:55%;--s:28px;--r:-35deg;--d:6.5s"></i><i style="--x:70%;--y:78%;--s:32px;--r:15deg;--d:7s"></i><i style="--x:18%;--y:85%;--s:38px;--r:-10deg;--d:8.5s"></i><i style="--x:48%;--y:4%;--s:22px;--r:25deg;--d:5.5s"></i></div>
   <div class="card">
     <img class="logo" src="msa-logo.png" alt="MSA">
 
@@ -547,11 +595,10 @@ select{color-scheme:dark}
 <div id="ed" hidden>
   <div class="edhead">
   <div class="edtop"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
-  <div class="edst"><span class="muted">Çerçeve</span><div id="edpal"></div><select id="edfs"><option value="">Yok</option><option value="beam">Dönen ışın</option><option value="neon">Neon nabız</option><option value="rainbow">Gökkuşağı</option></select></div>
   <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">🗂️ Yükle</button><button class="btn-ghost sm" id="edpaste" type="button">🗒️ Panodan</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edfbt" type="button">🔎 Bul</button></div>
   </div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
-  <div class="edhb"><button id="edhd" type="button">☰ Araçlar</button></div>
+  <div class="edhb"><button id="edhd" type="button" aria-label="Araçları göster/gizle"></button></div>
   <div id="edfb" hidden>
     <div class="fr"><input id="edfind" placeholder="Bul" autocomplete="off" enterkeyhint="search"><button id="edfp" type="button" aria-label="Önceki">▲</button><button id="edfn" type="button" aria-label="Sonraki">▼</button><button id="edfx" type="button" aria-label="Kapat">✕</button></div>
     <div class="fr"><input id="edrep" placeholder="Yeni metin" autocomplete="off"><button id="edfr" type="button">Değiştir</button><button id="edfa" type="button">Tümü</button></div>
@@ -820,6 +867,7 @@ function show(n) {
   const h = n === "home";
   stage.hidden = h; home.hidden = !h;
   $$(".view").forEach(v => { const on = v.dataset.view === n; v.hidden = !on; v.classList.toggle("in", on); });
+  if (n === "auth") { const el = $("#view-auth h1"); el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
   if (n === "auth" && !first && prev !== "auth") {
     form.reset(); $('[data-mode="login"]').click(); clearErrs();
     clearInterval(cool); rs.disabled = false; rs.textContent = "Tekrar gönder";
@@ -876,7 +924,7 @@ function hcard(h) {
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}${FRS.includes(h.fs) ? " fr fr-" + h.fs : ""}" style="--cc:${/^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : "#6d4aff"}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty();
 
@@ -1464,7 +1512,7 @@ home.addEventListener("submit", async e => {
 });
 
 /* Kod editörü */
-const FRS = ["beam", "neon", "rainbow"];
+const FRS = ["beam", "neon", "rainbow", "aurora", "spark", "wave"];
 const PAL = ["#6d4aff", "#2a7fff", "#22d3a6", "#ff5c8a", "#ffb020", "#ff6a3d", "#a855f7", "#e5e7eb"];
 const BSTY = ["beam", "solid", "neon", "gold", "dashed", "double"];
 const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
@@ -1536,21 +1584,22 @@ edb.addEventListener("dragover", e => e.preventDefault());
 edb.addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) edLoad(f); });
 /* Geri al/yinele, bul-değiştir, otomatik kapanış etiketi */
 let hist = [], hi = -1, ht;
-const hpush = () => { clearTimeout(ht); if (hist[hi]?.v === edh.value) return; hist.splice(hi + 1); hist.push({ v: edh.value, s: edh.selectionStart }); if (hist.length > 200) hist.shift(); hi = hist.length - 1; };
+const hpush = () => { clearTimeout(ht); if (hist[hi]?.v === edh.value) return; hist.splice(hi + 1); hist.push({ v: edh.value, s: edh.selectionStart }); if (hist.length > 200) hist.shift(); hi = hist.length - 1; updUR(); };
 const hgo = d => {
   hpush(); const n = hi + d; if (n < 0 || n >= hist.length) return;
   const o = edh.value, v = hist[n].v, st = edh.scrollTop, sl = edh.scrollLeft;
   let a = 0; const m = Math.min(o.length, v.length); while (a < m && o[a] === v[a]) a++;
   let b = 0; while (b < m - a && o[o.length - 1 - b] === v[v.length - 1 - b]) b++;
   const c = v.length - b; hi = n;
-  edh.focus({ preventScroll: true }); edh.value = v; edh.setSelectionRange(c, c); edSync();
+  edh.focus({ preventScroll: true }); edh.value = v; edh.setSelectionRange(c, c); edSync(); updUR();
   const lh = parseFloat(getComputedStyle(edh).lineHeight) || 18, y = v.slice(0, c).split("\n").length * lh;
   edh.scrollLeft = sl;
   edh.scrollTop = (y < st + lh || y > st + edh.clientHeight - 2 * lh) ? Math.max(0, y - edh.clientHeight / 2) : st;
 };
-const hreset = () => { clearTimeout(ht); hist = [{ v: edh.value, s: 0 }]; hi = 0; };
+function updUR() { $("#edundo").classList.toggle("off", hi <= 0 && edh.value === (hist[0]?.v ?? edh.value)); $("#edredo").classList.toggle("off", hi >= hist.length - 1); }
+const hreset = () => { clearTimeout(ht); hist = [{ v: edh.value, s: 0 }]; hi = 0; updUR(); };
 edh.addEventListener("input", e => {
-  clearTimeout(ht); ht = setTimeout(hpush, 500);
+  updUR(); clearTimeout(ht); ht = setTimeout(hpush, 500);
   if (e.inputType && e.inputType.startsWith("insert") && e.inputType !== "insertFromPaste" && e.data && e.data.endsWith(">")) {
     const pos = edh.selectionStart, m = edh.value.slice(0, pos).match(/<([a-zA-Z][\w-]*)(\s[^<>]*)?>$/);
     if (m && !(m[2] || "").trim().endsWith("/") && !/^(br|img|input|meta|link|hr|area|base|col|embed|source|track|wbr|param)$/i.test(m[1])) {
@@ -1616,18 +1665,9 @@ $("#edfa").onclick = () => {
   const f = $("#edfind").value; if (!f || !fm.length) return toast("Bulunamadı.");
   const n = fm.length; hpush(); edh.value = edh.value.replace(new RegExp(escRe(f), "gi"), () => $("#edrep").value); edSync(); toast(n + " yer değiştirildi.");
 };
-/* Kod yazarken üst araçlar daralır, yukarı kaydırınca ya da ☰ ile açılır */
-let hLock = 0, hLast = 0, tch = 0;
-["touchstart", "touchmove", "wheel"].forEach(ev => edh.addEventListener(ev, () => { tch = Date.now() + 1200; }, { passive: true }));
-const hHead = on => { edb.classList.toggle("hc", on); hLock = Date.now() + 350; };
-edh.addEventListener("focus", () => hHead(true));
-edh.addEventListener("scroll", () => {
-  if (Date.now() < hLock || Date.now() > tch) { hLast = edh.scrollTop; return; }
-  const t = edh.scrollTop;
-  if (t <= 4 || t < hLast - 6) { if (edb.classList.contains("hc")) hHead(false); } else if (t > hLast + 6 && !edb.classList.contains("hc")) hHead(true);
-  hLast = t;
-});
-$("#edhd").onclick = () => hHead(false);
+/* Üst araçlar ok tuşuyla göster/gizle */
+const hHead = on => edb.classList.toggle("hc", on);
+$("#edhd").onclick = () => hHead(!edb.classList.contains("hc"));
 edh.addEventListener("scroll", () => { edpre.scrollTop = edmk.scrollTop = edn.scrollTop = edh.scrollTop; edpre.scrollLeft = edmk.scrollLeft = edh.scrollLeft; });
 edh.addEventListener("keydown", e => {
   if (e.key === "Tab") { e.preventDefault(); edh.setRangeText("  ", edh.selectionStart, edh.selectionEnd, "end"); edSync(); }
@@ -1645,9 +1685,6 @@ edh.addEventListener("keydown", e => {
   }, { passive: false });
   edh.addEventListener("touchend", () => { d0 = 0; });
 }
-const edPal = () => $("#edpal").innerHTML = PAL.map(c => `<button type="button" class="sw${c === ctx.ed.fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("");
-$("#edpal").onclick = e => { const b = e.target.closest("[data-c]"); if (b) { ctx.ed.fc = b.dataset.c; edPal(); } };
-$("#edfs").onchange = e => { ctx.ed.fs = e.target.value; };
 $$(".edtabs button").forEach(b => b.onclick = () => {
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x === b));
   edb.classList.toggle("pv", b.dataset.ed === "prev");
@@ -1659,8 +1696,7 @@ async function openEditor(h) {
   const b = isNew ? null : await getDoc(doc(db, "htmlBodies", h.id)), code = b?.exists() ? b.data().html : "";
   $("#edel").hidden = isNew;
   ctx.ed = { id: h.id, h, code, isNew, fs: FRS.includes(h.fs) ? h.fs : "", fc: PAL.includes(h.fc) ? h.fc : PAL[0] };
-  $("#edfs").value = ctx.ed.fs;
-  edh.value = code; edPal(); edSync(); edf.srcdoc = withShim(code); hreset();
+  edh.value = code; edSync(); edf.srcdoc = withShim(code); hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
   edb.hidden = false; document.body.style.overflow = "hidden"; document.documentElement.classList.add("edo"); vvFit();
@@ -1672,8 +1708,8 @@ $("#eds").onclick = async () => {
   const e = ctx.ed, code = edh.value;
   if (!code.trim()) return toast("HTML gerekli.");
   if (code.length > 900000) return toast("HTML çok büyük (en fazla ~900 KB).");
-  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? ""); if (!mm) return;
-  e.mt = mm.t; e.md = mm.d; const t = mm.t, d = mm.d;
+  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? "", e.fs, e.fc); if (!mm) return;
+  e.mt = mm.t; e.md = mm.d; e.fs = mm.fs; e.fc = mm.fc; const t = mm.t, d = mm.d;
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
@@ -1698,7 +1734,7 @@ $("#eds").onclick = async () => {
       if (ch && !ctx.admin) notify("html_pending", { detail: t });
     }
     closeEditor();
-    if (ch && !ctx.admin) await inform("Düzenlemen kaydedildi ve tekrar admin onayına gönderildi. '+WHY+'"); else toast("Kaydedildi.");
+    if (ch && !ctx.admin) await inform("Düzenlemen kaydedildi ve tekrar admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylanana kadar başkaları göremez."); else toast("Kaydedildi.");
   } catch (x) { toast(trError(x)); }
 };
 
@@ -1996,15 +2032,25 @@ function inform(msg) {
     y.onclick = end; d.onclick = e => { if (e.target === d) end(); };
   });
 }
-function askMeta(t, d) {
+function askMeta(t, d, fs0, fc0) {
   return new Promise(res => {
     const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
     const i = document.createElement("input"), x = document.createElement("textarea");
     i.className = "sq"; i.maxLength = 80; i.placeholder = "Başlık"; i.value = t; i.style.margin = "0 0 10px";
     x.className = "sq"; x.maxLength = 200; x.placeholder = "Açıklama"; x.value = d; x.style.cssText = "margin:0 0 16px;height:120px;padding:12px 16px;border-radius:18px;resize:vertical;max-width:none";
-    a.before(i, x); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
-    const end = v => { dl.hidden = true; i.remove(); x.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
-    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim() }); };
+    let fs = fs0 || "", fc = fc0 || PAL[0];
+    const w = document.createElement("div"), pal = document.createElement("div"), sel = document.createElement("select");
+    w.style.cssText = "margin:0 0 16px;display:flex;flex-direction:column;gap:10px;align-items:center";
+    pal.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;justify-content:center";
+    sel.className = "sq"; sel.style.cssText = "margin:0;max-width:none;color-scheme:dark";
+    sel.innerHTML = '<option value="">Çerçeve: Yok</option><option value="beam">Çerçeve: Dönen ışın</option><option value="neon">Çerçeve: Neon nabız</option><option value="rainbow">Çerçeve: Gökkuşağı</option><option value="aurora">Çerçeve: Aurora</option><option value="spark">Çerçeve: Kıvılcım</option><option value="wave">Çerçeve: Dalga halkası</option>'; sel.value = fs;
+    const dr = () => { pal.hidden = !fs; pal.innerHTML = PAL.map(c => `<button type="button" class="sw${c === fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join(""); };
+    pal.onclick = e => { const b = e.target.closest("[data-c]"); if (b) { fc = b.dataset.c; dr(); } };
+    sel.onchange = () => { fs = sel.value; dr(); };
+    dr(); w.append(sel, pal);
+    a.before(i, x, w); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
+    const end = v => { dl.hidden = true; i.remove(); x.remove(); w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
+    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc }); };
     n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
     i.focus();
   });
