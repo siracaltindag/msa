@@ -1,0 +1,31 @@
+<p><strong>Yürürlük Tarihi:</strong> 22.10.2026</p>
+
+<h4>1. Veri Sorumlusu</h4>
+<p>6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, kişisel verileriniz veri sorumlusu sıfatıyla <strong>${esc(k.sorumlu)}</strong> tarafından aşağıda açıklanan kapsamda işlenebilecektir. Her türlü soru ve talebiniz için <strong>${esc(k.eposta)}</strong> adresi üzerinden iletişime geçebilirsiniz.</p>
+
+<h4>2. İşlenen Kişisel Verileriniz</h4>
+<p>Platformumuzu kullanımınız kapsamında aşağıdaki kişisel verileriniz işlenmektedir:</p>
+<ul>
+  <li><strong>Kimlik ve Hesap Bilgileri:</strong> Ad soyad, kullanıcı adı, şifre (kriptografik olarak şifrelenmiş biçimde).</li>
+  <li><strong>İletişim Bilgileri:</strong> E-posta adresi (tercihe bağlı).</li>
+  <li><strong>Kullanıcı İşlem ve Profil Bilgileri:</strong> Biyografi, profil güncellemeleri, platforma yüklenen HTML kodları, kişisel notlar, yorumlar, beğeniler ve yönetim ile yapılan yazışmalar.</li>
+  <li><strong>İşlem Güvenliği Bilgileri:</strong> Sisteme giriş ve son görülme zamanları, erişim talepleri, log kayıtları, güvenlik ihlali tespitleri ve oturum yönetimi için tarayıcı çerezleri/depolama verileri.</li>
+</ul>
+
+<h4>3. Kişisel Verilerin İşlenme Amaçları</h4>
+<p>Kişisel verileriniz; üyelik süreçlerinin yürütülmesi, platform içi içerik paylaşımı ve onay mekanizmalarının yönetilmesi, kullanıcılar arası etkileşimin (mesajlaşma ve bildirimler) sağlanması, sistem güvenliğinin tesis edilmesi ve platformda yer alan içeriklerin fikri mülkiyet haklarının korunması amaçlarıyla işlenmektedir.</p>
+
+<h4>4. İşlemenin Hukuki Sebepleri</h4>
+<p>Verileriniz, KVKK Madde 5 kapsamında; "Bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması", "Veri sorumlusunun hukuki yükümlülüğünü yerine getirebilmesi", "Bir hakkın tesisi, kullanılması veya korunması" ve "İlgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için zorunlu olması" hukuki sebeplerine dayanılarak işlenmektedir.</p>
+
+<h4>5. Kişisel Verilerin Aktarımı</h4>
+<p>Sistem altyapısı Google Firebase üzerinde barındırıldığından, verileriniz yurt dışındaki güvenli sunucularda muhafaza edilmektedir. Bu aktarım, kayıt esnasında alınan açık rızanıza dayanmaktadır. Yasal zorunluluklar saklı kalmak kaydıyla, verileriniz hiçbir şekilde yetkisiz üçüncü şahıslarla veya kurumlarla ticari amaçla paylaşılmamaktadır.</p>
+
+<h4>6. İçerik Güvenliği ve İhlal Tespiti</h4>
+<p>Fikri mülkiyet haklarının korunması amacıyla; korumalı içerikler görüntülenirken kullanıcı adınız ve işlem tarihiniz dijital filigran olarak içeriğe eklenmekte olup, içeriğe ayrıca izleyenin kimliğini tespit etmeye yarayan görünmez bir dijital iz gömülmektedir. Yetkisiz kopyalama, kısayol kullanımı, sağ tık işlemleri ve geliştirici araçları ile veri çekme (scraping) teşebbüsleri sistem tarafından kayıt altına alınarak hesabınızın askıya alınmasına veya iptaline neden olabilir.</p>
+
+<h4>7. Veri Saklama ve İmha Politikası</h4>
+<p>Kişisel verileriniz, hesabınız aktif olduğu sürece ve yasal zamanaşımı süreleri boyunca saklanır. Hesabınızı silmeniz veya ihlal sebebiyle hesabınızın kapatılması durumunda, ilgili verileriniz veritabanımızdan kalıcı ve geri döndürülemez biçimde silinmektedir.</p>
+
+<h4>8. İlgili Kişi Olarak Haklarınız</h4>
+<p>KVKK’nın 11. maddesi uyarınca; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, işlenme amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde/yurt dışında aktarıldığı 3. kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini isteme, silinmesini veya yok edilmesini talep etme haklarına sahipsiniz. Bu haklarınıza ilişkin taleplerinizi <strong>${esc(k.eposta)}</strong> adresi üzerinden veri sorumlusuna iletebilirsiniz.</p>
