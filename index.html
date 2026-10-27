@@ -336,8 +336,8 @@ html.edo *,html.edo *::before,html.edo *::after,html.edo::after,html.edo::before
 .tick{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;word-break:break-word}
 .tick small{display:block;color:var(--muted)}
 .row2 small.nt{margin:4px 0;color:var(--text);font-size:14px;white-space:pre-wrap;word-break:break-word}
-#warn{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px;background:rgba(12,0,6,.96);text-align:center}
-#warn{background:#9b0000;animation:wpulse 1s infinite alternate}@keyframes wpulse{from{background:#7a0000}to{background:#d10000}}
+#warn{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px;background:#9b0000;animation:wpulse 1s infinite alternate;text-align:center}
+@keyframes wpulse{from{background:#7a0000}to{background:#d10000}}
 #warn h2{margin:0 0 16px;color:#fff;font-size:clamp(34px,10vw,56px);line-height:1.1;letter-spacing:1px;text-shadow:0 0 18px #000}#warn .wl{font-size:20px;font-weight:800}
 #warn p{max-width:420px;margin:8px auto;color:#fff}
 #warnok{margin-top:16px;min-height:50px;padding:0 40px;border:0;border-radius:999px;background:#fff;color:#9b0000;font-weight:800;font-size:17px;cursor:pointer}
@@ -474,6 +474,106 @@ select{color-scheme:dark}
 .nb button{width:auto;height:auto;padding:0 0 0 10px;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline}
 .nit{position:relative;padding:9px 0 9px 14px;border-bottom:1px solid var(--line)}
 .nit.un::before{content:"";position:absolute;left:0;top:15px;width:6px;height:6px;border-radius:50%;background:var(--violet)}
+
+/* sade overrides */
+.bfr .logobox{width:88px;height:46px;margin:0;border:1px solid var(--line);border-left:0;border-radius:0 999px 999px 0;background:rgba(255,255,255,.05);overflow:hidden}
+.bfr .logobox img{height:32px;width:auto;max-width:70px;border-radius:0;object-fit:contain}
+#eds,#edx,#edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:rgba(255,255,255,.06)!important;border:1px solid var(--line)!important;color:var(--text)!important;font-weight:500!important;box-shadow:none!important}
+#edfb button{border:1px solid var(--line)}
+.edup .btn-ghost{height:24px!important;padding:0 8px!important;font-size:11px!important}.edup{gap:5px;padding:4px 10px}
+#pf .btn2,#nf .btn2,#pwf .btn2,#dlf .btn2{height:44px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);box-shadow:none;color:var(--text);font-weight:500}
+#pf .btn2::after,#nf .btn2::after,#pwf .btn2::after,#dlf .btn2::after{display:none}
+#pf .btn2:hover,#nf .btn2:hover,#pwf .btn2:hover,#dlf .btn2:hover{transform:none;box-shadow:none;background:rgba(255,255,255,.1)}
+
+.sigh{font-family:var(--font-sig)!important;font-weight:700!important;font-size:42px!important;line-height:1.1;letter-spacing:.5px}
+#eds,#edfr{background:rgba(31,157,85,.18)!important;border:1px solid rgba(31,157,85,.55)!important;color:#fff!important}
+#edel,#edfx{background:rgba(214,41,62,.18)!important;border:1px solid rgba(214,41,62,.55)!important;color:#fff!important}
+#edx{background:rgba(109,74,255,.18)!important;border:1px solid rgba(109,74,255,.55)!important;color:#fff!important}
+#edfile,#edfp,#edfn{background:rgba(42,127,255,.18)!important;border:1px solid rgba(42,127,255,.55)!important;color:#fff!important}
+#edpaste{background:rgba(150,110,255,.18)!important;border:1px solid rgba(150,110,255,.55)!important;color:#fff!important}
+#edfbt,#edfa{background:rgba(212,175,55,.18)!important;border:1px solid rgba(212,175,55,.55)!important;color:#fff!important}
+#pf .btn2,#nf .btn2,#pwf .btn2{background:rgba(109,74,255,.25);border-color:rgba(150,130,255,.6);color:#fff}
+#pf .btn2:hover,#nf .btn2:hover,#pwf .btn2:hover{background:rgba(109,74,255,.4)}
+#dlf .btn2{background:rgba(214,41,62,.22);border-color:rgba(214,41,62,.6);color:#fff}
+#dlf .btn2:hover{background:rgba(214,41,62,.38)}
+
+/* v3 düz renkler */
+.sigh{font-size:30px!important}
+.bfr .logobox{width:112px;height:54px;flex:none}
+.bfr .logobox img{height:42px;max-width:92px}
+.bfr{height:66px;overflow:hidden}
+#eds,#edx,#edel,#edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{border:0!important;color:#fff!important;box-shadow:none!important;font-weight:600!important}
+#eds{background:#1f9d55!important}
+#edx{background:#6d4aff!important}
+#edel{background:#d6293e!important}
+#edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:#4b5060!important}
+#pf .btn2,#nf .btn2,#pwf .btn2{background:#6d4aff!important;border:0!important;color:#fff!important}
+#pf .btn2:hover,#nf .btn2:hover,#pwf .btn2:hover{background:#7d5dff!important}
+#dlf .btn2{background:#d6293e!important;border:0!important;color:#fff!important}
+#dlf .btn2:hover{background:#e63a4f!important}
+
+/* v4 */
+.bfr .logobox{margin-left:-10px}
+#sname{display:block!important;white-space:nowrap!important;-webkit-line-clamp:unset!important;text-overflow:ellipsis;overflow:hidden;font-size:19px!important}
+.bfr .sn{margin-left:8px!important}
+.collapse{transition:grid-template-rows .22s ease,opacity .18s ease,visibility 0s linear 0s}
+.reg-only,.reg .login-only{transition-delay:0s,0s,.22s}
+.reg .reg-only{transition-delay:0s}
+.ind{transition:transform .22s ease}
+.tabs button{transition:color .15s}
+#submit-wrap .btn::after{background:linear-gradient(135deg,#6d4aff,#2a7fff)}
+#submit-wrap .btn{color:#fff}
+#submit-wrap .spin{border-color:rgba(255,255,255,.3);border-top-color:#fff}
+
+/* v5 */
+#submit-wrap .btn::after{background:linear-gradient(135deg,rgba(109,74,255,.38),rgba(42,127,255,.28));border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%)}
+#submit-wrap .btn{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.bfr .logobox{width:80px;height:50px;margin-left:-10px;padding:0 0 0 8px;place-items:center start}
+.bfr .logobox img{height:38px;max-width:64px}
+.bfr .sn{margin-left:6px!important}
+#sname{font-size:18px!important}
+
+/* v6 */
+#submit-wrap .btn::after{background:linear-gradient(135deg,rgba(109,74,255,.42),rgba(42,127,255,.32)),#15152b;border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);-webkit-backdrop-filter:none;backdrop-filter:none}
+.bfr .logobox{padding:0;place-items:center}
+.sigh{font-size:36px!important}
+
+/* v7 */
+#submit-wrap .btn::after{background:linear-gradient(135deg,rgba(20,200,180,.5),rgba(42,150,255,.38)),#14404a}
+#edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:#23252d!important}
+#edx{background:#2a7fff!important}
+.edup .btn-ghost{width:76px!important;padding:0!important;text-align:center}
+#edfb button{height:32px}
+#edfp,#edfn,#edfx{width:44px;padding:0}
+#edfr,#edfa{width:76px;padding:0}
+
+/* v8 */
+.edup .btn-ghost{width:112px!important}
+
+/* v9 */
+.edup{flex-wrap:nowrap}
+.edup .btn-ghost{width:84px!important;flex:none}
+#edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:#3d404c!important}
+#submit-wrap .btn::after{background:linear-gradient(135deg,#9a7bff 0%,#6d4aff 55%,#5a46f0 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -6px 14px rgba(60,30,200,.35)}
+#submit-wrap .btn{color:#fff;text-shadow:0 1px 6px rgba(40,20,120,.5)}
+
+/* v10 */
+#submit-wrap .btn::after{background:linear-gradient(120deg,#7c4dff 0%,#3b8cff 50%,#14d6c0 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -6px 14px rgba(20,40,160,.3)}
+#eds,#edel,#edx{width:96px!important;height:40px!important;padding:0!important;flex:none;text-align:center}
+
+/* v11 */
+.edup .btn-ghost{width:100px!important;height:22px!important}
+#edx{background:#f07a1a!important}
+
+/* v12 */
+.edup .btn-ghost{height:30px!important}
+
+/* v13 */
+#submit-wrap::before,#submit-wrap .btn::before{background:conic-gradient(from var(--angle),transparent 0 50%,#fff 58%,#7c4dff 72%,#3b8cff 86%,#14d6c0 100%)}
+
+/* Ortak arka plan: yükleme, giriş ve ana ekranda görünür */
+#home{position:relative;z-index:1}
+body.inhome .crys i{display:none}
 </style>
 </head>
 <body>
@@ -486,15 +586,16 @@ select{color-scheme:dark}
 <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
 </defs></svg>
 
+<div class="crys" aria-hidden="true"><b style="--x:22%;--y:28%;--s:340px;--c:rgba(109,74,255,.55);--d:13s"></b><b style="--x:78%;--y:62%;--s:360px;--c:rgba(42,127,255,.5);--d:16s"></b><b style="--x:48%;--y:88%;--s:280px;--c:rgba(0,229,255,.32);--d:11s"></b><b style="--x:70%;--y:12%;--s:260px;--c:rgba(168,85,247,.4);--d:14s"></b><i style="--x:8%;--y:12%;--s:34px;--r:10deg;--d:6s"></i><i style="--x:82%;--y:8%;--s:26px;--r:-20deg;--d:7.5s"></i><i style="--x:90%;--y:45%;--s:40px;--r:30deg;--d:8s"></i><i style="--x:5%;--y:55%;--s:28px;--r:-35deg;--d:6.5s"></i><i style="--x:70%;--y:78%;--s:32px;--r:15deg;--d:7s"></i><i style="--x:18%;--y:85%;--s:38px;--r:-10deg;--d:8.5s"></i><i style="--x:48%;--y:4%;--s:22px;--r:25deg;--d:5.5s"></i></div>
+
 <div id="splash"><img src="msa-logo.png" alt="MSA"></div>
 
 <main id="stage" hidden>
-  <div class="crys" aria-hidden="true"><b style="--x:22%;--y:28%;--s:340px;--c:rgba(109,74,255,.55);--d:13s"></b><b style="--x:78%;--y:62%;--s:360px;--c:rgba(42,127,255,.5);--d:16s"></b><b style="--x:48%;--y:88%;--s:280px;--c:rgba(0,229,255,.32);--d:11s"></b><b style="--x:70%;--y:12%;--s:260px;--c:rgba(168,85,247,.4);--d:14s"></b><i style="--x:8%;--y:12%;--s:34px;--r:10deg;--d:6s"></i><i style="--x:82%;--y:8%;--s:26px;--r:-20deg;--d:7.5s"></i><i style="--x:90%;--y:45%;--s:40px;--r:30deg;--d:8s"></i><i style="--x:5%;--y:55%;--s:28px;--r:-35deg;--d:6.5s"></i><i style="--x:70%;--y:78%;--s:32px;--r:15deg;--d:7s"></i><i style="--x:18%;--y:85%;--s:38px;--r:-10deg;--d:8.5s"></i><i style="--x:48%;--y:4%;--s:22px;--r:25deg;--d:5.5s"></i></div>
   <div class="card">
     <img class="logo" src="msa-logo.png" alt="MSA">
 
     <section class="view" id="view-auth" data-view="auth" hidden>
-      <h1>Hoş geldin</h1>
+      <h1 class="sigh">Hoş geldin</h1>
       <p class="sub">Hesabına giriş yap veya yeni hesap oluştur.</p>
       <div class="tabs">
         <button type="button" data-mode="login" class="on">Giriş Yap</button>
@@ -599,8 +700,8 @@ select{color-scheme:dark}
 <div id="chat" hidden><div class="ch1"><b id="chn">Admin ile Sohbet</b><span class="chh"><button class="btn-ghost sm" data-a="chclear" type="button">Temizle</button><button class="ib" data-a="chx" type="button" aria-label="Kapat">×</button></span></div><div id="chl"></div><form id="chf" class="chf"><input id="chi" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form></div>
 <div id="ed" hidden>
   <div class="edhead">
-  <div class="edtop"><button class="btn-ghost sm" id="eds" type="button">Kaydet</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="edx" type="button">Kapat</button></div>
-  <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">🗂️ Yükle</button><button class="btn-ghost sm" id="edpaste" type="button">🗒️ Panodan</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edfbt" type="button">🔎 Bul</button></div>
+  <div class="edtop"><button class="btn-ghost sm" id="edx" type="button">Çık</button><button class="btn-ghost sm" id="edel" type="button">Sil</button><button class="btn-ghost sm" id="eds" type="button">Kaydet</button></div>
+  <div class="edup"><button class="btn-ghost sm" id="edfile" type="button">Yükle</button><button class="btn-ghost sm" id="edpaste" type="button">Pano</button><input id="edfin" type="file" accept=".html,.htm,.txt,text/html,text/plain" hidden><button class="btn-ghost sm" id="edfbt" type="button">Bul</button></div>
   </div>
   <div class="edtabs"><button type="button" data-ed="code" class="on">Kod</button><button type="button" data-ed="prev">Önizleme</button></div>
   <div class="edhb"><button id="edhd" type="button" aria-label="Araçları göster/gizle"></button></div>
@@ -628,8 +729,6 @@ const firebaseConfig = {
   appId: "1:883902020685:web:54f5d9e13b9134dfe0b004"
 };
 
-/* KVKK: kendi bilgilerini buraya yaz */
-const KVKK = { sorumlu: "MSA", eposta: "@admin", tarih: "22.10.2026" };
 const ADMIN_UID = "dnNCccsp9qbsPSzYhqxLuDRr2Sw2";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -870,7 +969,7 @@ function show(n) {
   const first = cur === null, prev = cur;
   cur = n;
   const h = n === "home";
-  stage.hidden = h; home.hidden = !h;
+  stage.hidden = h; home.hidden = !h; document.body.classList.toggle("inhome", h);
   $$(".view").forEach(v => { const on = v.dataset.view === n; v.hidden = !on; v.classList.toggle("in", on); });
   if (n === "auth") { const el = $("#view-auth h1"); el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
   if (n === "auth" && !first && prev !== "auth") {
@@ -922,7 +1021,7 @@ const notify = (type, extra = {}) => addDoc(collection(db, "notifications"), {
 
 const card = c => `<a class="card2 beam${c.gold ? " gold" : ""}" href="${c.h}">${svg(c.i)}<span>${c.t}</span></a>`;
 const navItem = r => `<a href="#/${r}" data-r="${r}" title="${ROUTES[r][0]}" class="${r === "admin" ? "gold beam" : ""}">${svg(ROUTES[r][1])}<span class="lb">${ROUTES[r][0]}</span></a>`;
-const empty = b => `<div class="emp"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg><p>Henüz içerik yok.</p>${b ? '<a class="emb" href="#/add">İlk HTML\'ini paylaş</a>' : ""}</div>`;
+const empty = (b, m) => `<div class="emp"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg><p>${m || "Henüz içerik yok."}</p>${b ? '<a class="emb" href="#/add">İlk HTML\'ini paylaş</a>' : ""}</div>`;
 const phd = t => `<p class="phd">${t}</p>`;
 
 function hcard(h) {
@@ -941,14 +1040,13 @@ function adminPage() {
     const U = S.users.filter(u => u.id !== ADMIN_UID).sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
     const ub = u => {
       const B = (v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(u.username)}">${t}</button>`;
-      const vbtn = `<button data-a="vtog" data-id="${u.id}">${vb(u.id) ? "Tiki kaldır" : "Onaylı tik ver"}</button>`;
       const m = u.status === "pending" ? B("approved", "Onayla") + B("rejected", "Reddet") : u.status === "approved" ? B("blocked", "Engelle") : B("approved", "Engeli kaldır");
-      return m + vbtn + `<button data-a="mex" data-id="${u.id}" data-v="${u.mailExempt ? "" : "1"}" data-n="${esc(u.username)}">${u.mailExempt ? "E-posta zorunlu yap" : "E-posta muaf"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
+      return m + `<button data-a="trust" data-id="${u.id}" data-v="${u.trusted ? "" : "1"}" data-n="${esc(u.username)}">${u.trusted ? "Güvenilirliği kaldır" : "Güvenilir yap"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
     };
     return tabs + (U.map(u => {
       const op = ctx.uxp === u.id, on = u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5;
       const bd = `<em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${on ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}`;
-      return `<div class="row2 ur" data-a="uxp" data-id="${u.id}"><div class="uh">${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}${vb(u.id)}</b> ${bd}<span class="chev">${op ? "▲" : "▼"}</span></div>${op ? `<div class="ud"><small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.mailExempt ? " · e-posta muaf" : ""}</small><small>Son giriş: ${fmt(u.lastLogin)}</small><small>Son görülme: ${fmt(u.lastSeen)}</small><div class="btns ub">${ub(u)}</div></div>` : ""}</div>`;
+      return `<div class="row2 ur" data-a="uxp" data-id="${u.id}"><div class="uh">${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}${vb(u.id)}</b> ${bd}<span class="chev">${op ? "▲" : "▼"}</span></div>${op ? `<div class="ud"><small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.trusted ? " · güvenilir" : u.mailExempt ? " · e-posta muaf" : ""}</small><small>Son giriş: ${fmt(u.lastLogin)}</small><small>Son görülme: ${fmt(u.lastSeen)}</small><div class="btns ub">${ub(u)}</div></div>` : ""}</div>`;
     }).join("") || empty());
   }
   if (at === "data") {
@@ -1036,9 +1134,9 @@ const PAGES = {
     const l = t === "all" ? S.htmls : t === "html" ? S.mine : t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : [];
     const ad = "";
     const tabs = `<div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${n}</button>`).join("")}</div>`;
-    return tabs + (l.length || ad ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>` : empty(1));
+    return tabs + (l.length || ad ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>` : empty(t === "favs" ? 0 : 1, t === "favs" ? "Henüz favori yok." : ""));
   },
-  favs: () => { const l = ctx.S.htmls.filter(h => ctx.S.prefs.favs.includes(h.id)); return phd(l.length + " favori") + grid(l); },
+  favs: () => { const l = ctx.S.htmls.filter(h => ctx.S.prefs.favs.includes(h.id)); return phd(l.length + " favori") + (l.length ? grid(l) : empty(0, "Henüz favori yok.")); },
   mine: () => phd(ctx.S.mine.length + " HTML") + grid(ctx.S.mine),
   add: () => `<form id="addf" class="addf"><input id="ht" placeholder="Başlık" maxlength="80"><input id="hd" placeholder="Açıklama" maxlength="200"><textarea id="hh" placeholder="HTML kodu"></textarea><p class="err" id="e-add"></p><button class="btn2" type="submit"><span class="lbl">${ctx.admin ? "Yayınla" : "Onaya Gönder"}</span><i class="spin"></i></button></form>`,
   notes: empty, settings: empty,
@@ -1292,20 +1390,16 @@ async function violate(d) {
 function exitViewer() { document.body.classList.remove("vw"); if (ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
 $("#vx").onclick = exitViewer;
 
-function kvkkHtml() {
-  const k = KVKK;
-  return `<p>Yürürlük tarihi: ${esc(k.tarih)}</p>
-<h4>1. Veri sorumlusu</h4><p>6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında veri sorumlusu ${esc(k.sorumlu)}'dır. İletişim: ${esc(k.eposta)}</p>
-<h4>2. İşlenen kişisel veriler</h4><ul><li>Kimlik ve hesap: ad soyad, kullanıcı adı, şifre (şifrelenmiş olarak)</li><li>İletişim: isteğe bağlı e-posta adresi</li><li>Profil: biyografi ve profil değişiklik geçmişi</li><li>İçerik: paylaştığın HTML'ler, notlar, yorumlar, beğeniler ve yöneticiyle yazışmalar</li><li>İşlem güvenliği: giriş ve son görülme zamanı, erişim istekleri, güvenlik ihlali bildirimleri</li><li>Tarayıcı: oturumunu sürdürmek için tarayıcı depolaması</li></ul>
-<h4>3. İşleme amaçları</h4><p>Üyelik hesabının oluşturulması ve yönetimi, içerik paylaşımı ve onay sürecinin yürütülmesi, mesajlaşma ve bildirimler, site güvenliğinin sağlanması ve içeriklerin telif haklarının korunması.</p>
-<h4>4. Hukuki sebepler</h4><p>Sözleşmenin kurulması ve ifası, hakkın tesisi, kullanılması ve korunması, veri sorumlusunun meşru menfaati (güvenlik ve telif koruması) ve yurt dışına aktarım için açık rızan.</p>
-<h4>5. Aktarım</h4><p>Verilerin Google Firebase altyapısında yurt dışındaki sunucularda saklanır. Bu aktarım için kayıt sırasında açık rızan alınır. Verilerin bunun dışında üçüncü kişilerle paylaşılmaz.</p>
-<h4>6. İçerik koruma ve izleme</h4><p>Korumalı içerikler açılırken kullanıcı adın ve tarih filigran olarak eklenir; içeriğe izleyenin kimliğini gösteren görünmez bir iz de gömülür. Kopyalama, kısayol, sağ tık ve geliştirici araçlarıyla içerik çıkarma denemeleri kaydedilir ve hesabın kapatılmasına yol açabilir.</p>
-<h4>7. Saklama süresi</h4><p>Verilerin hesabın açık olduğu sürece saklanır. Hesabını sildiğinde veya yönetici hesabı sildiğinde verilerin veritabanından tamamen silinir.</p>
-<h4>8. KVKK madde 11 kapsamındaki haklarınız</h4><ul><li>Kişisel verilerinin işlenip işlenmediğini öğrenme ve bilgi talep etme</li><li>İşlenme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme</li><li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme</li><li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li><li>Silinmesini veya yok edilmesini isteme</li><li>İşlenmesine itiraz etme ve zarara uğraman hâlinde giderilmesini talep etme</li></ul><p>Başvurularını ${esc(k.eposta)} adresine iletebilirsin.</p>`;
+const KVKK_URL = "ek-/kvkk.txt";
+async function kvkkHtml() {
+  const r = await fetch(KVKK_URL, { cache: "no-cache" });
+  if (!r.ok) throw new Error("kvkk-yok");
+  const h = await r.text();
+  if (!h.trim()) throw new Error("kvkk-bos");
+  return h;
 }
 document.addEventListener("click", e => {
-  if (e.target.closest("[data-kvkk]")) { e.preventDefault(); $("#kvt").innerHTML = kvkkHtml(); $("#kvkkm").hidden = false; }
+  if (e.target.closest("[data-kvkk]")) { e.preventDefault(); $("#kvt").innerHTML = "<p>Yükleniyor…</p>"; $("#kvkkm").hidden = false; kvkkHtml().then(h => { $("#kvt").innerHTML = h; }).catch(() => { $("#kvt").innerHTML = "<p>Metin yüklenemedi. İnternet bağlantını kontrol edip tekrar dene.</p>"; }); }
   else if (e.target.id === "kvx" || e.target.closest("#kvx") || e.target.id === "kvkkm") $("#kvkkm").hidden = true;
 });
 
@@ -1339,10 +1433,11 @@ function protect(html) {
   return html;
 }
 
+const canFree = () => !!(ctx.admin || ctx.prof?.trusted);
 async function openHtml(id, h) {
   const S = ctx.S;
   if (needMail() && h.by !== ctx.uid) { location.hash = "#/profile"; return toast("Paylaşılan HTML'leri açmak için profilinden e-posta ekle."); }
-  if (!ctx.admin && h.by !== ctx.uid && S.access[id] !== "granted") {
+  if (!ctx.admin && h.by !== ctx.uid && S.access[id] !== "granted" && !(h.by === ADMIN_UID && ctx.prof?.trusted)) {
     if (S.access[id] === "requested") return toast("İsteğin admin onayını bekliyor.");
     await setDoc(doc(db, "access", ctx.uid + "_" + id), { uid: ctx.uid, name: ctx.name, htmlId: id, title: h.title, status: "requested", ts: serverTimestamp() });
     S.access[id] = "requested";
@@ -1424,6 +1519,15 @@ home.addEventListener("click", async e => {
         else { await updateDoc(doc(db, "comments", id), { deleted: true, deletedAt: serverTimestamp() }); }
         break;
       }
+      case "trust": {
+        const on = d.v === "1";
+        if (!await ask(on ? d.n + " kullanıcısına şu yetkiler verilsin mi: e-posta muafiyeti, mavi tik, admin HTML'lerine onaysız giriş, HTML yükleme ve düzenlemede onaysız yayın? (Güvenlik ihlalleri yine bildirilir.)" : d.n + " kullanıcısının güvenilir yetkileri (muafiyet, mavi tik, onaysız giriş/yayın) kaldırılsın mı?", on ? "Onayla" : "Kaldır")) break;
+        const bg = ctx.S.badges || [];
+        await updateDoc(doc(db, "users", id), { trusted: on, mailExempt: on });
+        await setDoc(doc(db, "settings", "badges"), { uids: on ? (bg.includes(id) ? bg : [...bg, id]) : bg.filter(x => x !== id) }, { merge: true });
+        toast(on ? "Güvenilir yetkisi verildi." : "Güvenilir yetkisi kaldırıldı.");
+        break;
+      }
       case "mex": await updateDoc(doc(db, "users", id), { mailExempt: d.v === "1" }); break;
       case "udel": if (await ask(d.n + " ve tüm verileri kalıcı olarak silinsin mi?", "Sil")) { await wipeUser(id); toast("Kullanıcı silindi."); } break;
       case "ust": await updateDoc(doc(db, "users", id), { status: d.v, ...(d.v === "approved" ? { violationAt: null } : {}) }); break;
@@ -1457,10 +1561,10 @@ home.addEventListener("submit", async e => {
     if (h.length > 900000) return setErr("add", "HTML çok büyük (en fazla ~900 KB).");
     setErr("add");
     const ref = doc(collection(db, "htmls")), w = writeBatch(db);
-    w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp() });
+    w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp() });
     w.set(doc(db, "htmlBodies", ref.id), { html: h, by: ctx.uid });
     await w.commit();
-    if (!ctx.admin) notify("html_pending", { detail: t });
+    if (!canFree()) notify("html_pending", { detail: t });
     toast(ctx.admin ? "Yayınlandı." : "Admin onayına gönderildi.");
     location.hash = "#/mine";
   } catch (x) { f === "addf" ? setErr("add", trError(x)) : toast(trError(x)); }
@@ -1702,7 +1806,7 @@ async function openEditor(h) {
   edb.hidden = false; document.body.style.overflow = "hidden"; document.documentElement.classList.add("edo"); vvFit();
 }
 function closeEditor() { document.documentElement.classList.remove("edo"); edb.classList.remove("hc"); $("#edfb").hidden = true; edb.hidden = true; edf.srcdoc = ""; document.body.style.overflow = ""; }
-$("#edx").onclick = closeEditor;
+$("#edx").onclick = async () => { if (await ask("Çıkarsan kaydedilmemiş değişiklikler kaybolacak. Çıkılsın mı?", "Çık")) closeEditor(); };
 
 $("#eds").onclick = async () => {
   const e = ctx.ed, code = edh.value;
@@ -1713,12 +1817,12 @@ $("#eds").onclick = async () => {
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
-      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: ctx.admin ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc } : {}) });
+      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc } : {}) });
       w.set(doc(db, "htmlBodies", ref.id), { html: code, by: ctx.uid });
       await w.commit();
-      if (!ctx.admin) notify("html_pending", { detail: t });
+      if (!canFree()) notify("html_pending", { detail: t });
       closeEditor(); location.hash = "#/mine";
-      if (ctx.admin) toast("Yayınlandı."); else await inform("HTML admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylı bir içeriğin sonradan gizlice değiştirilip diğer kullanıcılara zararlı kod gösterilmesini önlemek için böyle yapıyoruz. Onaylanana kadar başkaları göremez.");
+      if (canFree()) toast("Yayınlandı."); else await inform("HTML admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylı bir içeriğin sonradan gizlice değiştirilip diğer kullanıcılara zararlı kod gösterilmesini önlemek için böyle yapıyoruz. Onaylanana kadar başkaları göremez.");
       return;
     }
     const ch = t !== e.h.title || d !== (e.h.desc || "") || code !== e.code;
@@ -1727,14 +1831,14 @@ $("#eds").onclick = async () => {
     if (ch || fchg) {
       const w = writeBatch(db);
       if (ch) {
-        w.update(doc(db, "htmls", e.id), { title: t, desc: d, ...(ctx.admin ? {} : { status: "pending" }), ...st });
+        w.update(doc(db, "htmls", e.id), { title: t, desc: d, ...(canFree() ? {} : { status: "pending" }), ...st });
         w.update(doc(db, "htmlBodies", e.id), { html: code });
       } else w.update(doc(db, "htmls", e.id), st);
       await w.commit();
-      if (ch && !ctx.admin) notify("html_pending", { detail: t });
+      if (ch && !canFree()) notify("html_pending", { detail: t });
     }
     closeEditor();
-    if (ch && !ctx.admin) await inform("Düzenlemen kaydedildi ve tekrar admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylanana kadar başkaları göremez."); else toast("Kaydedildi.");
+    if (ch && !canFree()) await inform("Düzenlemen kaydedildi ve tekrar admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylanana kadar başkaları göremez."); else toast("Kaydedildi.");
   } catch (x) { toast(trError(x)); }
 };
 
@@ -1774,13 +1878,12 @@ function toAvatar(file) {
     img.src = u;
   });
 }
-const avatarBlock = () => `<button class="avbtn" type="button" data-a="avpick" aria-label="Profil fotoğrafı">${avHtml(ctx.uid, ctx.name, "avbig")}</button><p class="muted" style="margin:0 0 12px;font-size:12px">Fotoğraf eklemek için simgeye dokun.</p>${avPh(ctx.uid) ? '<button type="button" class="btn-ghost sm" data-a="avrm" style="margin-bottom:14px">Fotoğrafı kaldır</button>' : ""}<input id="avf" type="file" accept="image/*" hidden>`;
+const avatar = () => `<button class="avbtn" type="button" data-a="avpick" aria-label="Profil fotoğrafı">${avHtml(ctx.uid, ctx.name, "avbig")}</button><p class="muted" style="margin:0 0 12px;font-size:12px">Fotoğraf eklemek için simgeye dokun.</p>${avPh(ctx.uid) ? '<button type="button" class="btn-ghost sm" data-a="avrm" style="margin-bottom:14px">Fotoğrafı kaldır</button>' : ""}<input id="avf" type="file" accept="image/*" hidden>`;
 home.addEventListener("change", async e => {
   if (e.target.id !== "avf" || !e.target.files[0]) return;
   try { await setDoc(doc(db, "profiles", ctx.uid), { photoURL: await toAvatar(e.target.files[0]) }); toast("Fotoğraf kaydedildi."); }
   catch (x) { toast(trError(x)); }
 });
-const avatar = avatarBlock;
 function avatarUpd() {
   $("#sname").textContent = ctx.prof?.fullName || ctx.name || "";
   const h = $("#hav"); if (h) h.innerHTML = avHtml(ctx.uid, ctx.name, "av hv");
@@ -1807,7 +1910,7 @@ function notesList() {
   return l.length ? l.map(n => `<div class="row2${n.pinned ? " np" : ""}"><div><b>${n.pinned ? "📌 " : ""}${esc(n.title || "Başlıksız")}</b><small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="npin" data-id="${n.id}">${n.pinned ? "Sabiti kaldır" : "Sabitle"}</button><button data-a="nedit" data-id="${n.id}">Düzenle</button><button data-a="ndel" data-id="${n.id}">Sil</button></div></div>`).join("") : empty();
 }
 
-PAGES.home = () => `<div class="hi">Merhaba, <b class="sig">${esc((ctx.prof?.fullName || ctx.name || "").split(" ")[0])}</b></div><input id="sq" class="sq" type="search" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off"><div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
+PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
 
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
