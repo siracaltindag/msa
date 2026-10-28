@@ -831,12 +831,25 @@ async function signIn(email, password) {
   await ready;
   let ems = [toMail(email)];
   if (!email.includes("@")) { const m = await getDoc(doc(db, "usernames", slug(email))).catch(() => null); if (m?.exists() && m.data().email !== ems[0]) ems.unshift(m.data().email); }
+  const byName = !email.includes("@") || isFake(email);
   let user;
-  for (let i = 0; i < ems.length; i++) {
-    try { ({ user } = await signInWithEmailAndPassword(auth, ems[i], password)); break; }
-    catch (x) { if (i === ems.length - 1 || !["auth/invalid-credential", "auth/user-not-found", "auth/wrong-password"].includes(x.code)) throw x; }
-  }
+  regBusy = true;
+  try {
+    for (let i = 0; i < ems.length; i++) {
+      try { ({ user } = await signInWithEmailAndPassword(auth, ems[i], password)); break; }
+      catch (x) { if (i === ems.length - 1 || !["auth/invalid-credential", "auth/user-not-found", "auth/wrong-password"].includes(x.code)) throw x; }
+    }
+    if (byName && user.uid !== ADMIN_UID) {
+      const s = await getDoc(doc(db, "users", user.uid)).catch(() => null), cur = s?.exists() ? s.data().username : "";
+      const typed = email.includes("@") ? email.split("@")[0] : slug(email);
+      if (cur && slug(cur) !== typed) {
+        await signOut(auth).catch(() => {});
+        const x = new Error("old-username"); x.code = "auth/invalid-credential"; throw x;
+      }
+    }
+  } finally { regBusy = false; }
   updateDoc(doc(db, "users", user.uid), { lastLogin: serverTimestamp() }).catch(() => {});
+  await resolve(auth.currentUser);
 }
 
 async function signUp({ username, password, remail, fullName }) {
@@ -1029,7 +1042,7 @@ function hcard(h) {
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by)}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
 
@@ -1857,8 +1870,8 @@ async function changePassword(cur, nw) {
   await updatePassword(u, nw);
 }
 
-const vbSvg = k => `<svg viewBox="0 0 24 24" width="16" height="16" fill="${PAL[1]}" aria-label="Onaylı Hesap" style="vertical-align:-3px;margin-left:3px"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
-const vb = uid => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg() : "";
+const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="${PAL[1]}" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
+const vb = (uid, z) => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg(z) : "";
 const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
@@ -1919,7 +1932,7 @@ PAGES.settings = () => {
 };
 
 
-const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || ctx.name)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
+const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || ctx.name)}${vb(ctx.uid, 26)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
 PAGES.profile = () => {
   const p = ctx.prof || {};
   return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" autocomplete="off" autocapitalize="none">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
