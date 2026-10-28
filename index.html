@@ -1922,7 +1922,7 @@ PAGES.settings = () => {
 const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || ctx.name)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
 PAGES.profile = () => {
   const p = ctx.prof || {};
-  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" readonly title="Kullanıcı adı Ayarlar'dan değiştirilir">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
+  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" autocomplete="off" autocapitalize="none">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
 };
 
 home.addEventListener("input", e => {
@@ -1994,6 +1994,19 @@ home.addEventListener("change", async e => {
   ctx.du = e.target.value || "all"; loadProf(); render();
 });
 
+async function syncName(uid, nm) {
+  let ok = true;
+  for (const [c, f, k] of [["htmls", "by", "byName"], ["comments", "uid", "name"], ["access", "uid", "name"]]) {
+    try {
+      const q = await getDocs(query(collection(db, c), where(f, "==", uid)));
+      const rows = q.docs.filter(d => d.data()[k] !== nm);
+      for (let i = 0; i < rows.length; i += 400) { const w = writeBatch(db); rows.slice(i, i + 400).forEach(d => w.update(d.ref, { [k]: nm })); await w.commit(); }
+    } catch { ok = false; }
+  }
+  try { await updateDoc(doc(db, "chats", uid), { name: nm }); } catch {}
+  return ok;
+}
+
 home.addEventListener("submit", async e => {
   const f = e.target.id;
   if (!["pf", "pwf", "dlf", "nf", "anf"].includes(f)) return;
@@ -2019,14 +2032,43 @@ home.addEventListener("submit", async e => {
         }
         setDoc(doc(db, "usernames", slug(ctx.name)), { uid: ctx.uid, email: n.contactEmail }).catch(() => {});
       }
+      if (ch.includes("username") && slug(n.username) !== slug(ctx.name)) {
+        const t = await getDoc(doc(db, "usernames", slug(n.username))).catch(() => null);
+        if (t?.exists() && t.data().uid !== ctx.uid) return setErr("pf", "Bu kullanıcı adı kullanılıyor.");
+        const u1 = auth.currentUser, ne = slug(n.username) + MAILDOM;
+        if (isFake(u1.email)) {
+          try { await updateEmail(u1, ne); }
+          catch (x) {
+            if (x.code === "auth/requires-recent-login") {
+              const pw = await askPass("Kullanıcı adını değiştirmek için mevcut şifreni gir.");
+              if (!pw) return;
+              try { await reauthenticateWithCredential(u1, EmailAuthProvider.credential(u1.email, pw)); await updateEmail(u1, ne); }
+              catch (y) {
+                if (y.code === "auth/invalid-credential" || y.code === "auth/wrong-password") return setErr("pf", "Şifre hatalı.");
+                if (y.code !== "auth/operation-not-allowed") return setErr("pf", trError(y));
+              }
+            } else if (x.code !== "auth/operation-not-allowed") return setErr("pf", trError(x));
+          }
+        }
+      }
+      let synced = true;
       const w = writeBatch(db);
       w.update(doc(db, "users", ctx.uid), Object.fromEntries(ch.map(k => [k, n[k]])));
       ch.forEach(k => w.set(doc(collection(db, "profileHistory", ctx.uid, "items")), { field: k, old: o[k] || "", new: n[k], ts: serverTimestamp() }));
       await w.commit();
-      if (ch.includes("username")) { await updateProfile(auth.currentUser, { displayName: n.username }); ctx.name = n.username; }
+      if (ch.includes("username")) {
+        await updateProfile(auth.currentUser, { displayName: n.username });
+        const ok = slug(ctx.name), nk = slug(n.username);
+        if (ok !== nk) {
+          await setDoc(doc(db, "usernames", nk), { uid: ctx.uid, email: auth.currentUser.email });
+          deleteDoc(doc(db, "usernames", ok)).catch(() => {});
+        }
+        ctx.name = n.username;
+        synced = await syncName(ctx.uid, n.username);
+      }
       Object.assign(ctx.prof, Object.fromEntries(ch.map(k => [k, n[k]])));
       $("#hname").textContent = ctx.name; avatarUpd(); render();
-      toast(sent ? "Onay bağlantısı e-postana gönderildi." : "Profil kaydedildi.");
+      toast(sent ? "Onay bağlantısı e-postana gönderildi." : synced ? "Profil kaydedildi." : "Profil kaydedildi; eski paylaşım ve yorumlardaki ad güncellenemedi.");
       if (sent) setErr("pf", "Onay e-postası " + n.contactEmail + " adresine gönderildi. Gelen kutunu ve spam klasörünü kontrol et.", true);
     }
     if (f === "pwf") {
