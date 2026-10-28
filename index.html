@@ -1038,11 +1038,11 @@ const empty = (b, m) => `<div class="emp"><svg class="ic" viewBox="0 0 24 24"><p
 const phd = t => `<p class="phd">${t}</p>`;
 
 function hcard(h) {
-  const S = ctx.S, n = S.likes.filter(l => l.htmlId === h.id).length;
+  const S = ctx.S, n = S.likes.filter(l => l.htmlId === h.id).length, cc = Math.max(0, h.cc || 0);
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("fav", fv, "star")}${B("cm", 0, "msg")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", cc ? `<i>${cc}</i>` : "")}${B("fav", fv, "star")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
 
@@ -1247,6 +1247,15 @@ async function loadProf() {
   if (ctx.r === "admin" && ctx.at === "data") render();
 }
 
+const bumpCc = (id, k) => { if (id && k) updateDoc(doc(db, "htmls", id), { cc: increment(k) }).catch(() => {}); };
+async function recountCc() {
+  try {
+    const cs = await getDocs(collection(db, "comments")), cnt = {};
+    cs.docs.forEach(d => { const x = d.data(); if (!x.deleted && x.htmlId) cnt[x.htmlId] = (cnt[x.htmlId] || 0) + 1; });
+    const hs = await getDocs(collection(db, "htmls")), rows = hs.docs.filter(d => (d.data().cc || 0) !== (cnt[d.id] || 0));
+    for (let i = 0; i < rows.length; i += 400) { const w = writeBatch(db); rows.slice(i, i + 400).forEach(d => w.update(d.ref, { cc: cnt[d.id] || 0 })); await w.commit(); }
+  } catch {}
+}
 function startData() {
   const S = ctx.S, c = n => collection(db, n), map = s => s.docs.map(d => ({ id: d.id, ...d.data() }));
   const sub = (q, fn) => ctx.subs.push(onSnapshot(q, fn, () => {}));
@@ -1272,6 +1281,7 @@ function startData() {
     sub(query(c("htmls"), where("status", "==", "pending")), s => { S.pend = map(s).filter(x => !x.deleted); rf(); });
     sub(query(c("access"), where("status", "==", "requested")), s => { S.reqs = map(s); rf(); });
     sub(query(c("notifications"), orderBy("createdAt", "desc"), limit(30)), s => { S.notifs = map(s); notifRender(); });
+    recountCc();
   }
 }
 
@@ -1417,32 +1427,41 @@ document.addEventListener("click", e => {
 });
 
 /* Admin HTML'leri için kopyalama caydırıcıları */
-function protect(html) {
+function protect(html, names = []) {
   const key = Array.from(crypto.getRandomValues(new Uint8Array(12)));
   const enc = src => { const b = new TextEncoder().encode(src); let bin = ""; for (let i = 0; i < b.length; i++) bin += String.fromCharCode(b[i] ^ key[i % key.length]); return btoa(bin); };
   const wrap = src => '<script>(function(k,d){var s="",i=0,b=atob(d);for(;i<b.length;i++)s+=String.fromCharCode(b.charCodeAt(i)^k[i%k.length]);var e=document.createElement("script");e.text=decodeURIComponent(escape(s));(document.head||document.documentElement).appendChild(e);e.parentNode.removeChild(e)})(' + JSON.stringify(key) + ',"' + enc(src) + '")<\/script>';
   html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (m, a, code) =>
     /\bsrc\s*=/i.test(a) || !code.trim() || (/\btype\s*=/i.test(a) && !/\btype\s*=\s*["']?(text|application)\/javascript/i.test(a)) ? m : wrap(code));
   html = html.replace(/<!--(?!\[|>)[\s\S]*?-->/g, "");
+  const sigs = [...new Set(["MSA", ...names].map(x => String(x || "").trim()).filter(x => x.length >= 2))].sort((a, b) => b.length - a.length);
+  if (sigs.length) {
+    const re = new RegExp(sigs.map(x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gi");
+    const zones = /(<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>|<textarea\b[\s\S]*?<\/textarea>|<title\b[\s\S]*?<\/title>|<svg\b[\s\S]*?<\/svg>|<option\b[\s\S]*?<\/option>|<noscript\b[\s\S]*?<\/noscript>|<[^>]*>)/i;
+    html = html.split(zones).map((p, i) => i % 2 ? p : p.replace(re, m => '<span data-q="' + [...m].map(c => c.charCodeAt(0)).join(",") + '"></span>')).join("");
+  }
+  const codes = str => JSON.stringify([...str].map(c => c.charCodeAt(0)));
+  const markCodes = JSON.stringify([...ctx.uid].map(c => c.charCodeAt(0).toString(2).padStart(8, "0")).join("").split("").map(b => b === "1" ? 8204 : 8203));
   const who = (ctx.name || "") + " · " + new Date().toLocaleDateString("tr-TR");
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="280" height="150"><text x="14" y="84" transform="rotate(-24 140 75)" font-family="sans-serif" font-size="14" font-weight="600" fill="#888">' + esc(who) + '</text></svg>';
   const bg = "position:fixed;inset:0;z-index:2147483647;pointer-events:none;opacity:.1;background-image:url('data:image/svg+xml," + encodeURIComponent(svg) + "')";
   const guardJs = '(function(){var P=function(v){try{parent.postMessage({v:v},"*")}catch(e){}};' +
+    'var T=function(a){return String.fromCharCode.apply(null,a)};' +
+    '[["copyright",' + codes("MSA - Tüm hakları saklıdır") + '],["x-viewer",' + codes(ctx.uid) + ']].forEach(function(p){var m=document.createElement("meta");m.name=p[0];m.content=T(p[1]);(document.head||document.documentElement).appendChild(m)});' +
+    'var fq=function(){var q=document.querySelectorAll("span[data-q]");for(var i=0;i<q.length;i++){var c=q[i].getAttribute("data-q").split(","),s="";for(var j=0;j<c.length;j++)s+=String.fromCharCode(+c[j]);q[i].textContent=s;q[i].removeAttribute("data-q")}};' +
+    'var sg=function(){var d=document.createElement("div");d.style.cssText="position:absolute;width:0;height:0;overflow:hidden";d.textContent=String.fromCharCode(169)+T(' + markCodes + ');document.body.insertBefore(d,document.body.firstChild);fq()};' +
     '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu"&&!(e.pointerType==="touch"||e.pointerType==="pen"||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents)))P("Sag tik")},true)});' +
     'addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;if(e.key==="F12"||(c&&["u","s","p"].indexOf(k)>-1)||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>-1)){e.preventDefault();P("Kisayol: "+e.key)}},true);' +
     'var S=' + JSON.stringify(bg) + ',ob=new MutationObserver(function(){var w=document.getElementById("wm");if(!w)return mk();if(w.getAttribute("style")!==S){mk();P("Filigran degistirildi")}});' +
     'var mk=function(){var w=document.getElementById("wm");if(!w){w=document.createElement("div");w.id="wm";document.body.appendChild(w)}w.setAttribute("style",S);ob.observe(w,{attributes:true})};' +
-    'var ready=function(){mk();ob.observe(document.body,{childList:true})};' +
+    'var ready=function(){mk();sg();ob.observe(document.body,{childList:true})};' +
     'if(document.body)ready();else document.addEventListener("DOMContentLoaded",ready);' +
     'setInterval(function(){var t=performance.now();debugger;if(performance.now()-t>100)P("DevTools (iframe)")},1500)})()';
   const css = '<style>*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}@media print{html{display:none!important}}</style>';
-  const inj = '<meta name="copyright" content="MSA - Tüm hakları saklıdır"><meta name="x-viewer" content="' + esc(ctx.uid) + '">' + css + wrap(guardJs);
-  const mark = [...ctx.uid].map(c => c.charCodeAt(0).toString(2).padStart(8, "0")).join("").replace(/0/g, "\u200b").replace(/1/g, "\u200c");
-  const hid = '<div style="position:absolute;width:0;height:0;overflow:hidden">©' + mark + '</div>';
+  const inj = css + wrap(guardJs);
   if (/<head[^>]*>/i.test(html)) html = html.replace(/<head[^>]*>/i, m => m + inj);
   else if (/<html[^>]*>/i.test(html)) html = html.replace(/<html[^>]*>/i, m => m + "<head>" + inj + "</head>");
   else html = inj + html;
-  html = /<body[^>]*>/i.test(html) ? html.replace(/<body[^>]*>/i, m => m + hid) : html + hid;
   return html;
 }
 
@@ -1467,7 +1486,7 @@ async function openHtml(id, h) {
       else if (Object.keys(ld).length) fsPush();
     } catch {}
   }
-  frame.srcdoc = withShim((h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html) : b.data().html) + (ctx.admin ? "" : HOOK), ld);
+  frame.srcdoc = withShim((h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html, [h.byName]) : b.data().html) + (ctx.admin ? "" : HOOK), ld);
   viewer.hidden = false; document.body.style.overflow = "hidden"; document.body.classList.add("vw");
   guard(true);
 }
@@ -1528,8 +1547,12 @@ home.addEventListener("click", async e => {
       case "rcancel": ctx.rep = null; cmRender(); break;
       case "cdel": {
         const c = (ctx.cl || []).find(x => x.id === id);
-        if (ctx.admin) { for (const r of (ctx.cl || []).filter(x => x.parent === id)) await deleteDoc(doc(db, "comments", r.id)); await deleteDoc(doc(db, "comments", id)); }
-        else { await updateDoc(doc(db, "comments", id), { deleted: true, deletedAt: serverTimestamp() }); }
+        if (ctx.admin) {
+          const rs = (ctx.cl || []).filter(x => x.parent === id), k = rs.filter(r => !r.deleted).length + (c && !c.deleted ? 1 : 0);
+          for (const r of rs) await deleteDoc(doc(db, "comments", r.id));
+          await deleteDoc(doc(db, "comments", id)); bumpCc(ctx.cm, -k);
+        }
+        else { await updateDoc(doc(db, "comments", id), { deleted: true, deletedAt: serverTimestamp() }); if (c && !c.deleted) bumpCc(ctx.cm, -1); }
         break;
       }
       case "trust": {
@@ -1566,6 +1589,7 @@ home.addEventListener("submit", async e => {
       const x = $("#cmx").value.trim();
       if (!x || spam("c", 3000, x)) return;
       await addDoc(collection(db, "comments"), { htmlId: ctx.cm, uid: ctx.uid, name: ctx.name, text: x, parent: ctx.rep?.id || null, ts: serverTimestamp() });
+      bumpCc(ctx.cm, 1);
       $("#cmx").value = ""; ctx.rep = null; cmRender();
       return;
     }
