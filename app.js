@@ -289,7 +289,7 @@ const ROUTES = {
   add: ["HTML Ekle", "code"], mine: ["HTML'lerim", "folder"], notes: ["Notlarım", "note"],
   settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"]
 };
-const TABS = [["all", "Keşfet"], ["html", "HTML'lerim"], ["notes", "Notlarım"], ["favs", "Favoriler"]];
+const TABS = [["all", "Keşfet"], ["favs", "Favoriler"]];
 const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
 const NT = {
   new_user: n => `${esc(n.username)} kayıt oldu`,
@@ -310,7 +310,6 @@ const notify = (type, extra = {}) => addDoc(collection(db, "notifications"), {
   type, uid: auth.currentUser.uid, username: ctx.name || auth.currentUser.displayName || "", ...extra, createdAt: serverTimestamp(), read: false
 }).catch(() => {});
 
-const card = c => `<a class="card2 beam${c.gold ? " gold" : ""}" href="${c.h}">${svg(c.i)}<span>${c.t}</span></a>`;
 const navItem = r => `<a href="#/${r}" data-r="${r}" title="${ROUTES[r][0]}" class="${r === "admin" ? "gold beam" : ""}">${svg(ROUTES[r][1])}<span class="lb">${ROUTES[r][0]}</span></a>`;
 const empty = (b, m) => `<div class="emp"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg><p>${m || "Henüz içerik yok."}</p>${b ? '<a class="emb" href="#/add">İlk HTML\'ini paylaş</a>' : ""}</div>`;
 const phd = t => `<p class="phd">${t}</p>`;
@@ -420,13 +419,6 @@ async function wipeUser(id) {
 }
 
 const PAGES = {
-  home: () => {
-    const S = ctx.S, t = ctx.tab;
-    const l = t === "all" ? S.htmls : t === "html" ? S.mine : t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : [];
-    const ad = "";
-    const tabs = `<div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === t ? "on" : ""}">${n}</button>`).join("")}</div>`;
-    return tabs + (l.length || ad ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>` : empty(t === "favs" ? 0 : 1, t === "favs" ? "Henüz favori yok." : ""));
-  },
   favs: () => { const l = ctx.S.htmls.filter(h => ctx.S.prefs.favs.includes(h.id)); return phd(l.length + " favori") + (l.length ? grid(l) : empty(0, "Henüz favori yok.")); },
   mine: () => phd(ctx.S.mine.length + " HTML") + grid(ctx.S.mine),
   add: () => `<form id="addf" class="addf"><input id="ht" placeholder="Başlık" maxlength="80"><input id="hd" placeholder="Açıklama" maxlength="200"><textarea id="hh" placeholder="HTML kodu"></textarea><p class="err" id="e-add"></p><button class="btn2" type="submit"><span class="lbl">${ctx.admin ? "Yayınla" : "Onaya Gönder"}</span><i class="spin"></i></button></form>`,
@@ -1174,7 +1166,6 @@ async function changePassword(cur, nw) {
 
 const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="${PAL[1]}" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
 const vb = (uid, z) => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg(z) : "";
-const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
   const ph = avPh(uid), L = ph ? "" : esc((name || "?").charAt(0).toUpperCase());
@@ -1199,24 +1190,18 @@ home.addEventListener("change", async e => {
   try { await setDoc(doc(db, "profiles", ctx.uid), { photoURL: await toAvatar(e.target.files[0]) }); toast("Fotoğraf kaydedildi."); }
   catch (x) { toast(trError(x)); }
 });
+const hello = () => { const n = String(ctx.prof?.fullName || ctx.name || "").trim().split(/\s+/)[0]; return n ? "Merhaba, " + n : "Merhaba"; };
 function avatarUpd() {
-  $("#sname").textContent = ctx.prof?.fullName || ctx.name || "";
+  const g = $("#greet"); if (g) g.textContent = hello();
   const h = $("#hav"); if (h) h.innerHTML = avHtml(ctx.uid, ctx.name, "av hv");
 }
 
 function homeGrid() {
   const S = ctx.S, t = ctx.tab, q = (ctx.q || "").toLowerCase();
-  if (t === "notes") {
-    let n = S.notes.filter(x => !x.deleted);
-    if (q) n = n.filter(x => ((x.title || "") + " " + x.text).toLowerCase().includes(q));
-    n.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
-    return n.length ? n.map(x => `<div class="row2"><div><b>${x.pinned ? "📌 " : ""}${esc(x.title || "Başlıksız")}</b><small class="nt">${esc(x.text)}</small><small>${fmt(x.updatedAt)}</small></div><div class="btns"><button data-a="ngo" type="button">Notlarım'da aç</button></div></div>`).join("") : empty();
-  }
-  let l = t === "all" ? S.htmls : t === "html" ? S.mine : t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : [];
+  let l = t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : S.htmls;
   if (q) l = l.filter(h => (h.title + " " + (h.desc || "")).toLowerCase().includes(q));
-  const ad = "";
-  return l.length || ad
-    ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}${ad}</div>`
+  return l.length
+    ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>`
     : empty();
 }
 
@@ -1225,7 +1210,7 @@ function notesList() {
   return l.length ? l.map(n => `<div class="row2${n.pinned ? " np" : ""}"><div><b>${n.pinned ? "📌 " : ""}${esc(n.title || "Başlıksız")}</b><small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="npin" data-id="${n.id}">${n.pinned ? "Sabiti kaldır" : "Sabitle"}</button><button data-a="nedit" data-id="${n.id}">Düzenle</button><button data-a="ndel" data-id="${n.id}">Sil</button></div></div>`).join("") : empty();
 }
 
-PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="htabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
+PAGES.home = () => `<p id="greet" class="greet">${esc(hello())}</p><input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="stabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
 
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
@@ -1266,7 +1251,6 @@ const homeClick3 = async e => {
     if (d.a === "avpick") $("#avf").click();
     if (d.a === "avrm") await deleteDoc(doc(db, "profiles", ctx.uid));
     if (d.a === "vtog" && ctx.admin) { const b = ctx.S.badges || []; await setDoc(doc(db, "settings", "badges"), { uids: b.includes(d.id) ? b.filter(x => x !== d.id) : [...b, d.id] }, { merge: true }); }
-    if (d.a === "ngo") location.hash = "#/notes";
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
     if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
     if (d.a === "ndel" && await ask("Bu not silinsin mi?", "Sil")) { await updateDoc(doc(db, "notes", id), { deleted: true, deletedAt: serverTimestamp() }); }
@@ -1530,18 +1514,11 @@ startSession(({ screen, user, data }) => {
   splash.classList.add("off");
 });
 
-// @## MÜZİK BAŞLANGIÇ (silmek için bu satırdan "MÜZİK BİTİŞ" satırına kadar sil) ##@
 (() => {
-  const muzik = new Audio("-.mp3");
-  muzik.preload = "auto";
-  muzik.volume = 0.6;
-  const cal = () => {
-    muzik.currentTime = 0;
-    muzik.play().catch(() => {});
-  };
-  // Giriş Yap butonu ve yan paneldeki logo (tıklama anında çalar)
-  document.addEventListener("click", e => {
-    if (e.target.closest("#submit-wrap .btn") || e.target.closest(".logobox")) cal();
-  });
+  let t;
+  addEventListener("scroll", () => {
+    document.body.classList.add("sc");
+    clearTimeout(t);
+    t = setTimeout(() => document.body.classList.remove("sc"), 180);
+  }, { passive: true });
 })();
-// @## MÜZİK BİTİŞ ##@
