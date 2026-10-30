@@ -927,9 +927,71 @@ const homeSubmit2 = async e => {
 const PAL = ["#8b5cf6", "#3b82f6", "#06b6d4", "#22c55e", "#eab308", "#f97316", "#ef4444", "#ec4899"];
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
 const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
-let edT;
+let edT, edNT, edRows = [], edCur = 0;
+const edm = document.createElement("div"); edm.id = "edm"; edm.setAttribute("aria-hidden", "true"); edh.parentElement.prepend(edm);
+/* Satır numaraları: mantıksal satır başına bir numara, kaydırılan (sarılan) satırlar için boşluk */
+function edNum(line) {
+  if (line !== undefined) edCur = line;
+  const L = edh.value.split("\n"), w = edh.clientWidth, lh = parseFloat(getComputedStyle(edh).lineHeight) || 20;
+  if (w > 40) {
+    edm.style.width = w + "px";
+    edm.innerHTML = L.map(l => "<div>" + (esc(l) || " ") + "</div>").join("");
+    const k = edm.children; edRows = L.map((_, i) => Math.max(1, Math.round(k[i].offsetHeight / lh)));
+    edm.innerHTML = "";
+  } else edRows = L.map(() => 1);
+  edn.innerHTML = L.map((_, i) => '<div style="height:' + edRows[i] * lh + 'px">' + (edCur === i + 1 ? '<b class="cln">' + (i + 1) + "</b>" : i + 1) + "</div>").join("");
+  edn.scrollTop = edh.scrollTop;
+}
+const edNumQ = () => { cancelAnimationFrame(edNT); edNT = requestAnimationFrame(() => edNum()); };
+const edY = n => { let r = 0; for (let i = 0; i < n - 1 && i < edRows.length; i++) r += edRows[i]; return r * (parseFloat(getComputedStyle(edh).lineHeight) || 20); };
+new ResizeObserver(edNumQ).observe(edh);
 
-function hl(s) {
+/* Renklendirme: HTML (içinde JS/CSS dahil), JS/TS ve C-benzeri diller, Python/Shell/YAML, SQL, CSS, JSON, Markdown ve düz metin */
+const KW = {
+  c: "abstract as async await boolean break byte case catch char class const constructor continue debugger default defer delete do double else enum export extends extern final finally float fn for func function go goto if impl implements import in instanceof int interface internal let long match mod mut namespace new nil null of override package private protected pub public readonly ref return sealed short signed sizeof static string struct super switch this throw throws trait true false try type typedef typeof undefined union unsafe unsigned use using var virtual void volatile where while with yield echo elseif endif endwhile foreach array isset unset print require include",
+  py: "and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield None True False self cls print then fi do done esac case function export local echo source alias unset true false null",
+  sql: "select from where insert into values update set delete create alter drop table index view join left right inner outer full cross on as and or not null is in like between group by order having limit offset union all distinct case when then else end primary key foreign references default unique check constraint database use begin commit rollback"
+};
+const KWS = {}; for (const k in KW) KWS[k] = new Set(KW[k].split(" "));
+const EXT = { html: "html", htm: "html", xhtml: "html", svg: "html", xml: "html", vue: "html", css: "css", scss: "css", less: "css", json: "json", js: "c", mjs: "c", cjs: "c", jsx: "c", ts: "c", tsx: "c", java: "c", kt: "c", c: "c", h: "c", cpp: "c", hpp: "c", cs: "c", go: "c", rs: "c", php: "c", swift: "c", dart: "c", py: "py", sh: "py", bash: "py", zsh: "py", rb: "py", yml: "py", yaml: "py", toml: "py", ini: "py", env: "py", sql: "sql", md: "md", markdown: "md", txt: "" };
+let edLang = "";
+function detectLang(s) {
+  const h = s.slice(0, 4000);
+  if (/^\s*(<!doctype|<html|<head|<body|<\?xml|<svg|<[a-z][\w-]*[\s>])/i.test(h) || (/<\/?[a-z][\w-]*[^>]*>/i.test(h) && /<\/(div|p|body|html|script|style|span|a|ul|table)>/i.test(h))) return "html";
+  if (/^\s*[\[{]\s*("|\[|\{|\d|\]|\})/.test(s) && /[\]}]\s*$/.test(s)) return "json";
+  if (/^\s*#{1,6}\s|^\s*[-*]\s+\S|^```/m.test(h) && !/[{};]\s*$/m.test(h)) return "md";
+  if (/^\s*(select|insert|update|delete|create|alter|drop)\s/im.test(h)) return "sql";
+  if (/^\s*(def |class \w+(\(.*\))?:|import \w+|from \w+ import|#!\/|[\w.-]+:\s)/m.test(h) && !/[{};]\s*$/m.test(h)) return "py";
+  if (/(^|\n)\s*[^{}\n]+\{[^{}]*:[^{}]*\}/.test(h) && !/\b(function|const|let|var|=>)\b/.test(h)) return "css";
+  return "c";
+}
+function hlCode(s, f) {
+  if (f === "md") return s.split("\n").map(l => /^\s*(#{1,6}\s|>|```)/.test(l) ? `<i class="${/^\s*#/.test(l) ? "k" : "c"}">${esc(l)}</i>` : esc(l).replace(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/g, '<i class="s">$1</i>').replace(/^(\s*(?:[-*+]|\d+\.)\s)/, '<i class="t">$1</i>')).join("\n");
+  if (!f) return esc(s);
+  const sq = `"(?:\\\\[\\s\\S]|[^"\\\\\\n])*"?|'(?:\\\\[\\s\\S]|[^'\\\\\\n])*'?`;
+  const alt = f === "css" ? ["\\/\\*[\\s\\S]*?(?:\\*\\/|$)", sq, "#[0-9a-fA-F]{3,8}\\b|-?\\d[\\d.]*(?:px|em|rem|vh|vw|%|s|ms|deg|fr)?", "@[\\w-]+|[\\w-]+(?=\\s*:)"]
+    : f === "json" ? ["(?!)", '"(?:\\\\.|[^"\\\\\\n])*"?', "-?\\d[\\d.eE+-]*", "\\b(?:true|false|null)\\b"]
+    : f === "py" ? ["#[^\\n]*", '"""[\\s\\S]*?(?:"""|$)|\'\'\'[\\s\\S]*?(?:\'\'\'|$)|' + sq, "\\b\\d[\\w.]*", "[A-Za-z_$][\\w$]*"]
+    : f === "sql" ? ["--[^\\n]*|\\/\\*[\\s\\S]*?(?:\\*\\/|$)", sq, "\\b\\d[\\w.]*", "[A-Za-z_][\\w]*"]
+    : ["\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?(?:\\*\\/|$)", sq + "|`(?:\\\\[\\s\\S]|[^`\\\\])*`?", "\\b\\d[\\w.]*", "[A-Za-z_$][\\w$]*"];
+  const re = new RegExp(`(${alt[0]})|(${alt[1]})|(${alt[2]})|(${alt[3]})`, "g"), kw = KWS[f === "sql" ? "sql" : f === "py" ? "py" : "c"];
+  let o = "", i = 0, m;
+  while ((m = re.exec(s))) {
+    if (m[0] === "") { re.lastIndex++; continue; }
+    o += esc(s.slice(i, m.index)); i = m.index + m[0].length;
+    const t = m[0], e = esc(t);
+    if (m[1]) o += `<i class="c">${e}</i>`;
+    else if (m[2]) o += f === "json" && /^\s*:/.test(s.slice(i)) ? `<i class="a">${e}</i>` : `<i class="s">${e}</i>`;
+    else if (m[3]) o += `<i class="n">${e}</i>`;
+    else if (f === "css") o += t[0] === "@" ? `<i class="k">${e}</i>` : `<i class="a">${e}</i>`;
+    else if (f === "json") o += `<i class="k">${e}</i>`;
+    else o += kw.has(f === "sql" ? t.toLowerCase() : t) ? `<i class="k">${e}</i>` : e;
+  }
+  return o + esc(s.slice(i));
+}
+function hl(s, f) {
+  f = f || edLang || detectLang(s);
+  if (f !== "html") return hlCode(s, f);
   const tag = t => {
     const m = t.match(/^(<\/?!?)([\w:-]*)([\s\S]*?)(\/?>?)$/);
     const a = m[3].replace(/([\w:@.-]+)(\s*=\s*)?("[^"]*"|'[^']*'|[^\s"'>]+)?|([\s\S])/g,
@@ -947,7 +1009,12 @@ function hl(s) {
         const c = s[j];
         if (q) { if (c === q) q = ""; } else if (c === '"' || c === "'") q = c; else if (c === ">") { j++; break; }
       }
-      o += tag(s.slice(i, j)); i = j;
+      const tg = s.slice(i, j); o += tag(tg); i = j;
+      const sm = tg.match(/^<(script|style)\b/i);
+      if (sm && !/\/>$/.test(tg)) {
+        const mm = s.slice(i).search(new RegExp("</" + sm[1] + "\\b", "i")), k = mm < 0 ? s.length : i + mm;
+        o += hlCode(s.slice(i, k), sm[1].toLowerCase() === "style" ? "css" : /json/i.test(tg) ? "json" : "c"); i = k;
+      }
     } else {
       let j = s.indexOf("<", i + 1); if (j < 0) j = s.length;
       o += esc(s.slice(i, j)); i = j;
@@ -959,7 +1026,8 @@ function hl(s) {
 function edSync() {
   const v = edh.value;
   edpre.innerHTML = (v.length > 120000 ? esc(v) : hl(v)) + "\n";
-  edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
+  if ($("#edfb").hidden) edCur = 0;
+  edNumQ();
   clearTimeout(edT);
   edT = setTimeout(() => edf.srcdoc = withShim(v), 300);
   if (typeof edFind === "function" && !$("#edfb").hidden) edFind(true);
@@ -983,7 +1051,7 @@ async function edLoad(f) {
   try {
     const buf = await f.arrayBuffer(); let t;
     try { t = new TextDecoder("utf-8", { fatal: true }).decode(buf); } catch { t = new TextDecoder("windows-1254").decode(buf); }
-    edh.value = cleanCode(t); edh.scrollTop = edh.scrollLeft = 0; edSync();
+    edLang = EXT[(f.name.split(".").pop() || "").toLowerCase()] ?? ""; edh.value = cleanCode(t); edh.scrollTop = edh.scrollLeft = 0; edSync();
     { const e = ctx.ed; if (!(e.mt ?? e.h.title)) { const m = t.match(/<title[^>]*>([\s\S]*?)<\/title>/i); e.mt = ((m && m[1].trim()) || f.name.replace(/\.[^.]+$/, "")).slice(0, 80); } }
     edb.classList.remove("pv"); $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
     toast("Dosya yüklendi.");
@@ -1003,7 +1071,7 @@ const hgo = d => {
   let b = 0; while (b < m - a && o[o.length - 1 - b] === v[v.length - 1 - b]) b++;
   const c = v.length - b; hi = n;
   edh.focus({ preventScroll: true }); edh.value = v; edh.setSelectionRange(c, c); edSync(); updUR();
-  const lh = parseFloat(getComputedStyle(edh).lineHeight) || 18, y = v.slice(0, c).split("\n").length * lh;
+  edNum(); const lh = parseFloat(getComputedStyle(edh).lineHeight) || 18, y = edY(v.slice(0, c).split("\n").length + 1);
   edh.scrollLeft = sl;
   edh.scrollTop = (y < st + lh || y > st + edh.clientHeight - 2 * lh) ? Math.max(0, y - edh.clientHeight / 2) : st;
 };
@@ -1040,7 +1108,7 @@ function edMark() {
   const bar = !$("#edfb").hidden, f = $("#edfind").value, v = edh.value;
   if (!bar || !f || !fm.length) {
     edmk.innerHTML = ""; $("#edfi").textContent = bar && f ? "Bulunamadı" : "";
-    if (edn.querySelector("b")) edn.textContent = Array.from({ length: v.split("\n").length }, (_, i) => i + 1).join("\n");
+    if (edCur) edNum(0);
     return;
   }
   const cur = fm[fi], L = f.length, ls = v.lastIndexOf("\n", cur - 1) + 1;
@@ -1049,17 +1117,14 @@ function edMark() {
   edmk.innerHTML = seg(0, ls) + '<span class="cl">' + seg(ls, le) + "</span>" + seg(le, v.length) + "\n";
   const line = v.slice(0, cur).split("\n").length;
   $("#edfi").textContent = (fi + 1) + "/" + fm.length + " · Satır " + line + " · Sütun " + (cur - ls + 1);
-  edn.innerHTML = Array.from({ length: v.split("\n").length }, (_, i) => i + 1 === line ? '<b class="cln">' + (i + 1) + "</b>" : i + 1).join("\n");
+  edNum(line);
   edmk.scrollTop = edh.scrollTop; edmk.scrollLeft = edh.scrollLeft; edn.scrollTop = edh.scrollTop;
 }
 function edGo() {
   if (!fm.length) return;
   const v = edh.value, cur = fm[fi], ls = v.lastIndexOf("\n", cur - 1) + 1, line = v.slice(0, cur).split("\n").length;
   const cs = getComputedStyle(edh), lh = parseFloat(cs.lineHeight) || 20;
-  const cx = document.createElement("canvas").getContext("2d"); cx.font = cs.fontSize + " " + cs.fontFamily;
-  const x = (cur - ls) * cx.measureText("0").width;
-  edh.scrollTop = Math.max(0, (line - 1) * lh - edh.clientHeight * 0.2);
-  if (x < edh.scrollLeft || x > edh.scrollLeft + edh.clientWidth - 80) edh.scrollLeft = Math.max(0, x - edh.clientWidth / 3);
+  edh.scrollTop = Math.max(0, edY(line) - edh.clientHeight * 0.2);
 }
 const edStep = d => { if (!fm.length) return; fi = (fi + d + fm.length) % fm.length; edMark(); edGo(); };
 $("#edfbt").onclick = () => { const b = $("#edfb"); b.hidden = !b.hidden; if (!b.hidden) { hHead(true); $("#edfind").focus(); } edFind(); edGo(); };
@@ -1092,7 +1157,7 @@ edh.addEventListener("keydown", e => {
     if (e.touches.length !== 2 || !d0) return;
     e.preventDefault();
     const f = Math.min(30, Math.max(9, Math.round(f0 * dist(e.touches) / d0 * 2) / 2));
-    edb.style.setProperty("--fs", f + "px"); edb.style.setProperty("--lh", Math.round(f * 1.55) + "px");
+    edb.style.setProperty("--fs", f + "px"); edb.style.setProperty("--lh", Math.round(f * 1.55) + "px"); edNumQ();
   }, { passive: false });
   edh.addEventListener("touchend", () => { d0 = 0; });
 }

@@ -16,7 +16,7 @@ body::after{content:"";position:fixed;inset:-50%;z-index:-1;pointer-events:none;
 @keyframes drift{to{transform:translate(20%,15%) rotate(25deg)}}
 #splash{position:fixed;inset:0;z-index:40;display:grid;place-items:center;transition:opacity .5s}
 #splash.off{opacity:0;pointer-events:none}
-#splash img{height:48px;width:auto;animation:zoomg 2s ease-in-out infinite}
+#splash img{width:auto;animation:zoomg 2s ease-in-out infinite}
 @keyframes zoomg{0%,100%{transform:scale(.85);opacity:.5;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}50%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}52%{transform:scale(1.15) translate(-3px,1px) skewX(-6deg);opacity:1;filter:blur(0) drop-shadow(-3px 0 #b9a4ff) drop-shadow(3px 0 #00e5ff)}54%{transform:scale(1.15) translate(3px,-1px) skewX(5deg);opacity:1;filter:blur(0) drop-shadow(3px 0 #b9a4ff) drop-shadow(-3px 0 #00e5ff)}56%{transform:scale(1.15) translate(-2px,0);opacity:1;filter:blur(0) drop-shadow(-2px 0 #b9a4ff) drop-shadow(2px 0 #00e5ff)}58%{transform:scale(1.15);opacity:1;filter:blur(0) drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}}
 @media (prefers-reduced-motion:reduce){#splash img{animation:none}}
 @keyframes breathe{50%{opacity:.35;transform:scale(.94)}}
@@ -329,7 +329,6 @@ html.edo *,html.edo *::before,html.edo *::after,html.edo::after,html.edo::before
   #shell.collapsed #side{width:72px}
   #shell.collapsed .lb{opacity:0;transform:translateX(-10px)}
   #shell.collapsed .brand{justify-content:center;padding:0}
-  #shell.collapsed .navrow{flex-direction:column}
     #shell.collapsed #collapse .ic{transform:rotate(180deg)}
 }
 @media(max-width:860px){
@@ -488,7 +487,7 @@ select{color-scheme:dark}
 #edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:#3d404c!important}
 #submit-wrap .btn{color:#fff;text-shadow:0 1px 6px rgba(40,20,120,.5)}
 #submit-wrap .btn::after{background:linear-gradient(120deg,#7c4dff 0%,#3b8cff 50%,#14d6c0 100%);border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -6px 14px rgba(20,40,160,.3);-webkit-backdrop-filter:none;backdrop-filter:none}
-#eds,#edel,#edx{width:96px!important;height:40px!important;padding:0!important;flex:none;text-align:center}
+#eds,#edel,#edx{width:68px!important;height:40px!important;padding:0!important;flex:none;text-align:center}
 #edx{background:#f07a1a!important}
 .edup .btn-ghost{width:100px!important;padding:0!important;text-align:center;flex:none;height:30px!important}
 #submit-wrap::before, #submit-wrap .btn::before{background: conic-gradient(from var(--angle), transparent 0 50%, #7c4dff 60%, #3b8cff 78%, #14d6c0 92%, #fff 100%)}
@@ -515,4 +514,12 @@ body.sc *,body.sc *::before,body.sc *::after,body.sc::after{animation-play-state
   #shell.collapsed .side-in a .lb{width:0;overflow:hidden}
   #shell.collapsed .lob{margin:0}
 }
-#eds,#edel,#edx{width:68px!important}
+
+/* Editör: uzun satırlar yana taşmadan alt satıra sarılır; satır numarası yalnızca satır başında */
+#edpre,#edh,#edmk{white-space:pre-wrap;overflow-wrap:anywhere}
+#edh{overflow-x:hidden}
+#edn{white-space:normal}
+#edn div{white-space:pre}
+#edm{position:absolute;top:0;left:0;z-index:-1;visibility:hidden;pointer-events:none;margin:0;padding:0 12px;border:0;box-sizing:border-box;font:var(--fs)/var(--lh) ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:0;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:2}
+#edpre .k{color:#c58bff}
+#edpre .n{color:#ffb35c}
