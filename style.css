@@ -507,3 +507,12 @@ body.sc *,body.sc *::before,body.sc *::after,body.sc::after{animation-play-state
   #splash img{height:clamp(110px,18vh,200px)}
 }
 @media(min-width:861px){#sq{max-width:none;width:100%}}
+#sq{max-width:none;width:100%}
+@media(min-width:861px){
+  #shell.collapsed .navrow{flex-direction:column;align-items:center;gap:8px}
+  #shell.collapsed .navrow nav{width:100%}
+  #shell.collapsed .side-in a{justify-content:center;padding:0;gap:0}
+  #shell.collapsed .side-in a .lb{width:0;overflow:hidden}
+  #shell.collapsed .lob{margin:0}
+}
+#eds,#edel,#edx{width:68px!important}
