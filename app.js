@@ -1190,9 +1190,7 @@ home.addEventListener("change", async e => {
   try { await setDoc(doc(db, "profiles", ctx.uid), { photoURL: await toAvatar(e.target.files[0]) }); toast("Fotoğraf kaydedildi."); }
   catch (x) { toast(trError(x)); }
 });
-const hello = () => { const n = String(ctx.prof?.fullName || ctx.name || "").trim().split(/\s+/)[0]; return n ? "Merhaba, " + n : "Merhaba"; };
 function avatarUpd() {
-  const g = $("#greet"); if (g) g.textContent = hello();
   const h = $("#hav"); if (h) h.innerHTML = avHtml(ctx.uid, ctx.name, "av hv");
 }
 
@@ -1210,7 +1208,7 @@ function notesList() {
   return l.length ? l.map(n => `<div class="row2${n.pinned ? " np" : ""}"><div><b>${n.pinned ? "📌 " : ""}${esc(n.title || "Başlıksız")}</b><small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="npin" data-id="${n.id}">${n.pinned ? "Sabiti kaldır" : "Sabitle"}</button><button data-a="nedit" data-id="${n.id}">Düzenle</button><button data-a="ndel" data-id="${n.id}">Sil</button></div></div>`).join("") : empty();
 }
 
-PAGES.home = () => `<p id="greet" class="greet">${esc(hello())}</p><input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="stabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
+PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="stabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
 
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
@@ -1522,3 +1520,13 @@ startSession(({ screen, user, data }) => {
     t = setTimeout(() => document.body.classList.remove("sc"), 180);
   }, { passive: true });
 })();
+
+// @## MÜZİK BAŞLANGIÇ
+(() => {
+  const m = new Audio("MSA.mp3");
+  m.preload = "auto";
+  document.addEventListener("click", e => {
+    if (e.target.closest("#submit-wrap .btn, .flogo")) { m.currentTime = 0; m.play().catch(() => {}); }
+  }, true);
+})();
+// @## MÜZİK BİTİŞ
