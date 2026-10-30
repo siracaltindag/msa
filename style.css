@@ -113,7 +113,7 @@ h2{font-size:22px}
 #shell:not(.collapsed) .side-in a:hover{transform:translateX(3px)}
 }
 .side-in a.gold{color:var(--gold-light)}
-.side-in a.on{color:#fff;background:linear-gradient(90deg,color-mix(in srgb,var(--c,#fff) 24%,transparent),rgba(255,255,255,.04));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,#fff) 32%,transparent),0 0 18px -6px var(--c,#fff)}
+.side-in a.on{color:#fff;background:linear-gradient(90deg,color-mix(in srgb,var(--c,#fff) 24%,transparent),rgba(255,255,255,.04));box-shadow:0 0 22px -4px var(--c,#fff)}
 .side-in a .ic{box-sizing:border-box;flex:none;width:34px;height:34px;padding:6px;border-radius:11px;color:var(--c,#fff);stroke:currentColor;background:color-mix(in srgb,var(--c,#fff) 14%,transparent);transition:transform .3s var(--ease),background .3s}
 .side-in a[data-r=home]{--c:#7c8cff}
 .side-in a[data-r=favs]{--c:#ff6a8a}
@@ -498,3 +498,12 @@ body.inhome .crys i{display:none}
 body.sc *,body.sc *::before,body.sc *::after,body.sc::after{animation-play-state:paused!important}
 .htabs{transform:translateZ(0);-webkit-overflow-scrolling:touch}
 #content{transform:translateZ(0);backface-visibility:hidden}
+
+/* masaüstü: ekran çözünürlüğüne göre otomatik ölçekle */
+@media(min-width:861px){
+  #shell,#main{width:100%}
+  #content{padding:28px clamp(20px,3vw,56px) 96px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(clamp(150px,13vw,240px),1fr));gap:clamp(16px,1.4vw,24px)}
+  #splash img{height:clamp(110px,18vh,200px)}
+}
+@media(min-width:861px){#sq{max-width:none;width:100%}}
