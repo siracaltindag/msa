@@ -29,10 +29,11 @@ const ready = setPersistence(auth, browserLocalPersistence).catch(() => {});
 let emit = () => {}, unsub = null, regBusy = false, goneMsg = "";
 
 const MAILDOM = "@kullanici.msa";
-const slug = n => [...n.trim().toLowerCase()].map(c => /[a-z0-9_]/.test(c) ? c : "-" + c.codePointAt(0).toString(16)).join("");
+const slug = n => [...n.trim().replace(/^@+/, "").toLowerCase()].map(c => /[a-z0-9_]/.test(c) ? c : "-" + c.codePointAt(0).toString(16)).join("");
 const syncMap = u => { if (!u.email || isFake(u.email)) return; setDoc(doc(db, "usernames", slug(u.displayName || u.email.split("@")[0])), { uid: u.uid, email: u.email }).catch(() => {}); };
 const toMail = id => id.includes("@") ? id : slug(id) + MAILDOM;
 const isFake = e => (e || "").endsWith(MAILDOM);
+const atn = n => n ? "@" + String(n).replace(/^@+/, "") : "";
 const okMail = e => /^[^\s@]+@(gmail|hotmail)\.com$/i.test(e || "");
 
 const ERR = {
@@ -54,7 +55,7 @@ const trError = e => ERR[e?.code] || "Hata: " + (e?.code || e?.message);
 
 function validate(mode, v) {
   const e = {};
-  if (mode !== "register" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email) && (mode === "reset" || !v.email || v.email.includes("@")))
+  if (mode !== "register" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email) && (mode === "reset" || !v.email || v.email.replace(/^@+/, "").includes("@")))
     e.email = mode === "reset" ? "Şifre sıfırlamak için kayıtlı e-posta adresini gir (kullanıcı adı hesaplarında admine yaz)." : "Kullanıcı adı veya geçerli e-posta gir.";
   if (mode === "reset") return e;
   if (mode === "register") {
@@ -107,6 +108,8 @@ async function startSession(cb) {
 
 async function signIn(email, password) {
   await ready;
+  email = email.trim();
+  if (email.startsWith("@")) email = email.slice(1);
   let ems = [toMail(email)];
   if (!email.includes("@")) { const m = await getDoc(doc(db, "usernames", slug(email))).catch(() => null); if (m?.exists() && m.data().email !== ems[0]) ems.unshift(m.data().email); }
   const byName = !email.includes("@") || isFake(email);
@@ -132,6 +135,7 @@ async function signIn(email, password) {
 
 async function signUp({ username, password, remail, fullName }) {
   await ready;
+  username = atn(username);
   const taken = await getDoc(doc(db, "usernames", slug(username))).catch(() => null);
   if (taken?.exists()) { const t = new Error("taken"); t.code = "auth/email-already-in-use"; throw t; }
   const email = slug(username) + MAILDOM;
@@ -171,7 +175,7 @@ const setErr = (k, m = "", ok = false) => { const p = $("#e-" + k); p.textConten
 const clearErrs = () => FIELDS.forEach(k => setErr(k));
 const shake = el => { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); };
 const vals = () => ({
-  fullName: $("#fullName").value.trim().replace(/\s+/g, " "), username: $("#username").value.trim(), remail: $("#remail").value.trim().toLowerCase(), email: $("#email").value.trim(),
+  fullName: $("#fullName").value.trim().replace(/\s+/g, " "), username: $("#username").value.trim().replace(/^@+/, ""), remail: $("#remail").value.trim().toLowerCase(), email: $("#email").value.trim(),
   password: $("#password").value, password2: $("#password2").value, kvkk: $("#kvkk").checked
 });
 
@@ -282,7 +286,11 @@ const IC = {
   pin: '<path d="M9 3h6l-1 6 3 3H7l3-3zM12 12v9"/>',
   msg: '<path d="M4 5h16v11H9l-5 4z"/>',
   pen: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
-  trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>'
+  trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  pulse: '<path d="M3 12h4l3-8 4 16 3-8h4"/>'
 };
 const ROUTES = {
   home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], profile: ["Profil", "user"],
@@ -319,63 +327,90 @@ function hcard(h) {
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid;
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(h.byName || "")}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", cc ? `<i>${cc}</i>` : "")}${B("fav", fv, "star")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", cc ? `<i>${cc}</i>` : "")}${B("fav", fv, "star")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
 
+const curTab = () => ["reg", "pend", "users", "msgs", "data"].find(k => ctx.ox?.[k]) || (ctx.S.users.some(u => u.id !== ADMIN_UID && u.status === "pending") ? "reg" : ctx.S.pend.length + ctx.S.reqs.length > 0 ? "pend" : "users");
+const secOpen = k => curTab() === k;
 function adminPage() {
-  const S = ctx.S, at = ctx.at;
-  const tabs = `<div class="htabs">${[["users", "Kullanıcılar"], ["pend", "Bekleyenler"], ["msgs", "Mesajlar"], ["data", "Veri"], ["trace", "İz çöz"], ["ann", "Duyuru"]].map(([k, t]) => `<button data-at="${k}" class="${k === at ? "on" : ""}">${t}</button>`).join("")}</div>`;
-  if (at === "users") {
-    const U = S.users.filter(u => u.id !== ADMIN_UID).sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
-    const ub = u => {
-      const B = (v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(u.username)}">${t}</button>`;
-      const m = u.status === "pending" ? B("approved", "Onayla") + B("rejected", "Reddet") : u.status === "approved" ? B("blocked", "Engelle") : B("approved", "Engeli kaldır");
-      return m + `<button data-a="trust" data-id="${u.id}" data-v="${u.trusted ? "" : "1"}" data-n="${esc(u.username)}">${u.trusted ? "Güvenilirliği kaldır" : "Güvenilir yap"}</button><button data-a="udel" data-id="${u.id}" data-n="${esc(u.username)}">Sil</button>`;
-    };
-    return tabs + (U.map(u => {
-      const op = ctx.uxp === u.id, on = u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5;
-      const bd = `<em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${on ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}`;
-      return `<div class="row2 ur" data-a="uxp" data-id="${u.id}"><div class="uh">${avHtml(u.id, u.username, "av sm")}<b>${esc(u.username)}${vb(u.id)}</b> ${bd}<span class="chev">${op ? "▲" : "▼"}</span></div>${op ? `<div class="ud"><small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}${u.trusted ? " · güvenilir" : u.mailExempt ? " · e-posta muaf" : ""}</small><small>Son giriş: ${fmt(u.lastLogin)}</small><small>Son görülme: ${fmt(u.lastSeen)}</small><div class="btns ub">${ub(u)}</div></div>` : ""}</div>`;
-    }).join("") || empty());
-  }
-  if (at === "data") {
-    const du = ctx.du || "all", all = du === "all", D = ctx.dv;
-    const nm = Object.fromEntries(S.users.map(u => [u.id, u.username || u.email]));
-    const uo = `<option value="all"${all ? " selected" : ""}>Tümü</option>` + S.users.map(u => `<option value="${u.id}"${u.id === du ? " selected" : ""}>${esc(u.username || u.email)}</option>`).join("");
-    const F = { fullName: "Ad Soyad", username: "Kullanıcı adı", contactEmail: "E-posta", bio: "Biyografi", photoURL: "Fotoğraf" };
-    const ut = n => all && n ? ` <em class="bd st-approved">${esc(n)}</em>` : "", dl = x => x.deleted ? ' <em class="bd st-blocked">silindi</em>' : "";
-    const notes = S.allNotes.filter(n => all || n.uid === du).sort((a, b) => ms(b.updatedAt) - ms(a.updatedAt));
-    const htmls = S.allHtmls.filter(h => all || h.by === du).sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
-    const prof = D ? D.prof.map(p => `<div class="tick">✓ ${ut(p.u)}<b>${F[p.field] || esc(p.field)}</b>: ${esc(p.old) || "—"} → ${esc(p.new) || "—"}<small>${fmt(p.ts)}</small></div>`).join("") || empty() : '<p class="muted">Yükleniyor...</p>';
-    const body = `<h3 class="sh">Profil geçmişi <button class="btn-ghost sm" data-a="pclr" type="button">Temizle</button></h3>${prof}<h3 class="sh">Notlar</h3>${notes.map(n => `<div class="row2"><div><b>${esc(n.title || "Başlıksız")}</b>${dl(n)}${ut(nm[n.uid])}<small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="ddel" data-k="notes" data-id="${n.id}">Sil</button></div></div>`).join("") || empty()}<h3 class="sh">HTML'ler</h3>${htmls.map(x => `<div class="row2"><div><b>${esc(x.title)}</b> <em class="bd st-${x.status}">${ST[x.status] || x.status}</em>${dl(x)}${ut(nm[x.by])}<small>${fmt(x.createdAt)}</small></div><div class="btns"><button data-a="dl" data-id="${x.id}" data-n="${esc(x.title)}">İndir</button><button data-a="ddel" data-k="htmls" data-id="${x.id}">Sil</button></div></div>`).join("") || empty()}`;
-    return tabs + `<div class="lf"><select id="du">${uo}</select></div>` + body;
-  }
-  if (at === "trace") {
-    return tabs + '<form class="addf" onsubmit="return false"><p class="muted">Sızan HTML\'i veya metni buraya yapıştır. Gizli iz ve filigran yazısı aranır.</p><textarea id="trin" placeholder="Yapıştır..." style="height:160px"></textarea><button class="btn2" type="button" data-a="trace"><span class="lbl">İzi Çöz</span></button></form><div id="trout"></div>';
-  }
-  if (at === "ann") {
-    return tabs + `<form id="anf" class="addf"><textarea id="anx" maxlength="500" placeholder="Duyuru yaz..." style="height:100px"></textarea><button class="btn2" type="submit"><span class="lbl">Herkese Gönder</span><i class="spin"></i></button></form><h3 class="sh">Gönderilenler</h3>` + (S.ann.map(a => `<div class="row2"><div><small class="nt">${esc(a.text)}</small><small>${fmt(a.ts)}</small></div><div class="btns"><button data-a="andel" data-id="${a.id}">Sil</button></div></div>`).join("") || empty());
-  }
-  if (at === "msgs") {
+  const S = ctx.S;
+  const us = k => !!ctx.us?.[k];
+  const usc = (k, t, n, b) => `<div class="usc"><div class="ush2" data-a="usec" data-k="${k}"><b>${t}</b>${n ? `<em>${n}</em>` : ""}<i class="fch${us(k) ? " up" : ""}"></i></div>${us(k) ? b : ""}</div>`;
+  const msgsBody = () => {
     const C = [...S.chats].sort((a, b) => ms(b.updated) - ms(a.updated));
-    const list = C.map(c => `<div class="row2${c.id === ctx.ct ? " sel" : ""}" data-a="ch" data-id="${c.id}"><div>${avHtml(c.id, c.name, "av sm")}<b>${esc(c.name)}</b>${c.adminUnread ? ` <em class="bd st-pending">${c.adminUnread} yeni</em>` : ""}<small>${esc(c.last)}</small></div><small>${fmt(c.updated)}</small></div>`).join("");
-    const mu = '<option value="">Yeni mesaj: kullanıcı seç</option>' + S.users.filter(u => u.id !== ADMIN_UID && u.status === "approved").map(u => `<option value="${u.id}"${u.id === ctx.ct ? " selected" : ""}>${esc(u.username || u.email)}</option>`).join("");
-    const cn = ctx.ct ? esc(S.users.find(u => u.id === ctx.ct)?.username || S.chats.find(c => c.id === ctx.ct)?.name || "") : "";
+    const list = C.map(c => `<div class="row2${c.id === ctx.ct ? " sel" : ""}" data-a="ch" data-id="${c.id}"><div>${avHtml(c.id, c.name, "av sm")}<b>${esc(atn(c.name))}</b>${c.adminUnread ? ` <em class="bd st-pending">${c.adminUnread} yeni</em>` : ""}<small>${esc(c.last)}</small></div><small>${fmt(c.updated)}</small></div>`).join("");
+    const mu = '<option value="">Yeni mesaj: kullanıcı seç</option>' + S.users.filter(u => u.id !== ADMIN_UID && u.status === "approved").map(u => `<option value="${u.id}"${u.id === ctx.ct ? " selected" : ""}>${esc(u.username ? atn(u.username) : u.email)}</option>`).join("");
+    const cn = ctx.ct ? esc(atn(S.users.find(u => u.id === ctx.ct)?.username || S.chats.find(c => c.id === ctx.ct)?.name || "")) : "";
     const conv = ctx.ct ? `<h3 class="sh">${avHtml(ctx.ct, cn, "av sm")}${cn}</h3><div id="adl" class="chl">${ctx.cmsgs.map(m => bub(m, m.from === "admin")).join("")}</div><form id="adf" class="chf"><input id="adx" maxlength="500" placeholder="Cevap yaz..." autocomplete="off"><button class="ib" type="submit" aria-label="Gönder">➤</button></form><button class="btn-ghost sm" data-a="cdelall" type="button" style="margin-top:10px">Sohbeti tamamen sil</button>` : "";
-    return tabs + `<div class="lf"><select id="mu">${mu}</select></div>` + (list || empty()) + conv;
-  }
-  if (at === "pend") {
-    const hp = S.pend.map(h => `<div class="row2"><div><b>${esc(h.title)}</b><small>${esc(h.byName)} · ${esc(h.desc)}</small></div><div class="btns"><button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button><button data-a="hap" data-id="${h.id}">Onayla</button><button data-a="hrej" data-id="${h.id}">Reddet</button></div></div>`).join("");
-    const rq = S.reqs.map(r => `<div class="row2"><div><b>${esc(r.name)}</b><small>${esc(r.title)}</small></div><div class="btns"><button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="granted">İzin ver</button><button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="denied">Reddet</button></div></div>`).join("");
-    return tabs + `<h3 class="sh">HTML onayları</h3>${hp || empty()}<h3 class="sh">Açma istekleri</h3>${rq || empty()}`;
-  }
-
-  return tabs;
+    return usc("ann", "Duyuru yaz", S.ann.length, annBody) + `<div class="lf"><select id="mu">${mu}</select></div>` + (list || empty()) + conv;
+  };
+  const U = S.users.filter(u => u.id !== ADMIN_UID).sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
+  const AC = { requested: ["İstedi", "pending"], granted: ["İzinli", "approved"], denied: ["Reddedildi", "blocked"] };
+  const PF = { fullName: "Ad Soyad", username: "Kullanıcı adı", contactEmail: "E-posta", bio: "Biyografi", photoURL: "Fotoğraf" };
+  const rw = (main, btns, v) => `<div class="urw${v ? " v" : ""}"><div>${main}</div><div class="btns">${btns}</div></div>`;
+  const none = '<p class="muted">Yok</p>', loading = '<p class="muted">Yükleniyor...</p>';
+  const detail = u => {
+    const X = ctx.ux?.id === u.id ? ctx.ux : null, bg = (S.badges || []).includes(u.id), nm = esc(atn(u.username));
+    const at = (a, v) => `data-a="${a}" data-id="${u.id}" data-v="${v}" data-n="${nm}"`;
+    const SL = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
+    const sm = `<button type="button" class="swr stx s-${u.status}" data-a="usec" data-k="st"><span><small>Durum</small><b>${SL[u.status] || u.status}</b></span><i class="fch${us("st") ? " up" : ""}"></i></button>` + (us("st") ? `<div class="smo">${[["approved", "Onayla"], ["pending", "Beklet"], ["blocked", "Engelle"]].filter(x => x[0] !== u.status).map(x => `<button type="button" class="smb s-${x[0]}" ${at("ust", x[0])}>${x[1]}</button>`).join("")}</div>` : "");
+    const sw = (a, on, t, v) => `<button type="button" class="swr${on ? " on" : ""}" ${at(a, v)}><b>${t}</b><i class="tg"></i></button>`;
+    const hs = S.allHtmls.filter(h => h.by === u.id).sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
+    const ns = S.allNotes.filter(n => n.uid === u.id).sort((a, b) => ms(b.updatedAt) - ms(a.updatedAt));
+    const hl = hs.map(h => rw(`<b>${esc(h.title)}</b> <em class="bd st-${h.status}">${ST[h.status] || h.status}</em>${h.deleted ? ' <em class="bd st-blocked">silindi</em>' : ""}<small>${fmt(h.createdAt)}</small>`, `<button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button>${h.status === "pending" && !h.deleted ? `<button data-a="hap" data-id="${h.id}">Onayla</button>` : ""}<button data-a="ddel" data-k="htmls" data-id="${h.id}">Sil</button>`)).join("");
+    const al = !X?.access ? loading : X.access.map(a => rw(`<b>${esc(a.title)}</b> <em class="bd st-${(AC[a.status] || [])[1] || "pending"}">${(AC[a.status] || [a.status])[0]}</em><small>${fmt(a.ts)}</small>`, `<button data-a="acc" data-id="${a.id}" data-v="granted">İzin ver</button><button data-a="acc" data-id="${a.id}" data-v="denied">Reddet</button>`)).join("");
+    const nl = ns.map(n => rw(`<b>${esc(n.title || "Başlıksız")}</b>${n.deleted ? ' <em class="bd st-blocked">silindi</em>' : ""}<small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small>`, `<button data-a="ddel" data-k="notes" data-id="${n.id}">Sil</button>`)).join("");
+    const pl = !X?.prof ? loading : X.prof.map(p => `<div class="tick">✓ <b>${PF[p.field] || esc(p.field)}</b>: ${esc(p.old) || "—"} → ${esc(p.new) || "—"}<small>${fmt(p.ts)}</small></div>`).join("");
+    return `<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}</small><small>Son giriş: ${fmt(u.lastLogin)}</small><small>Son görülme: ${fmt(u.lastSeen)}</small>`
+      + `${sm}<div class="swl">${sw("trust", u.trusted, "Güvenilir", u.trusted ? "" : "1")}${sw("mex", u.mailExempt, "E-posta muaf", u.mailExempt ? "" : "1")}${sw("vtog", bg, "Mavi tik", "")}</div>`
+      + usc("h", "HTML'ler", hs.length, hl || none)
+      + usc("a", "Erişim istekleri", X?.access?.length, al || none)
+      + usc("n", "Notlar", ns.length, nl || none)
+      + usc("p", "Profil geçmişi", X?.prof?.length, pl || none)
+      + `<div class="btns ub">${u.status === "pending" ? `<button class="dng" ${at("ust", "rejected")}>Reddet</button>` : ""}${X?.prof?.length ? `<button data-a="uhclr" data-id="${u.id}">Geçmişi temizle</button>` : ""}<button class="dng" data-a="udel" data-id="${u.id}" data-n="${nm}">Kullanıcıyı sil</button></div>`
+      + `<button type="button" class="uclose" data-a="uxp" data-id="${u.id}"><i class="fch up"></i>Kapat</button>`;
+  };
+  const npd = S.pend.length + S.reqs.length;
+  const onl = U.filter(u => u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5).length, unr = S.chats.reduce((n, c) => n + (c.adminUnread || 0), 0);
+  const stc = (c, ic, n, t, k) => `<div class="stt${c ? " " + c : ""}${k && secOpen(k) ? " on" : ""}"${k ? ` data-a="otab" data-k="${k}"` : ""}><i class="sti">${svg(ic)}</i><b>${n}</b><span>${t}</span></div>`;
+  const regU = U.filter(u => u.status === "pending"), nreg = regU.length;
+  const stats = `<div class="ahd"><div><b>Yönetim Merkezi</b><small>${npd + nreg ? (npd + nreg) + " işlem onay bekliyor" : "Bekleyen işlem yok"} · ${onl} kişi çevrimiçi</small></div><i class="live"></i></div><div class="stg">${stc("", "user", U.length, "Kullanıcı", "users")}${stc("gold", "clock", nreg, "Onay bekleyen", "reg")}${stc("gold", "code", npd, "Bekleyen", "pend")}${stc("vio", "msg", unr, "Yeni mesaj", "msgs")}${stc("", "folder", S.allHtmls.length, "Veri", "data")}${stc("ok", "pulse", onl, "Çevrimiçi", "")}</div>`;
+  const pendBody = S.pend.map(h => rw(`<b>${esc(h.title)}</b><small>${esc(atn(h.byName))} · ${esc(h.desc)}</small>`, `<button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button><button data-a="hap" data-id="${h.id}">Onayla</button><button data-a="hrej" data-id="${h.id}">Reddet</button>`, 1)).join("")
+    + S.reqs.map(r => rw(`<b>${esc(atn(r.name))}</b><small>Erişim isteği: ${esc(r.title)}</small>`, `<button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="granted">İzin ver</button><button data-a="acc" data-id="${r.uid}_${r.htmlId}" data-v="denied">Reddet</button>`, 1)).join("");
+  const annBody = `<form id="anf" class="addf"><textarea id="anx" maxlength="500" placeholder="Duyuru yaz..." style="height:100px"></textarea><button class="btn2" type="submit"><span class="lbl">Herkese Gönder</span><i class="spin"></i></button></form>` + S.ann.map(a => rw(`<small class="nt">${esc(a.text)}</small><small>${fmt(a.ts)}</small>`, `<button data-a="andel" data-id="${a.id}">Sil</button>`)).join("");
+  const traceBody = '<form class="addf" onsubmit="return false"><p class="muted">Sızan HTML\'i veya metni buraya yapıştır. Gizli iz ve filigran yazısı aranır.</p><textarea id="trin" placeholder="Yapıştır..." style="height:160px"></textarea><button class="btn2" type="button" data-a="trace"><span class="lbl">İzi Çöz</span></button></form><div id="trout"></div>';
+  const ub = (u, v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(atn(u.username))}">${t}</button>`;
+  const regBody = regU.map(u => rw(`<b>${esc(atn(u.username))}</b>${u.violationAt ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}</small><small>${fmt(u.createdAt)}</small>`, ub(u, "approved", "Onayla") + ub(u, "rejected", "Reddet") + ub(u, "blocked", "Engelle"), 1)).join("");
+  const dataBody = usc("trace", "İz çöz", 0, traceBody) + ([...S.allHtmls].sort((a, b) => ms(b.createdAt) - ms(a.createdAt)).map(h => rw(`<b>${esc(h.title)}</b> <em class="bd st-${h.status}">${ST[h.status] || h.status}</em>${h.deleted ? ' <em class="bd st-blocked">silindi</em>' : ""}<small>${esc(atn(h.byName))} · ${fmt(h.createdAt)}</small>`, `<button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button>${h.status === "pending" && !h.deleted ? `<button data-a="hap" data-id="${h.id}">Onayla</button>` : ""}<button data-a="ddel" data-k="htmls" data-id="${h.id}">Sil</button>`, 1)).join("") || none);
+  const list = U.map(u => {
+    const op = ctx.uxp === u.id, on = u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5;
+    const bd = `<em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${on ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}`;
+    return `<div class="row2 ur"><div class="uh" data-a="uxp" data-id="${u.id}">${avHtml(u.id, u.username, "av sm")}<b>${esc(atn(u.username))}${vb(u.id)}</b> ${bd}<i class="fch${op ? " up" : ""}"></i></div>${op ? `<div class="ud">${detail(u)}</div>` : ""}</div>`;
+  }).join("") || empty();
+  const body = { reg: regBody || none, pend: pendBody || none, users: list, msgs: msgsBody(), data: dataBody }[curTab()];
+  return stats + `<div class="opn">${body}</div>`;
 }
 
 const needMail = () => !ctx.admin && !ctx.prof?.mailExempt && !okMail(ctx.prof?.contactEmail) && isFake(ctx.email);
+let atBusy = false, selfAtTried = false;
+/* Admin: @'sız eski kullanıcı adlarını gerçek @'lı yapar (kullanıcı kaydı + paylaşım, yorum, erişim ve sohbet adları) */
+async function migrateAt() {
+  if (atBusy || !ctx.admin) return;
+  const us = ctx.S.users.filter(u => u.username && !String(u.username).startsWith("@"));
+  if (!us.length) return;
+  atBusy = true;
+  try { for (const u of us) { const nm = atn(u.username); await updateDoc(doc(db, "users", u.id), { username: nm }); await syncName(u.id, nm); } }
+  catch {} finally { atBusy = false; }
+}
+/* Admin dışı kullanıcı: kendi adını bir kez @'lı yapar */
+async function selfAt(uid, name) {
+  if (selfAtTried) return; selfAtTried = true;
+  const nm = atn(name);
+  try { await updateDoc(doc(db, "users", uid), { username: nm }); await syncName(uid, nm); if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: nm }); } catch {}
+}
 function backfill() {
+  migrateAt();
   try { if (localStorage.umap2) return; } catch {}
   const us = ctx.S.users.filter(u => u.email && !isFake(u.email) && u.username);
   if (!us.length) return;
@@ -383,7 +418,6 @@ function backfill() {
   us.forEach(u => w.set(doc(db, "usernames", slug(u.username)), { uid: u.id, email: u.email }));
   w.commit().then(() => { try { localStorage.umap2 = "1"; } catch {} }).catch(() => {});
 }
-const ids = v => v === "all" ? ctx.S.users.map(u => u.id) : [v];
 async function delCol(q) {
   const s = await getDocs(q);
   for (let i = 0; i < s.docs.length; i += 400) { const w = writeBatch(db); s.docs.slice(i, i + 400).forEach(x => w.delete(x.ref)); await w.commit(); }
@@ -429,15 +463,8 @@ const PAGES = {
 
 function render() {
   const keep = ["adx", "anx"].map(i => { const x = $("#" + i); return [i, x?.value, x && document.activeElement === x]; });
-  const sl = $(".htabs")?.scrollLeft || 0;
   $("#content").innerHTML = PAGES[ctx.r]();
   keep.forEach(([i, v, f]) => { const n = $("#" + i); if (n) { if (v) n.value = v; if (f) n.focus(); } });
-  const t = $(".htabs");
-  if (t) {
-    t.scrollLeft = sl;
-    const on = t.querySelector(".on");
-    if (on) { const l = on.offsetLeft, r = l + on.offsetWidth; if (l < t.scrollLeft) t.scrollLeft = l - 8; else if (r > t.scrollLeft + t.clientWidth) t.scrollLeft = r - t.clientWidth + 8; }
-  }
   $("#adl")?.scrollTo(0, 1e9);
   xpRestore();
 }
@@ -485,6 +512,7 @@ function route() {
   ctx.r = r;
   $$("#nav a,#navb a").forEach(a => a.classList.toggle("on", a.dataset.r === r));
   $("#ptitle").textContent = ROUTES[r][0];
+  document.body.classList.toggle("adm", r === "admin");
   const c = $("#content");
   c.classList.remove("in"); void c.offsetWidth; c.classList.add("in");
   render();
@@ -506,17 +534,18 @@ function notifRender() {
   $("#nlist").innerHTML = N.length ? N.map(n => `<div class="nit${n.read ? "" : " un"} t-${n.type}" data-a="nread" data-id="${n.id}" data-k="${n.type}">${(NT[n.type] || (x => esc(x.type)))(n)}<small>${fmt(n.createdAt)}</small></div>`).join("") : '<p class="muted">Henüz bildirim yok.</p>';
 }
 
-async function loadProf() {
-  const v = ctx.du || "all", nm = Object.fromEntries(ctx.S.users.map(u => [u.id, u.username || u.email]));
-  ctx.dv = null;
+async function loadUx(id) {
+  ctx.ux = { id };
   try {
-    const ps = await Promise.all(ids(v).map(i => getDocs(query(collection(db, "profileHistory", i, "items"), orderBy("ts", "desc"), limit(100))).then(q => q.docs.map(d => ({ id: d.id, ...d.data(), u: nm[i] })))));
-    if ((ctx.du || "all") !== v) return;
-    ctx.dv = { prof: ps.flat().sort((a, b) => ms(b.ts) - ms(a.ts)).slice(0, 300) };
-  } catch (x) { toast(trError(x)); ctx.dv = { prof: [] }; }
-  if (ctx.r === "admin" && ctx.at === "data") render();
+    const [a, p] = await Promise.all([
+      getDocs(query(collection(db, "access"), where("uid", "==", id))),
+      getDocs(query(collection(db, "profileHistory", id, "items"), orderBy("ts", "desc"), limit(50)))
+    ]);
+    if (ctx.ux?.id !== id) return;
+    ctx.ux = { id, access: a.docs.map(d => ({ id: d.id, ...d.data() })).sort((x, y) => ms(y.ts) - ms(x.ts)), prof: p.docs.map(d => ({ id: d.id, ...d.data() })) };
+  } catch (x) { toast(trError(x)); ctx.ux = { id, access: [], prof: [] }; }
+  if (ctx.r === "admin" && ctx.uxp === id) render();
 }
-
 const bumpCc = (id, k) => { if (id && k) updateDoc(doc(db, "htmls", id), { cc: increment(k) }).catch(() => {}); };
 async function recountCc() {
   try {
@@ -529,8 +558,10 @@ async function recountCc() {
 function startData() {
   const S = ctx.S, c = n => collection(db, n), map = s => s.docs.map(d => ({ id: d.id, ...d.data() }));
   const sub = (q, fn) => ctx.subs.push(onSnapshot(q, fn, () => {}));
-  sub(query(c("htmls"), where("status", "==", "approved")), s => { S.htmls = map(s).filter(x => !x.deleted); rf(); });
-  sub(query(c("htmls"), where("by", "==", ctx.uid)), s => { S.mine = map(s).filter(x => !x.deleted); rf(); });
+  if (!ctx.admin) {
+    sub(query(c("htmls"), where("status", "==", "approved")), s => { S.htmls = map(s).filter(x => !x.deleted); rf(); });
+    sub(query(c("htmls"), where("by", "==", ctx.uid)), s => { S.mine = map(s).filter(x => !x.deleted); rf(); });
+  }
   sub(c("likes"), s => { S.likes = map(s); rf(); });
   sub(c("profiles"), s => {
     S.profiles = Object.fromEntries(s.docs.map(d => [d.id, d.data()]));
@@ -547,8 +578,12 @@ function startData() {
     sub(c("chats"), s => { S.chats = map(s); rf(); });
     sub(c("users"), s => { S.users = map(s); rf(); backfill(); });
     sub(c("notes"), s => { S.allNotes = map(s); rf(); });
-    sub(c("htmls"), s => { S.allHtmls = map(s); rf(); });
-    sub(query(c("htmls"), where("status", "==", "pending")), s => { S.pend = map(s).filter(x => !x.deleted); rf(); });
+    sub(c("htmls"), s => {
+      S.allHtmls = map(s);
+      const live = S.allHtmls.filter(x => !x.deleted);
+      S.htmls = live.filter(x => x.status === "approved"); S.mine = live.filter(x => x.by === ctx.uid); S.pend = live.filter(x => x.status === "pending");
+      rf();
+    });
     sub(query(c("access"), where("status", "==", "requested")), s => { S.reqs = map(s); rf(); });
     sub(query(c("notifications"), orderBy("createdAt", "desc"), limit(30)), s => { S.notifs = map(s); notifRender(); });
     recountCc();
@@ -557,9 +592,10 @@ function startData() {
 
 function buildHome(user, data) {
   const name = data?.username || user.displayName || "";
+  if (user.uid !== ADMIN_UID && data?.username && !String(data.username).startsWith("@")) selfAt(user.uid, data.username);
   if (ctx.uid === user.uid) { ctx.name = name; ctx.prof = data || {}; $("#hname").textContent = name; avatarUpd(); return; }
   ctx = {
-    uid: user.uid, admin: user.uid === ADMIN_UID, name, email: user.email, prof: data || {}, tab: "all", at: "users", subs: [], ct: "", cmsgs: [], q: "", nid: null, du: "all", dv: null,
+    uid: user.uid, admin: user.uid === ADMIN_UID, name, email: user.email, prof: data || {}, tab: "all", subs: [], ct: "", cmsgs: [], q: "", nid: null,
     S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
   };
   $("#hname").textContent = name; avatarUpd();
@@ -704,7 +740,7 @@ function protect(html, names = []) {
   html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (m, a, code) =>
     /\bsrc\s*=/i.test(a) || !code.trim() || (/\btype\s*=/i.test(a) && !/\btype\s*=\s*["']?(text|application)\/javascript/i.test(a)) ? m : wrap(code));
   html = html.replace(/<!--(?!\[|>)[\s\S]*?-->/g, "");
-  const sigs = [...new Set(["MSA", ...names].map(x => String(x || "").trim()).filter(x => x.length >= 2))].sort((a, b) => b.length - a.length);
+  const sigs = [...new Set(["MSA", ...names, ...names.map(x => String(x || "").replace(/^@+/, ""))].map(x => String(x || "").trim()).filter(x => x.length >= 2))].sort((a, b) => b.length - a.length);
   if (sigs.length) {
     const re = new RegExp(sigs.map(x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gi");
     const zones = /(<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>|<textarea\b[\s\S]*?<\/textarea>|<title\b[\s\S]*?<\/title>|<svg\b[\s\S]*?<\/svg>|<option\b[\s\S]*?<\/option>|<noscript\b[\s\S]*?<\/noscript>|<[^>]*>)/i;
@@ -764,7 +800,7 @@ async function openHtml(id, h) {
 /* Yorumlar */
 function cmRender() {
   const L = (ctx.cl || []).filter(c => ctx.admin || !c.deleted), by = (a, b) => ms(a.ts) - ms(b.ts);
-  const it = (c, l) => `<div class="cmi l${l}">${avHtml(c.uid, c.name, "av xs")}<b>${esc(c.name)}${vb(c.uid)}</b>${c.deleted ? ' <em class="bd st-blocked">kullanıcı sildi</em>' : ""} <small>${fmt(c.ts)}</small><p>${esc(c.text)}</p><div><button data-a="rep" data-id="${l ? c.parent : c.id}" data-n="${esc(c.name)}">Cevapla</button>${c.uid === ctx.uid || ctx.admin ? `<button data-a="cdel" data-id="${c.id}">Sil</button>` : ""}</div></div>`;
+  const it = (c, l) => `<div class="cmi l${l}">${avHtml(c.uid, c.name, "av xs")}<b>${esc(atn(c.name))}${vb(c.uid)}</b>${c.deleted ? ' <em class="bd st-blocked">kullanıcı sildi</em>' : ""} <small>${fmt(c.ts)}</small><p>${esc(c.text)}</p><div><button data-a="rep" data-id="${l ? c.parent : c.id}" data-n="${esc(atn(c.name))}">Cevapla</button>${c.uid === ctx.uid || ctx.admin ? `<button data-a="cdel" data-id="${c.id}">Sil</button>` : ""}</div></div>`;
   $("#cml").innerHTML = L.filter(c => !c.parent).sort(by).map(c => it(c, 0) + L.filter(r => r.parent === c.id).sort(by).map(r => it(r, 1)).join("")).join("") || '<p class="muted">Henüz yorum yok.</p>';
   $("#rep").hidden = !ctx.rep;
   $("#rep").textContent = ctx.rep ? "Cevap: " + ctx.rep.n + " (iptal için dokun)" : "";
@@ -785,15 +821,17 @@ const docClick2 = e => {
   xpOff();
 };
 const homeClick1 = async e => {
-  const b = e.target.closest("[data-a],[data-t],[data-at]");
+  const b = e.target.closest("[data-a],[data-t]");
   if (!b) return;
   const d = b.dataset, id = d.id, S = ctx.S;
   if (d.t) { ctx.tab = d.t; return render(); }
-  if (d.at) { ctx.at = d.at; if (d.at === "data") loadProf(); return render(); }
   const h = [...S.htmls, ...S.mine].find(x => x.id === id);
   try {
     switch (d.a) {
-      case "uxp": ctx.uxp = ctx.uxp === id ? null : id; render(); break;
+      case "usec": ctx.us = { ...ctx.us, [d.k]: !ctx.us?.[d.k] }; render(); break;
+      case "uxp": { const was = ctx.uxp === id; ctx.uxp = was ? null : id; ctx.us = {}; render(); if (was) $('.uh[data-id="' + id + '"]')?.scrollIntoView({ block: "nearest" }); else loadUx(id); break; }
+      case "otab": ctx.ox = { [d.k]: true }; if (d.k !== "msgs" && ctx.ct) { ctx.cmu?.(); ctx.cmu = null; ctx.ct = ""; ctx.cmsgs = []; } render(); $(".opn")?.scrollIntoView({ behavior: "smooth", block: "start" }); break;
+      case "uhclr": if (await ask("Bu kullanıcının profil geçmişi silinsin mi?", "Sil")) { await delCol(collection(db, "profileHistory", id, "items")); if (ctx.ux?.id === id) ctx.ux.prof = []; render(); } break;
       case "openh": if (h) { xpOff(); await openHtml(id, h); } break;
       case "open":
         if (!h) break;
@@ -836,15 +874,15 @@ const homeClick1 = async e => {
       }
       case "mex": await updateDoc(doc(db, "users", id), { mailExempt: d.v === "1" }); break;
       case "udel": if (await ask(d.n + " ve tüm verileri kalıcı olarak silinsin mi?", "Sil")) { await wipeUser(id); toast("Kullanıcı silindi."); } break;
-      case "ust": await updateDoc(doc(db, "users", id), { status: d.v, ...(d.v === "approved" ? { violationAt: null } : {}) }); break;
+      case "ust": ctx.us = { ...ctx.us, st: false }; await updateDoc(doc(db, "users", id), { status: d.v, ...(d.v === "approved" ? { violationAt: null } : {}) }); break;
       case "hap": await updateDoc(doc(db, "htmls", id), { status: "approved" }); break;
       case "hrej": await wipeHtml(id); break;
-      case "acc": await updateDoc(doc(db, "access", id), { status: d.v }); break;
+      case "acc": { await updateDoc(doc(db, "access", id), { status: d.v }); const r = ctx.ux?.access?.find(x => x.id === id); if (r) { r.status = d.v; render(); } break; }
       case "nall": { const w = writeBatch(db); ctx.S.notifs.filter(n => !n.read).forEach(n => w.update(doc(db, "notifications", n.id), { read: true })); await w.commit(); break; }
       case "nclr": if (await ask("Tüm bildirimler silinsin mi?", "Sil")) { await delCol(collection(db, "notifications")); toast("Bildirimler temizlendi."); } break;
       case "nread":
         await updateDoc(doc(db, "notifications", id), { read: true });
-        ctx.at = d.k === "new_user" ? "users" : d.k === "chat" ? "msgs" : "pend"; $("#notif").hidden = true;
+        ctx.ox = { [d.k === "chat" ? "msgs" : d.k === "new_user" ? "reg" : "pend"]: true }; $("#notif").hidden = true;
         if (location.hash === "#/admin") render(); else location.hash = "#/admin"; break;
     }
   } catch (x) { toast(trError(x)); }
@@ -894,7 +932,7 @@ function chatOpen() {
 }
 function chatClose() { ctx.chu?.(); ctx.chu = null; $("#chat").hidden = true; }
 $("#ask").onclick = () => {
-  if (ctx.admin) { location.hash === "#/admin" ? render() : location.hash = "#/admin"; }
+  if (ctx.admin) location.hash = location.hash === "#/admin" ? "#/home" : "#/admin";
   else $("#chat").hidden ? chatOpen() : chatClose();
 };
 
@@ -1233,7 +1271,7 @@ const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" f
 const vb = (uid, z) => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg(z) : "";
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
-  const ph = avPh(uid), L = ph ? "" : esc((name || "?").charAt(0).toUpperCase());
+  const ph = avPh(uid), L = ph ? "" : esc(String(name || "").replace(/^@+/, "").charAt(0).toUpperCase() || "?");
   return `<span class="${cls}" style="${ph ? `background:url('${ph}') center/cover` : "background:rgba(255,255,255,.12);color:#fff"}">${L}</span>`;
 };
 function toAvatar(file) {
@@ -1278,14 +1316,14 @@ PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" ent
 PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
 
 PAGES.settings = () => {
-  return `<div class="sets"><section class="scard"><h3 class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Şifre değiştir</h3><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form></section><section class="scard"><h3 class="sh"><i class="si red"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></i>Hesabı sil</h3><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form></section><section class="scard"><h3 class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></i>Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK) <span>›</span></button></section></div>`;
+  return `<div class="sets"><details class="scard fold"><summary class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Şifre değiştir<i class="fch"></i></summary><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form></details><details class="scard fold"><summary class="sh"><i class="si red"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></i>Hesabı sil<i class="fch"></i></summary><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form></details><section class="scard"><h3 class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></i>Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK) <span>›</span></button></section></div>`;
 };
 
 
-const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || ctx.name)}${vb(ctx.uid, 26)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
+const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || atn(ctx.name))}${vb(ctx.uid, 26)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
 PAGES.profile = () => {
   const p = ctx.prof || {};
-  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(ctx.name)}" autocomplete="off" autocapitalize="none">${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? ctx.name : ctx.email)}</p></div>`;
+  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><div class="atf"><span>@</span><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(String(ctx.name).replace(/^@+/, ""))}" autocomplete="off" autocapitalize="none"></div>${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? atn(ctx.name) : ctx.email)}</p></div>`;
 };
 
 home.addEventListener("input", e => {
@@ -1305,7 +1343,7 @@ const homeClick3 = async e => {
         if (!found.includes(uid)) found.push(uid);
       }
       const m = t.match(/name="x-viewer"\s+content="([^"]+)"/); if (m && !found.includes(m[1])) found.push(m[1]);
-      const nm = id => { const u = users.find(x => x.id === id); return u ? `${esc(u.username)}${u.fullName ? " (" + esc(u.fullName) + ")" : ""}` : "Kayıtlı kullanıcı bulunamadı (silinmiş olabilir)"; };
+      const nm = id => { const u = users.find(x => x.id === id); return u ? `${esc(atn(u.username))}${u.fullName ? " (" + esc(u.fullName) + ")" : ""}` : "Kayıtlı kullanıcı bulunamadı (silinmiş olabilir)"; };
       let h = found.map(id => `<div class="row2"><div><b>${nm(id)}</b><small>Kimlik: ${esc(id)}</small></div></div>`).join("");
       const vis = [...t.matchAll(/([^\n·<>]{2,40}?) · (\d{1,2}\.\d{1,2}\.\d{4})/g)].map(x => x[1].trim() + " · " + x[2]);
       if (vis.length) h += `<h3 class="sh">Görünür filigran</h3>` + [...new Set(vis)].map(v => `<div class="row2"><div><b>${esc(v)}</b></div></div>`).join("");
@@ -1335,9 +1373,6 @@ const homeClick3 = async e => {
       if (d.k === "htmls") await wipeHtml(id); else await deleteDoc(doc(db, d.k, id));
       toast("Silindi.");
     }
-    if (d.a === "pclr" && await ask("Bu kullanıcının profil geçmişi silinsin mi?", "Sil")) {
-      for (const i of ids(ctx.du || "all")) await delCol(collection(db, "profileHistory", i, "items")); if (ctx.dv) ctx.dv.prof = []; render();
-    }
   } catch (x) { toast(trError(x)); }
 };
 
@@ -1352,8 +1387,6 @@ function openAdminChat(id) {
 }
 home.addEventListener("change", async e => {
   if (e.target.id === "mu" && e.target.value) return openAdminChat(e.target.value);
-  if (e.target.id !== "du") return;
-  ctx.du = e.target.value || "all"; loadProf(); render();
 });
 
 async function syncName(uid, nm) {
@@ -1375,8 +1408,8 @@ const homeSubmit3 = async e => {
   e.preventDefault();
   try {
     if (f === "pf") {
-      const n = { fullName: $("#pfn").value.trim(), username: $("#pun").value.trim(), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
-      if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username)) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
+      const n = { fullName: $("#pfn").value.trim(), username: atn($("#pun").value.trim()), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
+      if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username.slice(1))) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
       if (n.contactEmail && !okMail(n.contactEmail)) return setErr("pf", "Geçersiz e-posta.");
       setErr("pf");
       const o = { ...ctx.prof, username: ctx.name }, ch = Object.keys(n).filter(k => (o[k] || "") !== n[k]);
