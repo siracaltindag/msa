@@ -279,13 +279,16 @@ const IC = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
   code: '<path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/>',
   folder: '<path d="M3 6h6l2 3h10v11H3z"/>',
-  note: '<path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
   heart: '<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>',
   pin: '<path d="M9 3h6l-1 6 3 3H7l3-3zM12 12v9"/>',
   msg: '<path d="M4 5h16v11H9l-5 4z"/>',
   pen: '<path d="M4 20l1-4L16 5l3 3L8 19z"/>',
+  note: '<path d="M5 3h14v18H5z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><path d="M4 4l16 16"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
   trash: '<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0"/>',
@@ -295,10 +298,10 @@ const IC = {
 const ROUTES = {
   home: ["Ana Sayfa", "home"], favs: ["Favori Uygulamalar", "star"], profile: ["Profil", "user"],
   add: ["HTML Ekle", "code"], mine: ["HTML'lerim", "folder"], notes: ["Notlarım", "note"],
-  settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"]
+  settings: ["Ayarlar", "settings"], admin: ["Yönetim", "shield"], tools: ["Admin araçları", "shield"]
 };
-const TABS = [["all", "Keşfet"], ["favs", "Favoriler"]];
-const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi" };
+const TABS = [["all", "Keşfet"], ["favs", "Favoriler"], ["notes", "Notlarım"]];
+const ST = { pending: "Bekliyor", approved: "Onaylı", blocked: "Engelli", rejected: "Reddedildi", passive: "Pasif" };
 const NT = {
   new_user: n => `${esc(n.username)} kayıt oldu`,
   html_pending: n => `${esc(n.username)} HTML ekledi: ${esc(n.detail)}`,
@@ -325,9 +328,9 @@ const phd = t => `<p class="phd">${t}</p>`;
 function hcard(h) {
   const S = ctx.S, n = S.likes.filter(l => l.htmlId === h.id).length, cc = Math.max(0, h.cc || 0);
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
-  const own = h.by === ctx.uid;
+  const own = h.by === ctx.uid, c2 = cardColor2(h);
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}" style="--cc:${cardColor(h)}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", cc ? `<i>${cc}</i>` : "")}${B("fav", fv, "star")}${B("pin", pn, "pin")}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}${c2 ? " gr" : ""}" style="--cc:${cardColor(h)}${c2 ? `;--cc2:${c2}` : ""}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}${h.status === "passive" ? '<em class="bd">Pasif · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", `<i>${cc}</i>`)}${B("fav", fv, "star")}${B("pin", pn, "pin")}${ctx.admin && (own || h.status === "passive") && (h.status === "approved" || h.status === "passive") ? B("hpas", h.status === "passive", h.status === "passive" ? "eyeoff" : "eye") : ""}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
 
@@ -456,8 +459,9 @@ const PAGES = {
   favs: () => { const l = ctx.S.htmls.filter(h => ctx.S.prefs.favs.includes(h.id)); return phd(l.length + " favori") + (l.length ? grid(l) : empty(0, "Henüz favori yok.")); },
   mine: () => phd(ctx.S.mine.length + " HTML") + grid(ctx.S.mine),
   add: () => `<form id="addf" class="addf"><input id="ht" placeholder="Başlık" maxlength="80"><input id="hd" placeholder="Açıklama" maxlength="200"><textarea id="hh" placeholder="HTML kodu"></textarea><p class="err" id="e-add"></p><button class="btn2" type="submit"><span class="lbl">${ctx.admin ? "Yayınla" : "Onaya Gönder"}</span><i class="spin"></i></button></form>`,
-  notes: empty, settings: empty,
+  settings: empty,
   profile: () => `<p><b>${esc(ctx.name)}</b></p><p class="muted">${esc(ctx.email)}</p>`,
+  tools: () => phd(ctx.S.pas.length + " pasif HTML") + (ctx.S.pas.length ? grid(ctx.S.pas) : empty(0, "Pasif HTML yok.")),
   admin: adminPage
 };
 
@@ -499,19 +503,20 @@ function xpRestore() {
   c.classList.remove("xp"); xpOn(c);
 }
 const rf = () => {
-  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); xpRestore(); return; }
-  if (ctx.r === "notes" && $("#nl")) { $("#nl").innerHTML = notesList(); return; }
-  if (["favs", "mine", "admin"].includes(ctx.r)) render();
+  if (ctx.r === "home" && $("#hg")) { $("#hg").innerHTML = homeGrid(); xpRestore(); if (ctx.nv) openNote(ctx.nv, 1); return; }
+  if (["favs", "mine", "admin", "tools"].includes(ctx.r)) render();
 };
 
+const navSync = () => $$("#nav a,#navb a").forEach(a => a.classList.toggle("on", a.dataset.r === (ctx.r === "home" && ctx.tab === "notes" ? "notes" : ctx.r)));
 function route() {
   if (!ctx.uid) return;
   let r = location.hash.replace("#/", "") || "home";
-  if (!ROUTES[r] || (r === "admin" && !ctx.admin)) r = "home";
+  if (!ROUTES[r] || ((r === "admin" || r === "tools") && !ctx.admin)) r = "home";
   if (r === "add") { if (location.hash !== "#/home") location.hash = "#/home"; openEditor(null); return; }
-  ctx.r = r;
-  $$("#nav a,#navb a").forEach(a => a.classList.toggle("on", a.dataset.r === r));
-  $("#ptitle").textContent = ROUTES[r][0];
+  const nr = r;
+  if (r === "notes") { ctx.tab = "notes"; r = "home"; } else if (r === "home" && ctx.tab === "notes") ctx.tab = "all";
+  ctx.r = r; closeNote(); navSync();
+  $("#ptitle").textContent = ROUTES[nr][0];
   document.body.classList.toggle("adm", r === "admin");
   const c = $("#content");
   c.classList.remove("in"); void c.offsetWidth; c.classList.add("in");
@@ -581,7 +586,7 @@ function startData() {
     sub(c("htmls"), s => {
       S.allHtmls = map(s);
       const live = S.allHtmls.filter(x => !x.deleted);
-      S.htmls = live.filter(x => x.status === "approved"); S.mine = live.filter(x => x.by === ctx.uid); S.pend = live.filter(x => x.status === "pending");
+      S.htmls = live.filter(x => x.status === "approved"); S.pas = live.filter(x => x.status === "passive"); S.mine = live.filter(x => x.by === ctx.uid); S.pend = live.filter(x => x.status === "pending");
       rf();
     });
     sub(query(c("access"), where("status", "==", "requested")), s => { S.reqs = map(s); rf(); });
@@ -596,10 +601,10 @@ function buildHome(user, data) {
   if (ctx.uid === user.uid) { ctx.name = name; ctx.prof = data || {}; $("#hname").textContent = name; avatarUpd(); return; }
   ctx = {
     uid: user.uid, admin: user.uid === ADMIN_UID, name, email: user.email, prof: data || {}, tab: "all", subs: [], ct: "", cmsgs: [], q: "", nid: null,
-    S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
+    S: { htmls: [], mine: [], likes: [], prefs: { favs: [], pins: [] }, access: {}, users: [], pend: [], pas: [], reqs: [], notifs: [], chats: [], chat: {}, notes: [], ann: [], allNotes: [], allHtmls: [], profiles: {} }
   };
   $("#hname").textContent = name; avatarUpd();
-  $("#nav").innerHTML = ["home", "favs", "profile", "add", "mine", "notes"].map(navItem).join("");
+  $("#nav").innerHTML = ["home", "favs", "profile", "add", "mine", "notes", ...(ctx.admin ? ["tools"] : [])].map(navItem).join("");
   { const a = $("#ask"); a.classList.toggle("gold", !!ctx.admin); a.title = ctx.admin ? "Yönetim Paneli" : "Admine Soru Sor"; a.innerHTML = ctx.admin ? `<svg class="ic" viewBox="0 0 24 24">${IC.shield}</svg>` : '<svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>'; }
   $("#navb").innerHTML = navItem("settings");
   $("#lo").onclick = async e => { e.preventDefault(); if (await ask("Çıkış yapılsın mı?", "Çıkış yap")) logout(); };
@@ -824,7 +829,7 @@ const homeClick1 = async e => {
   const b = e.target.closest("[data-a],[data-t]");
   if (!b) return;
   const d = b.dataset, id = d.id, S = ctx.S;
-  if (d.t) { ctx.tab = d.t; return render(); }
+  if (d.t) { ctx.tab = d.t; history.replaceState(null, "", d.t === "notes" ? "#/notes" : "#/home"); navSync(); return render(); }
   const h = [...S.htmls, ...S.mine].find(x => x.id === id);
   try {
     switch (d.a) {
@@ -854,6 +859,7 @@ const homeClick1 = async e => {
       case "rep": ctx.rep = { id, n: d.n }; cmRender(); $("#cmx").focus(); break;
       case "rcancel": ctx.rep = null; cmRender(); break;
       case "cdel": {
+        if (!await ask("Bu yorum silinsin mi?", "Sil")) break;
         const c = (ctx.cl || []).find(x => x.id === id);
         if (ctx.admin) {
           const rs = (ctx.cl || []).filter(x => x.parent === id), k = rs.filter(r => !r.deleted).length + (c && !c.deleted ? 1 : 0);
@@ -963,6 +969,8 @@ const homeSubmit2 = async e => {
 
 /* Kod editörü */
 const PAL = ["#8b5cf6", "#3b82f6", "#06b6d4", "#22c55e", "#eab308", "#f97316", "#ef4444", "#ec4899"];
+const SWATCH = [...PAL, "#14b8a6", "#84cc16", "#f43f5e", "#a855f7", "#0ea5e9", "#fb923c", "#facc15", "#94a3b8"];
+const cardColor2 = h => /^#[0-9a-f]{6}$/i.test(h.fc2 || "") ? h.fc2 : "";
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
 const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
 let edT, edNT, edRows = [], edCur = 0;
@@ -1209,7 +1217,7 @@ async function openEditor(h) {
   if (isNew) h = { id: null, title: "", desc: "", by: ctx.uid };
   const b = isNew ? null : await getDoc(doc(db, "htmlBodies", h.id)), code = b?.exists() ? b.data().html : "";
   $("#edel").hidden = isNew;
-  ctx.ed = { id: h.id, h, code, isNew, fs: "beam", fc: cardColor(h) };
+  ctx.ed = { id: h.id, h, code, isNew, fs: "beam", fc: cardColor(h), fc2: cardColor2(h) };
   edh.value = code; edSync(); edf.srcdoc = withShim(code); hreset();
   edb.classList.remove("pv");
   $$(".edtabs button").forEach(x => x.classList.toggle("on", x.dataset.ed === "code"));
@@ -1222,12 +1230,12 @@ $("#eds").onclick = async () => {
   const e = ctx.ed, code = edh.value;
   if (!code.trim()) return toast("HTML gerekli.");
   if (code.length > 900000) return toast("HTML çok büyük (en fazla ~900 KB).");
-  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? "", e.fs, e.fc); if (!mm) return;
-  e.mt = mm.t; e.md = mm.d; e.fs = mm.fs; e.fc = mm.fc; const t = mm.t, d = mm.d;
+  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? "", e.fs, e.fc, e.fc2); if (!mm) return;
+  e.mt = mm.t; e.md = mm.d; e.fs = mm.fs; e.fc = mm.fc; e.fc2 = mm.fc2; const t = mm.t, d = mm.d;
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
-      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc } : {}) });
+      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc, ...(e.fc2 ? { fc2: e.fc2 } : {}) } : {}) });
       w.set(doc(db, "htmlBodies", ref.id), { html: code, by: ctx.uid });
       await w.commit();
       if (!canFree()) notify("html_pending", { detail: t });
@@ -1236,8 +1244,8 @@ $("#eds").onclick = async () => {
       return;
     }
     const ch = t !== e.h.title || d !== (e.h.desc || "") || code !== e.code;
-    const fchg = e.fs !== (e.h.fs || "") || (e.fs && e.fc !== cardColor(e.h));
-    const st = fchg ? { fs: e.fs, fc: e.fc } : {};
+    const fchg = e.fs !== (e.h.fs || "") || (e.fs && (e.fc !== cardColor(e.h) || e.fc2 !== cardColor2(e.h)));
+    const st = fchg ? { fs: e.fs, fc: e.fc, fc2: e.fc2 } : {};
     if (ch || fchg) {
       const w = writeBatch(db);
       if (ch) {
@@ -1295,25 +1303,49 @@ home.addEventListener("change", async e => {
 });
 function avatarUpd() {
   const h = $("#hav"); if (h) h.innerHTML = avHtml(ctx.uid, ctx.name, "av hv");
+  const p = $("#sprof"); if (p) p.innerHTML = avHtml(ctx.uid, ctx.name, "av sp") + `<span class="lb">${esc(atn(ctx.name))}${vb(ctx.uid, "1.07em")}</span>`;
 }
 
 function homeGrid() {
   const S = ctx.S, t = ctx.tab, q = (ctx.q || "").toLowerCase();
-  let l = t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : S.htmls;
-  if (q) l = l.filter(h => (h.title + " " + (h.desc || "")).toLowerCase().includes(q));
+  if (t === "notes") return notesList(q);
+  const f = l => q ? l.filter(h => (h.title + " " + (h.desc || "")).toLowerCase().includes(q)) : l;
+  const l = f(t === "favs" ? S.htmls.filter(h => S.prefs.favs.includes(h.id)) : S.htmls);
+  return l.length ? grid(l) : empty();
+}
+
+/* Notlar: düz metin; ## ile ## arasındaki bölüm kod kutusuna dönüşür (çalıştırılmaz, düz metin gösterilir) */
+const LN = { html: "HTML", css: "CSS", json: "JSON", sql: "SQL", py: "Python/Shell", md: "Markdown", c: "JS / C-tipi" };
+const codeBox = c => { c = c.replace(/^\s*\n|\s+$/g, ""); const L = detectLang(c); return `<div class="cbx" data-a="ncode"><div class="cbh"><span>Kod · ${LN[L]}</span><span class="cbb"><button type="button" data-a="ccopy">Kopyala</button><button type="button" data-a="cexp">Genişlet</button></span></div><pre class="cbp"><code>${hl(c, L)}</code></pre></div>`; };
+const noteHtml = t => {
+  let o = "", i = 0, m;
+  const re = /##([\s\S]*?)##/g;
+  while ((m = re.exec(t))) { o += esc(t.slice(i, m.index).replace(/\n$/, "")) + codeBox(m[1]); i = re.lastIndex; if (t[i] === "\n") i++; }
+  return o + esc(t.slice(i));
+};
+function notesList(q) {
+  const l = ctx.S.notes.filter(n => !n.deleted && (!q || ((n.title || "") + " " + n.text).toLowerCase().includes(q))).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
   return l.length
-    ? `<div class="grid">${[...l].sort((a, b) => S.prefs.pins.includes(b.id) - S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>`
-    : empty();
+    ? l.map(n => `<div class="ncard${n.pinned ? " np" : ""}${n.id === ctx.nlast ? " sel" : ""}" data-a="nview" data-id="${n.id}"><div class="nch"><div class="nct">${esc(n.title || "Başlıksız")}</div><div class="nca"><button type="button" class="${n.pinned ? "on" : ""}" data-a="npin" data-id="${n.id}" title="${n.pinned ? "Sabiti kaldır" : "Sabitle"}" aria-label="Sabitle">${svg("pin")}</button><button type="button" data-a="nedit" data-id="${n.id}" title="Düzenle" aria-label="Düzenle">${svg("edit")}</button><button type="button" class="del" data-a="ndel" data-id="${n.id}" title="Sil" aria-label="Sil">${svg("trash")}</button></div></div><div class="ntp">${esc(n.text.replace(/##[\s\S]*?##/g, " ‹/› kod "))}</div><small>${fmt(n.updatedAt)}</small></div>`).join("")
+    : empty(0, q ? "Eşleşen not yok." : "Henüz not yok.");
 }
-
-function notesList() {
-  const l = ctx.S.notes.filter(n => !n.deleted).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
-  return l.length ? l.map(n => `<div class="row2${n.pinned ? " np" : ""}"><div><b>${n.pinned ? "📌 " : ""}${esc(n.title || "Başlıksız")}</b><small class="nt">${esc(n.text)}</small><small>${fmt(n.updatedAt)}</small></div><div class="btns"><button data-a="npin" data-id="${n.id}">${n.pinned ? "Sabiti kaldır" : "Sabitle"}</button><button data-a="nedit" data-id="${n.id}">Düzenle</button><button data-a="ndel" data-id="${n.id}">Sil</button></div></div>`).join("") : empty();
+const notesCompose = () => `<form id="nf" class="addf ncf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz... Kod için ## kod ## arasına yaz" maxlength="20000" style="height:120px"></textarea><div class="ncr"><button type="button" class="gh" data-a="ninsc">‹/› Kod ekle</button>${ctx.nid ? '<button type="button" class="gh" data-a="ncancel">Vazgeç</button>' : ""}</div><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form>`;
+function openNote(id, quiet) {
+  const n = ctx.S.notes.find(x => x.id === id && !x.deleted);
+  if (!n) return closeNote();
+  let v = $("#nv"); if (!v) { v = document.createElement("div"); v.id = "nv"; home.appendChild(v); }
+  const key = n.title + "\0" + n.text;
+  if (quiet && !v.hidden && ctx.nvk === key) return;
+  ctx.nv = id; ctx.nvk = key; ctx.nlast = id;
+  $$(".ncard").forEach(x => x.classList.toggle("sel", x.dataset.id === id));
+  const keep = v.querySelector(".nvb")?.scrollTop || 0;
+  v.innerHTML = `<div class="nvh"><button type="button" data-a="nclose" aria-label="Kapat">✕</button><b>${esc(n.title || "Başlıksız")}</b></div><div class="nvb ntx">${noteHtml(n.text)}</div>`;
+  v.hidden = false; v.querySelector(".nvb").scrollTop = keep;
+  v.querySelectorAll(".cbx").forEach(x => { const p = x.querySelector(".cbp"); if (p.scrollHeight <= p.clientHeight + 1 && p.scrollWidth <= p.clientWidth + 1) x.querySelector('[data-a="cexp"]').hidden = true; });
 }
+function closeNote() { ctx.nv = null; ctx.nvk = null; const v = $("#nv"); if (v) { v.hidden = true; v.innerHTML = ""; $(".ncard.sel")?.scrollIntoView({ block: "nearest" }); } }
 
-PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="stabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div><div id="hg">${homeGrid()}</div>`;
-
-PAGES.notes = () => `<form id="nf" class="addf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz..." maxlength="2000" style="height:120px"></textarea><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form><h3 class="sh">Notlarım</h3><div id="nl">${notesList()}</div>`;
+PAGES.home = () => `<input id="sq" class="sq" type="text" inputmode="search" enterkeyhint="search" name="hsq" placeholder="HTML ara..." value="${esc(ctx.q || "")}" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"><div class="stabs">${TABS.map(([k, n]) => `<button data-t="${k}" class="${k === ctx.tab ? "on" : ""}">${n}</button>`).join("")}</div>${ctx.tab === "notes" ? notesCompose() : ""}<div id="hg">${homeGrid()}</div>`;
 
 PAGES.settings = () => {
   return `<div class="sets"><details class="scard fold"><summary class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Şifre değiştir<i class="fch"></i></summary><form id="pwf" class="addf"><label class="lb" for="pw0">Mevcut şifre</label><input id="pw0" type="password" placeholder="Mevcut şifre" autocomplete="current-password"><label class="lb" for="pw1">Yeni şifre</label><input id="pw1" type="password" placeholder="Yeni şifre" autocomplete="new-password"><label class="lb" for="pw2">Yeni şifre tekrar</label><input id="pw2" type="password" placeholder="Yeni şifre tekrar" autocomplete="new-password"><p class="err" id="e-pw"></p><button class="btn2" type="submit"><span class="lbl">Şifreyi Değiştir</span><i class="spin"></i></button></form></details><details class="scard fold"><summary class="sh"><i class="si red"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></i>Hesabı sil<i class="fch"></i></summary><form id="dlf" class="addf"><p class="muted">Hesabın kalıcı olarak silinir. HTML'lerin ve notların silinmiş olarak işaretlenir, işlem kayıtları adminde kalır.</p><label class="lb" for="dpw">Şifren</label><input id="dpw" type="password" placeholder="Şifreni gir" autocomplete="current-password"><p class="err" id="e-dl"></p><button class="btn2" type="submit"><span class="lbl">Hesabımı Sil</span><i class="spin"></i></button></form></details><section class="scard"><h3 class="sh"><i class="si"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></i>Gizlilik</h3><button class="btn-ghost" data-kvkk type="button">Aydınlatma Metni (KVKK) <span>›</span></button></section></div>`;
@@ -1352,9 +1384,20 @@ const homeClick3 = async e => {
     if (d.a === "avpick") $("#avf").click();
     if (d.a === "avrm") await deleteDoc(doc(db, "profiles", ctx.uid));
     if (d.a === "vtog" && ctx.admin) { const b = ctx.S.badges || []; await setDoc(doc(db, "settings", "badges"), { uids: b.includes(d.id) ? b.filter(x => x !== d.id) : [...b, d.id] }, { merge: true }); }
+    if (d.a === "hpas" && ctx.admin) { const h = S.allHtmls.find(x => x.id === id); if (h) await updateDoc(doc(db, "htmls", id), { status: h.status === "passive" ? "approved" : "passive" }); }
+    if (d.a === "nview") openNote(id);
+    if (d.a === "nclose") closeNote();
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
     if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
+    if (d.a === "ncancel") { ctx.nid = null; render(); }
     if (d.a === "ndel" && await ask("Bu not silinsin mi?", "Sil")) { await updateDoc(doc(db, "notes", id), { deleted: true, deletedAt: serverTimestamp() }); }
+    if (d.a === "ninsc") { const t = $("#nx"), s0 = t.selectionStart, s1 = t.selectionEnd, sel = t.value.slice(s0, s1); t.setRangeText("##\n" + sel + "\n##", s0, s1, "end"); t.focus(); if (!sel) t.setSelectionRange(s0 + 3, s0 + 3); }
+    if (d.a === "ccopy") {
+      const t = e.target.closest(".cbx").querySelector("code").textContent;
+      try { await navigator.clipboard.writeText(t); } catch { const x = document.createElement("textarea"); x.value = t; document.body.appendChild(x); x.select(); document.execCommand("copy"); x.remove(); }
+      toast("Kopyalandı");
+    }
+    if (d.a === "cexp") { const x = e.target.closest(".cbx"); b.textContent = x.classList.toggle("open") ? "Daralt" : "Genişlet"; }
     if (d.a === "andel") { await deleteDoc(doc(db, "announcements", id)); }
     if (d.a === "del") {
       const h = [...S.htmls, ...S.mine].find(x => x.id === id);
@@ -1495,6 +1538,7 @@ const homeSubmit3 = async e => {
     if (f === "nf") {
       const t = $("#nt").value.trim(), x = $("#nx").value.trim();
       if (!x) return setErr("nf", "Not boş olamaz.");
+      if (x.length > 20000) return setErr("nf", "Not en fazla 20.000 karakter olabilir.");
       setErr("nf");
       if (ctx.nid) { await updateDoc(doc(db, "notes", ctx.nid), { title: t, text: x, updatedAt: serverTimestamp() }); ctx.nid = null; }
       else { await addDoc(collection(db, "notes"), { uid: ctx.uid, title: t, text: x, pinned: false, deleted: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); }
@@ -1556,22 +1600,28 @@ function inform(msg) {
     y.onclick = end; d.onclick = e => { if (e.target === d) end(); };
   });
 }
-function askMeta(t, d, fs0, fc0) {
+function askMeta(t, d, fs0, fc0, fc20) {
   return new Promise(res => {
     const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
     const i = document.createElement("input"), x = document.createElement("textarea");
     i.className = "sq"; i.maxLength = 80; i.placeholder = "Başlık"; i.value = t; i.style.margin = "0 0 10px";
     x.className = "sq"; x.maxLength = 200; x.placeholder = "Açıklama"; x.value = d; x.style.cssText = "margin:0 0 16px;height:120px;padding:12px 16px;border-radius:18px;resize:vertical;max-width:none";
-    let fs = "beam", fc = fc0 || PAL[0];
-    const w = document.createElement("div"), pal = document.createElement("div");
+    let fs = "beam", fc = fc0 || PAL[0], fc2 = fc20 || "", two = !!fc20;
+    const w = document.createElement("div");
     w.style.cssText = "margin:0 0 16px;display:flex;flex-direction:column;gap:10px;align-items:center";
-    pal.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;justify-content:center";
-    const dr = () => { pal.innerHTML = PAL.map(c => `<button type="button" class="sw${c === fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join(""); };
-    pal.onclick = e => { const b = e.target.closest("[data-c]"); if (b) { fc = b.dataset.c; dr(); } };
-    dr(); w.append(pal);
+    let slot = 1;
+    const dr = () => { w.innerHTML = `<div class="fxp" style="background:${two ? `linear-gradient(135deg,${fc},${fc2})` : fc}"></div><div class="fxr">${SWATCH.map(c => `<button type="button" class="sw${c === fc || (two && c === fc2) ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div><div class="fxb"><span class="fxs${two ? " on" : ""}"><button type="button" class="${slot === 1 ? "cur" : ""}" data-h="1" style="background:${fc}" aria-label="1. renk"></button><button type="button" class="${two && slot === 2 ? "cur" : ""}" data-h="2" style="background:${two ? fc2 : "transparent"}" aria-label="2. renk"></button></span><small>${two ? `${slot}. rengi seç` : "Çift renk için sağ yarıya dokun"}</small>${two ? '<button type="button" class="fxo" data-x="1">Tek renk</button>' : ""}</div>`; };
+    w.onclick = e => {
+      const b = e.target.closest("[data-h],[data-c],[data-x]"); if (!b) return;
+      if (b.dataset.h) { if (b.dataset.h === "2" && !two) { two = true; if (!fc2) fc2 = SWATCH[(SWATCH.indexOf(fc) + 5 + SWATCH.length) % SWATCH.length]; } slot = two ? +b.dataset.h : 1; }
+      else if (b.dataset.x) { two = false; slot = 1; }
+      else if (two && slot === 2) fc2 = b.dataset.c; else fc = b.dataset.c;
+      dr();
+    };
+    dr();
     a.before(i, x, w); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
     const end = v => { dl.hidden = true; i.remove(); x.remove(); w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
-    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc }); };
+    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc, fc2: two ? fc2 : "" }); };
     n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
     i.focus();
   });
@@ -1619,12 +1669,3 @@ startSession(({ screen, user, data }) => {
   }, { passive: true });
 })();
 
-// @## MÜZİK BAŞLANGIÇ
-(() => {
-  const m = new Audio("MSA.mp3");
-  m.preload = "auto";
-  document.addEventListener("click", e => {
-    if (e.target.closest("#submit-wrap .btn, .flogo")) { m.currentTime = 0; m.play().catch(() => {}); }
-  }, true);
-})();
-// @## MÜZİK BİTİŞ
