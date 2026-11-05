@@ -385,7 +385,18 @@ function adminPage() {
   const traceBody = '<form class="addf" onsubmit="return false"><p class="muted">Sızan HTML\'i veya metni buraya yapıştır. Gizli iz ve filigran yazısı aranır.</p><textarea id="trin" placeholder="Yapıştır..." style="height:160px"></textarea><button class="btn2" type="button" data-a="trace"><span class="lbl">İzi Çöz</span></button></form><div id="trout"></div>';
   const ub = (u, v, t) => `<button data-a="ust" data-id="${u.id}" data-v="${v}" data-n="${esc(atn(u.username))}">${t}</button>`;
   const regBody = regU.map(u => rw(`<b>${esc(atn(u.username))}</b>${u.violationAt ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}<small>${esc(u.contactEmail || (u.email && !isFake(u.email) ? u.email : "e-posta yok"))}</small><small>${fmt(u.createdAt)}</small>`, ub(u, "approved", "Onayla") + ub(u, "rejected", "Reddet") + ub(u, "blocked", "Engelle"), 1)).join("");
-  const dataBody = usc("trace", "İz çöz", 0, traceBody) + ([...S.allHtmls].sort((a, b) => ms(b.createdAt) - ms(a.createdAt)).map(h => rw(`<b>${esc(h.title)}</b> <em class="bd st-${h.status}">${ST[h.status] || h.status}</em>${h.deleted ? ' <em class="bd st-blocked">silindi</em>' : ""}<small>${esc(atn(h.byName))} · ${fmt(h.createdAt)}</small>`, `<button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button>${h.status === "pending" && !h.deleted ? `<button data-a="hap" data-id="${h.id}">Onayla</button>` : ""}<button data-a="ddel" data-k="htmls" data-id="${h.id}">Sil</button>`, 1)).join("") || none);
+  const dataByUser = () => {
+    const byUser = {};
+    S.allHtmls.forEach(h => { (byUser[h.by] = byUser[h.by] || []).push(h); });
+    const owners = Object.keys(byUser).sort((a, b) => atn(byUser[a][0]?.byName || "").localeCompare(atn(byUser[b][0]?.byName || "")));
+    return owners.map(uid => {
+      const hs2 = byUser[uid].sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
+      const nm = esc(atn(hs2[0]?.byName || ""));
+      const body = hs2.map(h => rw(`<b>${esc(h.title)}</b> <em class="bd st-${h.status}">${ST[h.status] || h.status}</em>${h.deleted ? ' <em class="bd st-blocked">silindi</em>' : ""}<small>${fmt(h.createdAt)}</small>`, `<button data-a="dl" data-id="${h.id}" data-n="${esc(h.title)}">İndir</button>${h.status === "pending" && !h.deleted ? `<button data-a="hap" data-id="${h.id}">Onayla</button>` : ""}<button data-a="ddel" data-k="htmls" data-id="${h.id}">Sil</button>`)).join("");
+      return usc("ud_" + uid, `${nm}${vb(uid)}`, hs2.length, body);
+    }).join("");
+  };
+  const dataBody = usc("trace", "İz çöz", 0, traceBody) + (dataByUser() || none);
   const list = U.map(u => {
     const op = ctx.uxp === u.id, on = u.lastSeen?.toMillis && Date.now() - u.lastSeen.toMillis() < 3e5;
     const bd = `<em class="bd st-${u.status}">${ST[u.status] || u.status}</em>${u.selfDeleted ? ' <em class="bd st-blocked">hesabı sildi</em>' : ""}${u.violationAt && u.status === "pending" ? ' <em class="bd st-blocked">ihlal nedeniyle</em>' : ""}${on ? ' <em class="bd st-approved">çevrimiçi</em>' : ""}`;
@@ -528,7 +539,7 @@ function route() {
 function notifRender() {
   const S = ctx.S, dot = $("#bell .dot");
   if (!ctx.admin) {
-    const cu = S.chat?.userUnread || 0, seen = S.prefs.annSeen || 0, n = cu + S.ann.filter(a => ms(a.ts) > seen).length;
+    const cu = S.chat?.userUnread || 0, seen = Math.max(S.prefs.annSeen || 0, ms(ctx.prof?.createdAt) || 0), n = cu + S.ann.filter(a => ms(a.ts) > seen).length;
     dot.hidden = !n; dot.textContent = n;
     const it = (cu ? `<div class="nit un" data-a="openchat">Admin'den ${cu} yeni mesaj</div>` : "") + S.ann.map(a => `<div class="nit${ms(a.ts) > seen ? " un" : ""}">${esc(a.text)}<small>${fmt(a.ts)}</small></div>`).join("");
     $("#nlist").innerHTML = it || '<p class="muted">Henüz bildirim yok.</p>';
@@ -626,14 +637,14 @@ function clearHome() {
 }
 
 /* HTML görüntüleme + koruma */
-const HOOK = '<script>addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();((e.pointerType==="touch"||e.pointerType==="pen"||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents))||parent.postMessage({x:1},"*"))},true)<\/script>';
+const HOOK = '<script>var isTouch=("ontouchstart" in window)||navigator.maxTouchPoints>0;addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();isTouch||parent.postMessage({x:1},"*")},true)<\/script>';
 const isBad = e => {
   const k = (e.key || "").toLowerCase(), c = e.ctrlKey || e.metaKey;
   return e.key === "F12" || (c && (k === "u" || k === "s")) || (c && e.shiftKey && ["i", "j", "c"].includes(k));
 };
 const onKey = e => { if (isBad(e)) { e.preventDefault(); violate("Kısayol: " + e.key); } };
-const touchy = e => e.pointerType === "touch" || e.pointerType === "pen" || !!e.sourceCapabilities?.firesTouchEvents;
-const onCtx = e => { e.preventDefault(); if (!touchy(e)) violate("Sağ tık"); };
+const isTouchDevice = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+const onCtx = e => { e.preventDefault(); if (!isTouchDevice) violate("Sağ tık"); };
 function devtools() {
   if (matchMedia("(pointer:fine)").matches && (outerWidth - innerWidth > 200 || outerHeight - innerHeight > 260)) return violate("DevTools (boyut)");
   if (window.eruda || window.VConsole || document.getElementById("eruda") || document.querySelector(".eruda-container,#__vconsole,script[src*=eruda i],script[src*=vconsole i]")) return violate("Eruda/vConsole");
@@ -761,7 +772,8 @@ function protect(html, names = []) {
     '[["copyright",' + codes("MSA - Tüm hakları saklıdır") + '],["x-viewer",' + codes(ctx.uid) + ']].forEach(function(p){var m=document.createElement("meta");m.name=p[0];m.content=T(p[1]);(document.head||document.documentElement).appendChild(m)});' +
     'var fq=function(){var q=document.querySelectorAll("span[data-q]");for(var i=0;i<q.length;i++){var c=q[i].getAttribute("data-q").split(","),s="";for(var j=0;j<c.length;j++)s+=String.fromCharCode(+c[j]);q[i].textContent=s;q[i].removeAttribute("data-q")}};' +
     'var sg=function(){var d=document.createElement("div");d.style.cssText="position:absolute;width:0;height:0;overflow:hidden";d.textContent=String.fromCharCode(169)+T(' + markCodes + ');document.body.insertBefore(d,document.body.firstChild);fq()};' +
-    '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu"&&!(e.pointerType==="touch"||e.pointerType==="pen"||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents)))P("Sag tik")},true)});' +
+    'var isTouch=("ontouchstart" in window)||navigator.maxTouchPoints>0;' +
+    '["contextmenu","selectstart","copy","cut","dragstart","beforeprint"].forEach(function(t){addEventListener(t,function(e){var n=e.target&&e.target.nodeName;if(t==="selectstart"&&/INPUT|TEXTAREA/.test(n))return;e.preventDefault();if(t==="contextmenu"&&!isTouch)P("Sag tik")},true)});' +
     'addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;if(e.key==="F12"||(c&&["u","s","p"].indexOf(k)>-1)||(c&&e.shiftKey&&["i","j","c"].indexOf(k)>-1)){e.preventDefault();P("Kisayol: "+e.key)}},true);' +
     'var S=' + JSON.stringify(bg) + ',ob=new MutationObserver(function(){var w=document.getElementById("wm");if(!w)return mk();if(w.getAttribute("style")!==S){mk();P("Filigran degistirildi")}});' +
     'var mk=function(){var w=document.getElementById("wm");if(!w){w=document.createElement("div");w.id="wm";document.body.appendChild(w)}w.setAttribute("style",S);ob.observe(w,{attributes:true})};' +
@@ -1475,12 +1487,12 @@ const homeSubmit3 = async e => {
         if (t?.exists() && t.data().uid !== ctx.uid) return setErr("pf", "Bu kullanıcı adı kullanılıyor.");
         const u1 = auth.currentUser, ne = slug(n.username) + MAILDOM;
         if (isFake(u1.email)) {
-          try { await updateEmail(u1, ne); }
+          try { await updateEmail(u1, ne); await u1.getIdToken(true); }
           catch (x) {
             if (x.code === "auth/requires-recent-login") {
               const pw = await askPass("Kullanıcı adını değiştirmek için mevcut şifreni gir.");
               if (!pw) return;
-              try { await reauthenticateWithCredential(u1, EmailAuthProvider.credential(u1.email, pw)); await updateEmail(u1, ne); }
+              try { await reauthenticateWithCredential(u1, EmailAuthProvider.credential(u1.email, pw)); await updateEmail(u1, ne); await u1.getIdToken(true); }
               catch (y) {
                 if (y.code === "auth/invalid-credential" || y.code === "auth/wrong-password") return setErr("pf", "Şifre hatalı.");
                 if (y.code !== "auth/operation-not-allowed") return setErr("pf", trError(y));
@@ -1498,11 +1510,13 @@ const homeSubmit3 = async e => {
         await updateProfile(auth.currentUser, { displayName: n.username });
         const ok = slug(ctx.name), nk = slug(n.username);
         if (ok !== nk) {
-          await setDoc(doc(db, "usernames", nk), { uid: ctx.uid, email: auth.currentUser.email });
-          deleteDoc(doc(db, "usernames", ok)).catch(() => {});
+          try {
+            await setDoc(doc(db, "usernames", nk), { uid: ctx.uid, email: auth.currentUser.email });
+            await deleteDoc(doc(db, "usernames", ok)).catch(() => {});
+          } catch { synced = false; }
         }
         ctx.name = n.username;
-        synced = await syncName(ctx.uid, n.username);
+        synced = (await syncName(ctx.uid, n.username)) && synced;
       }
       Object.assign(ctx.prof, Object.fromEntries(ch.map(k => [k, n[k]])));
       $("#hname").textContent = ctx.name; avatarUpd(); render();
