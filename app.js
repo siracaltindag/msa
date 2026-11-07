@@ -483,9 +483,9 @@ function render() {
   $("#adl")?.scrollTo(0, 1e9);
   xpRestore();
 }
-/* Kart genişletme: kart yerinde bir boşluk (xph) bırakıp diğer kartların üstüne biner, arkası bulanır */
+/* Kart genişletme: kart yerinde bir boşluk (xph) bırakıp diğer kartların üstüne biner */
 function xpOff() {
-  $$(".xph,.xbk").forEach(n => n.remove());
+  $$(".xph").forEach(n => n.remove());
   $$(".card2.xp").forEach(c => { c.classList.remove("xp"); ["position", "left", "top", "width", "height", "zIndex", "transition", "overflow"].forEach(k => c.style[k] = ""); });
   ctx.xid = null;
 }
@@ -493,19 +493,21 @@ function xpOn(c) {
   const g = c.parentElement, gr = g.getBoundingClientRect(), r = c.getBoundingClientRect(), cs = getComputedStyle(g);
   if (cs.position === "static") g.style.position = "relative";
   const pl = parseFloat(cs.paddingLeft) || 0, fullW = g.clientWidth - pl - (parseFloat(cs.paddingRight) || 0);
-  const W = Math.min(fullW, 560), pl2 = pl + (fullW - W) / 2;
+  const W = Math.min(fullW, 440);
   const L = r.left - gr.left - (parseFloat(cs.borderLeftWidth) || 0), T = r.top - gr.top - (parseFloat(cs.borderTopWidth) || 0);
+  const ccx = L + r.width / 2, mid = pl + fullW / 2, zone = fullW * 0.18;
+  let target = ccx < mid - zone ? L : ccx > mid + zone ? (L + r.width) - W : mid - W / 2;
+  target = Math.max(pl, Math.min(target, pl + fullW - W));
   const ph = document.createElement("div"); ph.className = "xph"; c.before(ph);
-  const bk = document.createElement("div"); bk.className = "xbk"; g.appendChild(bk);
   const set = (el, l, t, w, h, m = 0) => Object.assign(el.style, { left: (l - m) + "px", top: (t - m) + "px", width: (w + 2 * m) + "px", height: (h + 2 * m) + "px" });
   c.classList.add("xp");
   Object.assign(c.style, { position: "absolute", zIndex: "30", transition: "none", overflow: "hidden" });
-  set(c, pl2, T, W, 0); c.style.height = "auto"; const H = c.offsetHeight;
+  set(c, target, T, W, 0); c.style.height = "auto"; const H = c.offsetHeight;
   set(c, L, T, r.width, r.height);
   void c.offsetWidth;
   const tr = "left .32s var(--ease),top .32s var(--ease),width .32s var(--ease),height .32s var(--ease)";
   c.style.transition = tr;
-  set(c, pl2, T, W, H);
+  set(c, target, T, W, H);
   ctx.xid = c.dataset.id;
   setTimeout(() => { if (c.classList.contains("xp")) { c.style.transition = "none"; c.style.height = "auto"; c.style.overflow = ""; } }, 340);
 }
@@ -982,8 +984,8 @@ const homeSubmit2 = async e => {
 };
 
 /* Kod editörü */
-const PAL = ["#8b5cf6", "#3b82f6", "#06b6d4", "#22c55e", "#eab308", "#f97316", "#ef4444", "#ec4899"];
-const SWATCH = [...PAL, "#14b8a6", "#84cc16", "#f43f5e", "#a855f7", "#0ea5e9", "#fb923c", "#facc15", "#94a3b8"];
+const PAL = ["#8b5cf6", "#3b82f6", "#06b6d4", "#85cb19", "#facc15", "#f97316", "#ef4444", "#ec4899", "#d946ef", "#6366f1", "#e2725b", "#ffb347", "#e8a0bf", "#b39ddb", "#7ec8e3", "#d9b382", "#ff9aa2", "#8fa8d6", "#5eead4", "#c77dbb"];
+const SWATCH = PAL;
 const cardColor2 = h => /^#[0-9a-f]{6}$/i.test(h.fc2 || "") ? h.fc2 : "";
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
 const edh = $("#edh"), edpre = $("#edpre"), edn = $("#edn"), edf = $("#edf"), edb = $("#ed");
@@ -1238,6 +1240,9 @@ async function openEditor(h) {
   edb.hidden = false; document.body.style.overflow = "hidden"; document.documentElement.classList.add("edo"); vvFit();
 }
 function closeEditor() { document.documentElement.classList.remove("edo"); edb.classList.remove("hc"); $("#edfb").hidden = true; edb.hidden = true; edf.srcdoc = ""; document.body.style.overflow = ""; }
+$("#edx").innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+$("#edel").innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>';
+$("#eds").innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>';
 $("#edx").onclick = async () => { if (await ask("Çıkarsan kaydedilmemiş değişiklikler kaybolacak. Çıkılsın mı?", "Çık")) closeEditor(); };
 
 $("#eds").onclick = async () => {
@@ -1340,14 +1345,43 @@ const noteHtml = t => {
 function notesList(q) {
   const l = ctx.S.notes.filter(n => !n.deleted && (!q || ((n.title || "") + " " + n.text).toLowerCase().includes(q))).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
   return l.length
-    ? l.map(n => `<div class="ncard${n.pinned ? " np" : ""}${n.id === ctx.nlast ? " sel" : ""}" style="--cc:${cardColor(n)}" data-a="nview" data-id="${n.id}"><div class="nch"><div class="nct">${esc(n.title || "Başlıksız")}</div><div class="nca"><button type="button" class="ncol" data-a="ncolor" data-id="${n.id}" style="background:${cardColor(n)}" title="Çerçeve rengi" aria-label="Çerçeve rengi"></button><button type="button" class="${n.pinned ? "on" : ""}" data-a="npin" data-id="${n.id}" title="${n.pinned ? "Sabiti kaldır" : "Sabitle"}" aria-label="Sabitle">${svg("pin")}</button><button type="button" data-a="nedit" data-id="${n.id}" title="Düzenle" aria-label="Düzenle">${svg("edit")}</button><button type="button" class="del" data-a="ndel" data-id="${n.id}" title="Sil" aria-label="Sil">${svg("trash")}</button></div></div><div class="ntp">${esc(n.text.replace(/##[\s\S]*?##/g, " ‹/› kod "))}</div><small>${fmt(n.updatedAt)}</small></div>`).join("")
+    ? l.map(n => `<div class="ncard${n.pinned ? " np" : ""}${n.id === ctx.nlast ? " sel" : ""}" style="--cc:${cardColor(n)}" data-a="nview" data-id="${n.id}"><div class="nch"><div class="nct">${esc(n.title || "Başlıksız")}</div><div class="nca"><button type="button" class="${n.pinned ? "on" : ""}" data-a="npin" data-id="${n.id}" title="${n.pinned ? "Sabiti kaldır" : "Sabitle"}" aria-label="Sabitle">${svg("pin")}</button><button type="button" data-a="nedit" data-id="${n.id}" title="Düzenle" aria-label="Düzenle">${svg("edit")}</button><button type="button" class="del" data-a="ndel" data-id="${n.id}" title="Sil" aria-label="Sil">${svg("trash")}</button></div></div><div class="ntp">${esc(n.text.replace(/##[\s\S]*?##/g, " ‹/› kod "))}</div><small>${fmt(n.updatedAt)}</small></div>`).join("")
     : empty(0, q ? "Eşleşen not yok." : "Henüz not yok.");
 }
-const notesCompose = () => {
-  const open = !!(ctx.nAddOpen || ctx.nid);
-  const form = `<form id="nf" class="addf ncf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz... Kod için ## kod ## arasına yaz" maxlength="20000" style="height:120px"></textarea><div class="ncr"><button type="button" class="gh" data-a="ninsc">‹/› Kod ekle</button>${ctx.nid ? '<button type="button" class="gh" data-a="ncancel">Vazgeç</button>' : ""}</div><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form>`;
-  return `<div class="usc"><div class="ush2" data-a="naddtog"><b>Not Ekle</b><i class="fch${open ? " up" : ""}"></i></div>${open ? form : ""}</div>`;
-};
+const notesCompose = () => `<button type="button" class="btn2 nadd" data-a="naddopen"><span class="lbl">+ Not Ekle</span></button>`;
+function napPalette() {
+  $("#napal").innerHTML = SWATCH.map(c => `<button type="button" class="sw${c === ctx.nFc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("");
+}
+function openNoteAdd(id) {
+  const n = id ? ctx.S.notes.find(x => x.id === id && !x.deleted) : null;
+  ctx.nid = id || null;
+  ctx.nFc = n ? cardColor(n) : PAL[Math.floor(Math.random() * PAL.length)];
+  $("#nat").value = n?.title || "";
+  $("#natx").value = n?.text || "";
+  setErr("nf");
+  napPalette();
+  $("#nab").hidden = false; document.body.style.overflow = "hidden";
+  $("#nat").focus();
+  history.pushState({ nab: 1 }, "");
+}
+function closeNoteAdd() { $("#nab").hidden = true; document.body.style.overflow = ""; ctx.nid = null; }
+async function saveNote() {
+  const t = $("#nat").value.trim(), x = $("#natx").value.trim();
+  if (!x) { setErr("nf", "Not boş olamaz."); return false; }
+  if (x.length > 20000) { setErr("nf", "Not en fazla 20.000 karakter olabilir."); return false; }
+  setErr("nf");
+  if (ctx.nid) await updateDoc(doc(db, "notes", ctx.nid), { title: t, text: x, fc: ctx.nFc, updatedAt: serverTimestamp() });
+  else { const r = await addDoc(collection(db, "notes"), { uid: ctx.uid, title: t, text: x, fc: ctx.nFc, pinned: false, deleted: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); ctx.nid = r.id; }
+  return true;
+}
+$("#naps").onclick = async () => { if (await saveNote()) toast("Not kaydedildi."); };
+$("#napx").innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+$("#naps").innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>';
+const exitNoteAdd = async () => { if ($("#nat").value.trim() || $("#natx").value.trim()) { if (!(await saveNote())) return false; } closeNoteAdd(); render(); return true; };
+$("#napx").onclick = () => { if (history.state?.nab) history.back(); else exitNoteAdd(); };
+addEventListener("popstate", async () => { if ($("#nab").hidden) return; if (!(await exitNoteAdd())) history.pushState({ nab: 1 }, ""); });
+$("#nains").onclick = () => { const t = $("#natx"), s0 = t.selectionStart, s1 = t.selectionEnd, sel = t.value.slice(s0, s1); t.setRangeText("##\n" + sel + "\n##", s0, s1, "end"); t.focus(); if (!sel) t.setSelectionRange(s0 + 3, s0 + 3); };
+$("#napal").onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; ctx.nFc = b.dataset.c; napPalette(); };
 function openNote(id, quiet) {
   const n = ctx.S.notes.find(x => x.id === id && !x.deleted);
   if (!n) return closeNote();
@@ -1406,10 +1440,9 @@ const homeClick3 = async e => {
     if (d.a === "nview") openNote(id);
     if (d.a === "nclose") closeNote();
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
-    if (d.a === "ncolor") { const n = S.notes.find(x => x.id === id); const c = await askColor(cardColor(n)); if (c) await updateDoc(doc(db, "notes", id), { fc: c }); }
-    if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; ctx.nAddOpen = true; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
-    if (d.a === "ncancel") { ctx.nid = null; ctx.nAddOpen = false; render(); }
-    if (d.a === "naddtog") { ctx.nAddOpen = !ctx.nAddOpen; render(); }
+
+    if (d.a === "nedit") openNoteAdd(id);
+    if (d.a === "naddopen") openNoteAdd();
     if (d.a === "ndel" && await ask("Bu not silinsin mi?", "Sil")) { await updateDoc(doc(db, "notes", id), { deleted: true, deletedAt: serverTimestamp() }); }
     if (d.a === "ninsc") { const t = $("#nx"), s0 = t.selectionStart, s1 = t.selectionEnd, sel = t.value.slice(s0, s1); t.setRangeText("##\n" + sel + "\n##", s0, s1, "end"); t.focus(); if (!sel) t.setSelectionRange(s0 + 3, s0 + 3); }
     if (d.a === "ccopy") {
@@ -1557,15 +1590,6 @@ const homeSubmit3 = async e => {
         await deleteUser(u);
       } catch (x) { setErr("dl", x.code === "auth/invalid-credential" || x.code === "auth/wrong-password" ? "Şifre hatalı." : trError(x)); }
     }
-    if (f === "nf") {
-      const t = $("#nt").value.trim(), x = $("#nx").value.trim();
-      if (!x) return setErr("nf", "Not boş olamaz.");
-      if (x.length > 20000) return setErr("nf", "Not en fazla 20.000 karakter olabilir.");
-      setErr("nf");
-      if (ctx.nid) { await updateDoc(doc(db, "notes", ctx.nid), { title: t, text: x, updatedAt: serverTimestamp() }); ctx.nid = null; }
-      else { await addDoc(collection(db, "notes"), { uid: ctx.uid, title: t, text: x, pinned: false, deleted: false, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); }
-      render();
-    }
     if (f === "anf" && ctx.admin) {
       const x = $("#anx").value.trim();
       if (!x) return;
@@ -1646,21 +1670,6 @@ function askMeta(t, d, fs0, fc0, fc20) {
     y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc, fc2: two ? fc2 : "" }); };
     n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
     i.focus();
-  });
-}
-function askColor(fc0) {
-  return new Promise(res => {
-    const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
-    let fc = fc0 || PAL[0];
-    const w = document.createElement("div");
-    w.style.cssText = "margin:0 0 16px;display:flex;flex-direction:column;gap:10px;align-items:center";
-    const dr = () => { w.innerHTML = `<div class="fxp" style="background:${fc}"></div><div class="fxr">${SWATCH.map(c => `<button type="button" class="sw${c === fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div>`; };
-    w.onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; fc = b.dataset.c; dr(); };
-    dr();
-    a.before(w); $("#dlgt").textContent = "Notun çerçeve rengini seç"; y.textContent = "Kaydet"; dl.hidden = false;
-    const end = v => { dl.hidden = true; w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
-    y.onclick = () => end(fc);
-    n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
   });
 }
 function ask(msg, ok = "Evet") {

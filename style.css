@@ -149,8 +149,7 @@ h2{font-size:22px}
 .card2{cursor:pointer}
 .card2.xp{--xc:var(--cc,#14532d);aspect-ratio:auto;gap:12px;background:color-mix(in srgb,var(--cc,#14141d) 14%,#0f0f17)!important;border:2px solid var(--xc)!important;box-shadow:0 14px 40px rgba(0,0,0,.6)}
 .xph{aspect-ratio:1;visibility:hidden}
-.xbk{position:fixed;inset:0;z-index:29;background:rgba(5,5,12,.3);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;animation:xbkIn .28s var(--ease) forwards}
-@keyframes xbkIn{to{opacity:1}}
+
 .card2 .openb{display:none}
 .card2.xp .openb{display:block;width:100%;min-height:42px;margin-top:4px;border:0;border-radius:12px;background:var(--xc,#14532d);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
 .card2.xp b,.card2.xp small{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-wrap;word-break:break-word}
@@ -215,8 +214,14 @@ body.vw *,body.vw *::before,body.vw *::after,body.vw::after{animation-play-state
 .mg.a{background:rgba(255,255,255,.1)}
 .chf{display:flex;gap:8px;margin-top:10px}
 .chf input{flex:1;min-width:0;height:44px;padding:0 16px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
-html.edo::after{content:"";position:fixed;inset:0;background:#0a0a11;z-index:69}
-#ed{--fs:13px;--lh:20px;position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:#0a0a11}
+html.edo::after{content:"";position:fixed;inset:0;background:var(--bg);z-index:69}
+#ed{--fs:13px;--lh:20px;position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:var(--bg)}
+#nab{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:var(--bg);animation:napIn .22s var(--ease)}
+@keyframes napIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.nabb{flex:1;min-height:0;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.nabb input{height:48px;padding:0 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);color:var(--text);font:600 15px var(--font-b);outline:0}
+.nabb textarea{flex:1;min-height:200px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);color:var(--text);font:14px/1.6 var(--font-b);resize:vertical;outline:0}
+.napt{font:600 13px var(--font-h);color:var(--muted);margin-bottom:-4px}
 .edtop{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--line)}
 .edtop input{flex:1;min-width:140px;height:40px;padding:0 16px;border:0;border-radius:999px;outline:0;background:#fff;color:#000;font:16px var(--font-b)}
 .edtop .btn-ghost{height:40px}
@@ -246,7 +251,7 @@ html.edo::after{content:"";position:fixed;inset:0;background:#0a0a11;z-index:69}
 #edhd::before{content:"";width:8px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(2px) rotate(-135deg);transition:transform .25s}
 #ed.hc #edhd::before{transform:translateY(-2px) rotate(45deg)}
 #edur button.off{background:#3a3f4b;border-color:#3a3f4b;color:#7d8494;opacity:.6;cursor:default}
-#edfb{padding:6px 10px 4px;border-bottom:1px solid var(--line);background:#0a0a11}
+#edfb{padding:6px 10px 4px;border-bottom:1px solid var(--line);background:var(--bg)}
 #edfb .fr{display:flex;gap:6px;margin-bottom:6px}
 #edfb input{flex:1;min-width:0;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font:16px var(--font-b);outline:0}
 #edfp,#edfn{background:#2a7fff}
@@ -304,17 +309,21 @@ html.edo *,html.edo *::before,html.edo *::after,html.edo::after,html.edo::before
 #foot{padding:16px 20px 96px;color:var(--muted);font-size:12px;text-align:center}
 .flogo{display:block;height:64px;width:auto;margin:0 auto 10px;object-fit:contain;animation:logoGlitch 4s infinite}
 @keyframes logoGlitch{
-  0%,91%,100%{filter:drop-shadow(0 3px 6px rgba(0,0,0,.5)) drop-shadow(0 0 10px rgba(109,74,255,.35));transform:translate(0,0);clip-path:none}
-  91.5%{filter:drop-shadow(-3px 0 var(--blue)) drop-shadow(3px 0 var(--violet));transform:translate(-3px,0) skewX(2deg);clip-path:inset(8% 0 62% 0)}
-  92%{filter:drop-shadow(3px 0 var(--violet)) drop-shadow(-2px 0 var(--blue));transform:translate(3px,0);clip-path:inset(55% 0 12% 0)}
-  92.5%{filter:drop-shadow(0 3px 6px rgba(0,0,0,.5)) drop-shadow(0 0 10px rgba(109,74,255,.35));transform:translate(-2px,0);clip-path:inset(30% 0 40% 0)}
-  93%{filter:drop-shadow(-4px 0 var(--blue));transform:translate(2px,0) skewX(-2deg);clip-path:inset(75% 0 4% 0)}
-  93.5%{filter:drop-shadow(0 3px 6px rgba(0,0,0,.5)) drop-shadow(0 0 10px rgba(109,74,255,.35));transform:translate(0,0);clip-path:none}
+  0%,90%,100%{transform:none;filter:drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}
+  92%{transform:translate(-3px,1px) skewX(-6deg);filter:drop-shadow(-3px 0 #b9a4ff) drop-shadow(3px 0 #00e5ff)}
+  94%{transform:translate(3px,-1px) skewX(5deg);filter:drop-shadow(3px 0 #b9a4ff) drop-shadow(-3px 0 #00e5ff)}
+  96%{transform:translate(-2px,0);filter:drop-shadow(-2px 0 #b9a4ff) drop-shadow(2px 0 #00e5ff)}
+  98%{transform:none;filter:drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)}
 }
 .lob{flex:none;display:grid;place-items:center;width:34px;height:34px;margin-right:9px;padding:0;border:0;border-radius:50%;background:rgba(229,72,77,.25);color:#ff8a8a;cursor:pointer;transition:background .2s}
 .lob:hover{background:rgba(229,72,77,.4)}
 .lob .ic{width:18px;height:18px;stroke:currentColor}
 .btn2{position:relative;display:block;width:100%;height:52px;margin-top:10px;overflow:hidden;border:0;border-radius:16px;background:linear-gradient(135deg,var(--violet),var(--blue));color:#fff;font:600 15px var(--font-h);cursor:pointer;box-shadow:0 8px 24px rgba(42,127,255,.3);transition:transform .25s var(--ease),box-shadow .3s}
+.nadd{background:#6d4aff;color:#fff;border:0;box-shadow:none;margin-bottom:18px}
+.nadd::after{display:none}
+.nadd:hover{filter:brightness(1.1)}
+#napx .ic,#naps .ic{width:20px;height:20px;stroke:currentColor;display:block}
+#napx,#naps{display:inline-flex;align-items:center;justify-content:center}
 .btn2::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:sheen 3.2s ease-in-out infinite}
 @keyframes sheen{0%,55%{left:-60%}100%{left:130%}}
 .btn2:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(109,74,255,.5)}
@@ -470,14 +479,15 @@ select{color-scheme:dark}
 .sigh{font-family:var(--font-sig)!important;font-weight:700!important;font-size:36px!important;line-height:1.1;letter-spacing:.5px}
 #edfb button{height:32px;min-width:40px;padding:0 12px;border:1px solid var(--line);border-radius:999px;color:#fff;font-weight:700;cursor:pointer}
 #edfp,#edfn,#edfx{width:44px;padding:0}
-#edfr,#edfa{width:76px;padding:0}
-.edup{flex-wrap:nowrap}
+#edfr{width:92px;padding:0}
+#edfa{width:76px;padding:0}
+.edup{flex-wrap:nowrap;gap:8px}
 #edfile,#edpaste,#edfbt,#edfp,#edfn,#edfx,#edfr,#edfa{background:#3d404c!important}
 #submit-wrap .btn{color:#fff;text-shadow:0 1px 6px rgba(40,20,120,.5)}
 #submit-wrap .btn::after{background:linear-gradient(120deg,#7c4dff 0%,#3b8cff 50%,#14d6c0 100%);border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -6px 14px rgba(20,40,160,.3);-webkit-backdrop-filter:none;backdrop-filter:none}
 #eds,#edel,#edx{width:68px!important;height:40px!important;padding:0!important;flex:none;text-align:center}
 #edx{background:#4f6bff!important}
-.edup .btn-ghost{width:100px!important;padding:0!important;text-align:center;flex:none;height:30px!important}
+.edup .btn-ghost{width:80px!important;flex:none;min-width:0;padding:0 10px!important;text-align:center;white-space:nowrap;height:30px!important}
 #submit-wrap::before, #submit-wrap .btn::before{background: conic-gradient(from var(--angle), transparent 0 50%, #7c4dff 60%, #3b8cff 78%, #14d6c0 92%, #fff 100%)}
 /* Ortak arka plan: yükleme, giriş ve ana ekranda görünür */
 #home{position:relative;z-index:1}
@@ -514,8 +524,6 @@ details.fold>summary::-webkit-details-marker{display:none}
 details.fold[open]>summary.sh{margin-bottom:14px}
 .fch{margin:0 4px 0 auto;flex:none;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .25s}
 details.fold[open] .fch{transform:rotate(-135deg) translateY(-2px)}
-/* Editör: Yükle / Pano / Bul daha dar, yükseklik aynı */
-#edfile,#edpaste,#edfbt{width:54px!important;min-width:0!important;padding:0 4px!important;flex:none;text-align:center}
 /* @ ön eki */
 .field.fat .atp{position:absolute;z-index:2;left:20px;top:50%;transform:translateY(-50%);font:400 16px var(--font-b);color:rgba(255,255,255,.75);pointer-events:none}
 .field.fat input{padding-left:40px}
@@ -596,14 +604,15 @@ body.adm .top h2{color:var(--gold-light)}
 .urw.v .btns button{height:34px;padding:0 6px;font-size:12px}
 /* Notlar */
 .ncard{margin-bottom:12px;padding:16px 18px;border:2px solid var(--cc,rgba(255,255,255,.2));border-radius:20px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.ncard.np{box-shadow:0 0 0 1px rgba(255,255,255,.5)}
-.ncol{width:22px!important;height:22px!important;border-radius:50%;border:2px solid rgba(255,255,255,.5)!important;padding:0}
+.ncard.np{background:rgba(255,255,255,.05)}
+
 .nch{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
 .nct{flex:1;min-width:0;padding-top:4px;font:600 16px var(--font-h);word-break:break-word}
 .nca{display:flex;flex:none;gap:2px;margin:-6px -8px 0 0}
 .nca button{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .nca button:active{background:rgba(255,255,255,.1)}
-.nca button.on{color:var(--text)}
+.nca button.on{color:#b9a4ff}
+.nca button.on .ic{fill:currentColor}
 .nca button.del{color:var(--err)}
 .nca .ic{width:18px;height:18px}
 .ntp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;word-break:break-word;color:var(--muted);font-size:14px;line-height:1.5}
@@ -648,3 +657,29 @@ body.adm .top h2{color:var(--gold-light)}
 #shell.collapsed .sprof .lb{width:0;overflow:hidden}
 .sprof+.navrow{margin-top:4px}
 .sprof .lb{margin:0;font-size:11px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Not editörü: modern görünüm */
+#nab .edtop{justify-content:space-between;flex-wrap:nowrap;align-items:center;padding:12px 16px;border:0}
+#napx,#naps{width:38px;height:38px;min-width:0;padding:0;margin:0;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:var(--text);cursor:pointer;transition:transform .2s,background .2s}
+#naps{background:#6d4aff;color:#fff;box-shadow:0 6px 18px -6px #6d4aff}
+#napx:active,#naps:active{transform:scale(.92)}
+#napx .ic,#naps .ic{width:18px;height:18px}
+#nab .nabb{padding:6px 20px 24px;gap:14px}
+#nab .nabb input{height:auto;padding:8px 0;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0;background:transparent!important;font:700 22px var(--font-h)}
+#nab .nabb input:focus{border-bottom-color:#b9a4ff!important}
+#nab .nabb textarea{border:0!important;border-radius:18px;background:rgba(255,255,255,.04)!important;padding:16px 18px}
+
+/* HTML editörü: yuvarlak simge butonları */
+#ed .edtop{align-items:center}
+#edx,#edel,#eds{display:inline-flex!important;align-items:center;justify-content:center;width:42px!important;height:42px!important;min-width:0;padding:0!important;margin:0;border-radius:50%!important;transition:transform .2s}
+#edel[hidden]{display:none!important}
+#edx{background:rgba(255,255,255,.08)!important}
+#edel{background:rgba(214,41,62,.18)!important;color:var(--err)!important}
+#eds{background:#6d4aff!important;box-shadow:0 6px 18px -6px #6d4aff!important}
+#edx:active,#edel:active,#eds:active{transform:scale(.92)}
+#edx .ic,#edel .ic,#eds .ic{width:18px;height:18px;stroke:currentColor;display:block}
+#edx{background:rgba(249,115,22,.28)!important;color:#fdba74!important}
+#edfile,#edpaste,#edfbt{display:inline-flex!important;align-items:center;justify-content:center;gap:5px}
+#edfile .ic,#edpaste .ic,#edfbt .ic{width:13px;height:13px;stroke:currentColor;flex:none}
+#edx{background:#f97316!important;color:#fff!important}
+#edel{background:#ef4444!important;color:#fff!important}
