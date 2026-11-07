@@ -492,18 +492,20 @@ function xpOff() {
 function xpOn(c) {
   const g = c.parentElement, gr = g.getBoundingClientRect(), r = c.getBoundingClientRect(), cs = getComputedStyle(g);
   if (cs.position === "static") g.style.position = "relative";
-  const pl = parseFloat(cs.paddingLeft) || 0, W = g.clientWidth - pl - (parseFloat(cs.paddingRight) || 0);
+  const pl = parseFloat(cs.paddingLeft) || 0, fullW = g.clientWidth - pl - (parseFloat(cs.paddingRight) || 0);
+  const W = Math.min(fullW, 560), pl2 = pl + (fullW - W) / 2;
   const L = r.left - gr.left - (parseFloat(cs.borderLeftWidth) || 0), T = r.top - gr.top - (parseFloat(cs.borderTopWidth) || 0);
   const ph = document.createElement("div"); ph.className = "xph"; c.before(ph);
+  const bk = document.createElement("div"); bk.className = "xbk"; g.appendChild(bk);
   const set = (el, l, t, w, h, m = 0) => Object.assign(el.style, { left: (l - m) + "px", top: (t - m) + "px", width: (w + 2 * m) + "px", height: (h + 2 * m) + "px" });
   c.classList.add("xp");
   Object.assign(c.style, { position: "absolute", zIndex: "30", transition: "none", overflow: "hidden" });
-  set(c, pl, T, W, 0); c.style.height = "auto"; const H = c.offsetHeight;
+  set(c, pl2, T, W, 0); c.style.height = "auto"; const H = c.offsetHeight;
   set(c, L, T, r.width, r.height);
   void c.offsetWidth;
-  const tr = "left .3s var(--ease),top .3s var(--ease),width .3s var(--ease),height .3s var(--ease)";
+  const tr = "left .32s var(--ease),top .32s var(--ease),width .32s var(--ease),height .32s var(--ease)";
   c.style.transition = tr;
-  set(c, pl, T, W, H);
+  set(c, pl2, T, W, H);
   ctx.xid = c.dataset.id;
   setTimeout(() => { if (c.classList.contains("xp")) { c.style.transition = "none"; c.style.height = "auto"; c.style.overflow = ""; } }, 340);
 }
@@ -1338,10 +1340,14 @@ const noteHtml = t => {
 function notesList(q) {
   const l = ctx.S.notes.filter(n => !n.deleted && (!q || ((n.title || "") + " " + n.text).toLowerCase().includes(q))).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || ms(b.updatedAt) - ms(a.updatedAt));
   return l.length
-    ? l.map(n => `<div class="ncard${n.pinned ? " np" : ""}${n.id === ctx.nlast ? " sel" : ""}" data-a="nview" data-id="${n.id}"><div class="nch"><div class="nct">${esc(n.title || "Başlıksız")}</div><div class="nca"><button type="button" class="${n.pinned ? "on" : ""}" data-a="npin" data-id="${n.id}" title="${n.pinned ? "Sabiti kaldır" : "Sabitle"}" aria-label="Sabitle">${svg("pin")}</button><button type="button" data-a="nedit" data-id="${n.id}" title="Düzenle" aria-label="Düzenle">${svg("edit")}</button><button type="button" class="del" data-a="ndel" data-id="${n.id}" title="Sil" aria-label="Sil">${svg("trash")}</button></div></div><div class="ntp">${esc(n.text.replace(/##[\s\S]*?##/g, " ‹/› kod "))}</div><small>${fmt(n.updatedAt)}</small></div>`).join("")
+    ? l.map(n => `<div class="ncard${n.pinned ? " np" : ""}${n.id === ctx.nlast ? " sel" : ""}" style="--cc:${cardColor(n)}" data-a="nview" data-id="${n.id}"><div class="nch"><div class="nct">${esc(n.title || "Başlıksız")}</div><div class="nca"><button type="button" class="ncol" data-a="ncolor" data-id="${n.id}" style="background:${cardColor(n)}" title="Çerçeve rengi" aria-label="Çerçeve rengi"></button><button type="button" class="${n.pinned ? "on" : ""}" data-a="npin" data-id="${n.id}" title="${n.pinned ? "Sabiti kaldır" : "Sabitle"}" aria-label="Sabitle">${svg("pin")}</button><button type="button" data-a="nedit" data-id="${n.id}" title="Düzenle" aria-label="Düzenle">${svg("edit")}</button><button type="button" class="del" data-a="ndel" data-id="${n.id}" title="Sil" aria-label="Sil">${svg("trash")}</button></div></div><div class="ntp">${esc(n.text.replace(/##[\s\S]*?##/g, " ‹/› kod "))}</div><small>${fmt(n.updatedAt)}</small></div>`).join("")
     : empty(0, q ? "Eşleşen not yok." : "Henüz not yok.");
 }
-const notesCompose = () => `<form id="nf" class="addf ncf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz... Kod için ## kod ## arasına yaz" maxlength="20000" style="height:120px"></textarea><div class="ncr"><button type="button" class="gh" data-a="ninsc">‹/› Kod ekle</button>${ctx.nid ? '<button type="button" class="gh" data-a="ncancel">Vazgeç</button>' : ""}</div><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form>`;
+const notesCompose = () => {
+  const open = !!(ctx.nAddOpen || ctx.nid);
+  const form = `<form id="nf" class="addf ncf"><input id="nt" placeholder="Başlık (isteğe bağlı)" maxlength="80"><textarea id="nx" placeholder="Notunu yaz... Kod için ## kod ## arasına yaz" maxlength="20000" style="height:120px"></textarea><div class="ncr"><button type="button" class="gh" data-a="ninsc">‹/› Kod ekle</button>${ctx.nid ? '<button type="button" class="gh" data-a="ncancel">Vazgeç</button>' : ""}</div><p class="err" id="e-nf"></p><button class="btn2" type="submit"><span class="lbl">${ctx.nid ? "Güncelle" : "Not Ekle"}</span><i class="spin"></i></button></form>`;
+  return `<div class="usc"><div class="ush2" data-a="naddtog"><b>Not Ekle</b><i class="fch${open ? " up" : ""}"></i></div>${open ? form : ""}</div>`;
+};
 function openNote(id, quiet) {
   const n = ctx.S.notes.find(x => x.id === id && !x.deleted);
   if (!n) return closeNote();
@@ -1400,8 +1406,10 @@ const homeClick3 = async e => {
     if (d.a === "nview") openNote(id);
     if (d.a === "nclose") closeNote();
     if (d.a === "npin") { const n = S.notes.find(x => x.id === id); await updateDoc(doc(db, "notes", id), { pinned: !n.pinned }); }
-    if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
-    if (d.a === "ncancel") { ctx.nid = null; render(); }
+    if (d.a === "ncolor") { const n = S.notes.find(x => x.id === id); const c = await askColor(cardColor(n)); if (c) await updateDoc(doc(db, "notes", id), { fc: c }); }
+    if (d.a === "nedit") { const n = S.notes.find(x => x.id === id); ctx.nid = id; ctx.nAddOpen = true; render(); $("#nt").value = n.title || ""; $("#nx").value = n.text; scrollTo(0, 0); }
+    if (d.a === "ncancel") { ctx.nid = null; ctx.nAddOpen = false; render(); }
+    if (d.a === "naddtog") { ctx.nAddOpen = !ctx.nAddOpen; render(); }
     if (d.a === "ndel" && await ask("Bu not silinsin mi?", "Sil")) { await updateDoc(doc(db, "notes", id), { deleted: true, deletedAt: serverTimestamp() }); }
     if (d.a === "ninsc") { const t = $("#nx"), s0 = t.selectionStart, s1 = t.selectionEnd, sel = t.value.slice(s0, s1); t.setRangeText("##\n" + sel + "\n##", s0, s1, "end"); t.focus(); if (!sel) t.setSelectionRange(s0 + 3, s0 + 3); }
     if (d.a === "ccopy") {
@@ -1638,6 +1646,21 @@ function askMeta(t, d, fs0, fc0, fc20) {
     y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc, fc2: two ? fc2 : "" }); };
     n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
     i.focus();
+  });
+}
+function askColor(fc0) {
+  return new Promise(res => {
+    const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
+    let fc = fc0 || PAL[0];
+    const w = document.createElement("div");
+    w.style.cssText = "margin:0 0 16px;display:flex;flex-direction:column;gap:10px;align-items:center";
+    const dr = () => { w.innerHTML = `<div class="fxp" style="background:${fc}"></div><div class="fxr">${SWATCH.map(c => `<button type="button" class="sw${c === fc ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div>`; };
+    w.onclick = e => { const b = e.target.closest("[data-c]"); if (!b) return; fc = b.dataset.c; dr(); };
+    dr();
+    a.before(w); $("#dlgt").textContent = "Notun çerçeve rengini seç"; y.textContent = "Kaydet"; dl.hidden = false;
+    const end = v => { dl.hidden = true; w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
+    y.onclick = () => end(fc);
+    n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
   });
 }
 function ask(msg, ok = "Evet") {
