@@ -1,5 +1,7 @@
 @property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
 :root{--bg:#07070d;--text:#f5f5f7;--muted:#8b8b99;--violet:#6d4aff;--blue:#2a7fff;--gold:#d4af37;--gold-light:#f5d77a;--err:#ff7a99;--ok:#6ee7b7;--line:rgba(255,255,255,.1);--font-h:"Sora",system-ui,sans-serif;--font-b:"Inter",system-ui,sans-serif;--font-sig:"Dancing Script","Segoe Script","Brush Script MT",cursive;--ease:cubic-bezier(.22,1,.36,1)}
+:focus{outline:0}
+:focus-visible{outline:2px solid var(--violet);outline-offset:2px;border-radius:4px}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html::after{content:"";position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.03;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
