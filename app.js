@@ -993,7 +993,7 @@ const homeSubmit2 = async e => {
 };
 
 /* Kod editörü */
-const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#ffffff"]; 
+const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#9da5e2", "b3b3b3", "FFFC46"]; 
 const SWATCH = PAL;
 const cardColor2 = h => /^#[0-9a-f]{6}$/i.test(h.fc2 || "") ? h.fc2 : "";
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
@@ -1303,7 +1303,7 @@ async function changePassword(cur, nw) {
   await updatePassword(u, nw);
 }
 
-const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="${PAL[1]}" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
+const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="#007bff" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
 const vb = (uid, z) => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg(z) : "";
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
