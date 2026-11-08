@@ -993,7 +993,7 @@ const homeSubmit2 = async e => {
 };
 
 /* Kod editörü */
-const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#9da5e2", "b3b3b3", "FFFC46"]; 
+const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#9da5e2", "#b3b3b3", "#fffc46"]; 
 const SWATCH = PAL;
 const cardColor2 = h => /^#[0-9a-f]{6}$/i.test(h.fc2 || "") ? h.fc2 : "";
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
