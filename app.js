@@ -641,6 +641,15 @@ function clearHome() {
 }
 
 /* HTML görüntüleme + koruma */
+/* İndirilen HTML tek başına açılınca Türkçe harfler bozulmasın */
+const utf8Html = h => {
+  const m = '<meta charset="utf-8">';
+  h = String(h).replace(/<meta[^>]+charset[^>]*>/gi, "");
+  if (/<head(\s[^>]*)?>/i.test(h)) return h.replace(/<head(\s[^>]*)?>/i, x => x + m);
+  if (/<html(\s[^>]*)?>/i.test(h)) return h.replace(/<html(\s[^>]*)?>/i, x => x + m);
+  if (/^\s*<!doctype[^>]*>/i.test(h)) return h.replace(/^\s*<!doctype[^>]*>/i, x => x + m);
+  return m + h;
+};
 const HOOK = '<script>var isTouch=("ontouchstart" in window)||navigator.maxTouchPoints>0;addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();isTouch||parent.postMessage({x:1},"*")},true)<\/script>';
 const isBad = e => {
   const k = (e.key || "").toLowerCase(), c = e.ctrlKey || e.metaKey;
@@ -1460,8 +1469,8 @@ const homeClick3 = async e => {
       const bd = await getDoc(doc(db, "htmlBodies", id));
       if (!bd.exists()) return toast("İçerik bulunamadı.");
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([bd.data().html], { type: "text/html" }));
-      a.download = (d.n || id).replace(/[^\w\-]+/g, "_") + ".html";
+      a.href = URL.createObjectURL(new Blob([utf8Html(bd.data().html)], { type: "text/html;charset=utf-8" }));
+      a.download = (d.n || id).replace(/[^\p{L}\p{N}_\-]+/gu, "_") + ".html";
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     }
