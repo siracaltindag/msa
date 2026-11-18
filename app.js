@@ -330,7 +330,7 @@ function hcard(h) {
   const xp = ctx.xid === h.id ? " xp" : "", lk = S.likes.some(l => l.htmlId === h.id && l.uid === ctx.uid), fv = S.prefs.favs.includes(h.id), pn = S.prefs.pins.includes(h.id);
   const own = h.by === ctx.uid, c2 = cardColor2(h);
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
-  return `<div class="card2${xp}${c2 ? " gr" : ""}" style="--cc:${cardColor(h)}${c2 ? `;--cc2:${c2}` : ""}" data-a="open" data-id="${h.id}"><div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}${h.status === "passive" ? '<em class="bd">Pasif · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", `<i>${cc}</i>`)}${B("fav", fv, "star")}${B("pin", pn, "pin")}${ctx.admin && (own || h.status === "passive") && (h.status === "approved" || h.status === "passive") ? B("hpas", h.status === "passive", h.status === "passive" ? "eyeoff" : "eye") : ""}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
+  return `<div class="card2${xp}${c2 ? " gr" : ""}" style="--cc:${cardColor(h)}${c2 ? `;--cc2:${c2}` : ""}" data-a="open" data-id="${h.id}">${h.ic ? `<span class="hic">${esc(h.ic)}</span>` : ""}<div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}${h.status === "passive" ? '<em class="bd">Pasif · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", `<i>${cc}</i>`)}${B("fav", fv, "star")}${B("pin", pn, "pin")}${ctx.admin && (own || h.status === "passive") && (h.status === "approved" || h.status === "passive") ? B("hpas", h.status === "passive", h.status === "passive" ? "eyeoff" : "eye") : ""}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
 const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
 
@@ -350,7 +350,7 @@ function adminPage() {
   };
   const U = S.users.filter(u => u.id !== ADMIN_UID).sort((a, b) => (a.status === "pending" ? 0 : 1) - (b.status === "pending" ? 0 : 1) || (a.username || "").localeCompare(b.username || ""));
   const AC = { requested: ["İstedi", "pending"], granted: ["İzinli", "approved"], denied: ["Reddedildi", "blocked"] };
-  const PF = { fullName: "Ad Soyad", username: "Kullanıcı adı", contactEmail: "E-posta", bio: "Biyografi", photoURL: "Fotoğraf" };
+  const PF = { fullName: "Ad Soyad", username: "Kullanıcı adı", contactEmail: "E-posta", photoURL: "Fotoğraf" };
   const rw = (main, btns, v) => `<div class="urw${v ? " v" : ""}"><div>${main}</div><div class="btns">${btns}</div></div>`;
   const none = '<p class="muted">Yok</p>', loading = '<p class="muted">Yükleniyor...</p>';
   const detail = u => {
@@ -643,12 +643,12 @@ function clearHome() {
 /* HTML görüntüleme + koruma */
 /* İndirilen HTML tek başına açılınca Türkçe harfler bozulmasın */
 const utf8Html = h => {
-  const m = '<meta charset="utf-8">';
-  h = String(h).replace(/<meta[^>]+charset[^>]*>/gi, "");
-  if (/<head(\s[^>]*)?>/i.test(h)) return h.replace(/<head(\s[^>]*)?>/i, x => x + m);
-  if (/<html(\s[^>]*)?>/i.test(h)) return h.replace(/<html(\s[^>]*)?>/i, x => x + m);
-  if (/^\s*<!doctype[^>]*>/i.test(h)) return h.replace(/^\s*<!doctype[^>]*>/i, x => x + m);
-  return m + h;
+  const m = '<meta charset="utf-8">', B = "\uFEFF";
+  h = String(h).replace(/^\uFEFF/, "").replace(/<meta[^>]+charset[^>]*>/gi, "");
+  if (/<head(\s[^>]*)?>/i.test(h)) return B + h.replace(/<head(\s[^>]*)?>/i, x => x + m);
+  if (/<html(\s[^>]*)?>/i.test(h)) return B + h.replace(/<html(\s[^>]*)?>/i, x => x + m);
+  if (/^\s*<!doctype[^>]*>/i.test(h)) return B + h.replace(/^\s*<!doctype[^>]*>/i, x => x + m);
+  return B + m + h;
 };
 const HOOK = '<script>var isTouch=("ontouchstart" in window)||navigator.maxTouchPoints>0;addEventListener("keydown",e=>parent.postMessage({k:e.key,c:e.ctrlKey,m:e.metaKey,s:e.shiftKey},"*"),true);addEventListener("contextmenu",e=>{e.preventDefault();isTouch||parent.postMessage({x:1},"*")},true)<\/script>';
 const isBad = e => {
@@ -745,8 +745,10 @@ async function violate(d) {
     if (ok) { notify("violation", { detail: g.d }); try { localStorage.removeItem("msa_vio"); } catch {} }
   });
 }
-function exitViewer() { document.body.classList.remove("vw"); if (ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
-$("#vx").onclick = exitViewer;
+function exitViewer() { vxHide(); document.body.classList.remove("vw"); if (ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
+let vxt;
+function vxHide() { clearTimeout(vxt); $("#vx").classList.remove("open"); }
+$("#vx").onclick = () => { const b = $("#vx"); if (b.classList.contains("open")) return exitViewer(); b.classList.add("open"); vxt = setTimeout(vxHide, 3000); };
 
 const KVKK_URL = "ek-/kvkk.txt";
 async function kvkkHtml() {
@@ -823,7 +825,7 @@ async function openHtml(id, h) {
     } catch {}
   }
   frame.srcdoc = withShim((h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html, [h.byName]) : b.data().html) + (ctx.admin ? "" : HOOK), ld);
-  viewer.hidden = false; document.body.style.overflow = "hidden"; document.body.classList.add("vw");
+  viewer.hidden = false; vxHide(); document.body.style.overflow = "hidden"; document.body.classList.add("vw");
   guard(true);
 }
 
@@ -993,7 +995,7 @@ const homeSubmit2 = async e => {
 };
 
 /* Kod editörü */
-const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#9da5e2", "#b3b3b3", "#fffc46"]; 
+const PAL = ["#6600ff", "#007bff", "#3a00ff", "#00e5ff", "#b800e6", "#ff00aa", "#c71585", "#ff003c", "#b30000", "#ff4500", "#ff8c00", "#ffcc00", "#ccff00", "#9acd32", "#39ff14", "#00a83f", "#00fa9a", "#f2c091", "#a6603a", "#cf6969", "#b55c5c"]; 
 const SWATCH = PAL;
 const cardColor2 = h => /^#[0-9a-f]{6}$/i.test(h.fc2 || "") ? h.fc2 : "";
 const cardColor = h => /^#[0-9a-f]{6}$/i.test(h.fc || "") ? h.fc : PAL[[...String(h.id || "")].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 0) % PAL.length];
@@ -1258,12 +1260,12 @@ $("#eds").onclick = async () => {
   const e = ctx.ed, code = edh.value;
   if (!code.trim()) return toast("HTML gerekli.");
   if (code.length > 900000) return toast("HTML çok büyük (en fazla ~900 KB).");
-  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? "", e.fs, e.fc, e.fc2); if (!mm) return;
-  e.mt = mm.t; e.md = mm.d; e.fs = mm.fs; e.fc = mm.fc; e.fc2 = mm.fc2; const t = mm.t, d = mm.d;
+  const mm = await askMeta(e.mt ?? e.h.title ?? "", e.md ?? e.h.desc ?? "", e.fs, e.fc, e.fc2, e.mi ?? e.h.ic ?? ""); if (!mm) return;
+  e.mt = mm.t; e.md = mm.d; e.mi = mm.ic; e.fs = mm.fs; e.fc = mm.fc; e.fc2 = mm.fc2; const t = mm.t, d = mm.d;
   try {
     if (e.isNew) {
       const ref = doc(collection(db, "htmls")), w = writeBatch(db);
-      w.set(ref, { title: t, desc: d, by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc, ...(e.fc2 ? { fc2: e.fc2 } : {}) } : {}) });
+      w.set(ref, { title: t, desc: d, ...(e.mi ? { ic: e.mi } : {}), by: ctx.uid, byName: ctx.name, status: canFree() ? "approved" : "pending", createdAt: serverTimestamp(), ...(e.fs ? { fs: e.fs, fc: e.fc, ...(e.fc2 ? { fc2: e.fc2 } : {}) } : {}) });
       w.set(doc(db, "htmlBodies", ref.id), { html: code, by: ctx.uid });
       await w.commit();
       if (!canFree()) notify("html_pending", { detail: t });
@@ -1271,13 +1273,13 @@ $("#eds").onclick = async () => {
       if (canFree()) toast("Yayınlandı."); else await inform("HTML admin onayına gönderildi. Güvenlik için paylaşılan her HTML ve her düzenleme admin onayından geçer. Onaylı bir içeriğin sonradan gizlice değiştirilip diğer kullanıcılara zararlı kod gösterilmesini önlemek için böyle yapıyoruz. Onaylanana kadar başkaları göremez.");
       return;
     }
-    const ch = t !== e.h.title || d !== (e.h.desc || "") || code !== e.code;
+    const ch = t !== e.h.title || d !== (e.h.desc || "") || e.mi !== (e.h.ic || "") || code !== e.code;
     const fchg = e.fs !== (e.h.fs || "") || (e.fs && (e.fc !== cardColor(e.h) || e.fc2 !== cardColor2(e.h)));
     const st = fchg ? { fs: e.fs, fc: e.fc, fc2: e.fc2 } : {};
     if (ch || fchg) {
       const w = writeBatch(db);
       if (ch) {
-        w.update(doc(db, "htmls", e.id), { title: t, desc: d, ...(canFree() ? {} : { status: "pending" }), ...st });
+        w.update(doc(db, "htmls", e.id), { title: t, desc: d, ic: e.mi, ...(canFree() ? {} : { status: "pending" }), ...st });
         w.update(doc(db, "htmlBodies", e.id), { html: code });
       } else w.update(doc(db, "htmls", e.id), st);
       await w.commit();
@@ -1303,7 +1305,7 @@ async function changePassword(cur, nw) {
   await updatePassword(u, nw);
 }
 
-const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="#007bff" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
+const vbSvg = (z = 16) => `<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="${PAL[1]}" aria-label="Onaylı Hesap" style="vertical-align:${typeof z === "string" ? "-.19em" : "-3px"};margin-left:${typeof z === "string" ? ".19em" : "3px"}"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g></svg>`;
 const vb = (uid, z) => uid === ADMIN_UID || (ctx.S?.badges || []).includes(uid) ? vbSvg(z) : "";
 const avPh = uid => { const p = ctx.S?.profiles?.[uid]?.photoURL; return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(p || "") ? p : ""; };
 const avHtml = (uid, name, cls = "av") => {
@@ -1413,10 +1415,10 @@ PAGES.settings = () => {
 };
 
 
-const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || atn(ctx.name))}${vb(ctx.uid, 26)}</h2>${p.bio ? `<p class="pbi">${esc(p.bio)}</p>` : ""}<div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
+const profHead = p => { const S = ctx.S; return `<h2 class="pnm">${esc(p.fullName || atn(ctx.name))}${vb(ctx.uid, 26)}</h2><div class="pst"><div><b>${S.mine.length}</b><span>HTML</span></div><div><b>${S.likes.filter(l => S.mine.some(m => m.id === l.htmlId)).length}</b><span>Beğeni</span></div><div><b>${S.prefs.favs.length}</b><span>Favori</span></div></div>`; };
 PAGES.profile = () => {
   const p = ctx.prof || {};
-  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><div class="atf"><span>@</span><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(String(ctx.name).replace(/^@+/, ""))}" autocomplete="off" autocapitalize="none"></div>${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<label class="lb" for="pbio">Biyografi</label><textarea id="pbio" placeholder="Biyografi" maxlength="300">${esc(p.bio)}</textarea><p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? atn(ctx.name) : ctx.email)}</p></div>`;
+  return `<div class="pcard phc">${avatar()}${profHead(p)}<form id="pf" class="addf"><label class="lb" for="pfn">Ad Soyad</label><input id="pfn" placeholder="Ad Soyad" maxlength="60" value="${esc(p.fullName)}"><label class="lb" for="pun">Kullanıcı adı</label><div class="atf"><span>@</span><input id="pun" placeholder="Kullanıcı adı" maxlength="20" value="${esc(String(ctx.name).replace(/^@+/, ""))}" autocomplete="off" autocapitalize="none"></div>${isFake(ctx.email) ? `<label class="lb" for="pem">E-posta</label><input id="pem" type="email" placeholder="E-posta${p.mailExempt ? "" : " (paylaşılan HTML için zorunlu)"}" maxlength="80" value="${esc(p.contactEmail)}">` : ""}<p class="err" id="e-pf"></p><button class="btn2" type="submit"><span class="lbl">Kaydet</span><i class="spin"></i></button></form><p class="muted">Giriş: ${esc(isFake(ctx.email) ? atn(ctx.name) : ctx.email)}</p></div>`;
 };
 
 home.addEventListener("input", e => {
@@ -1513,7 +1515,7 @@ const homeSubmit3 = async e => {
   e.preventDefault();
   try {
     if (f === "pf") {
-      const n = { fullName: $("#pfn").value.trim(), username: atn($("#pun").value.trim()), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || ""), bio: $("#pbio").value.trim() };
+      const n = { fullName: $("#pfn").value.trim(), username: atn($("#pun").value.trim()), contactEmail: $("#pem") ? $("#pem").value.trim().toLowerCase() : (ctx.prof.contactEmail || "") };
       if (!/^[\p{L}\p{N}_.]{3,20}$/u.test(n.username.slice(1))) return setErr("pf", "Kullanıcı adı 3-20 karakter olmalı (harf, rakam, _ ve .).");
       if (n.contactEmail && !okMail(n.contactEmail)) return setErr("pf", "Geçersiz e-posta.");
       setErr("pf");
@@ -1655,11 +1657,14 @@ function inform(msg) {
     y.onclick = end; d.onclick = e => { if (e.target === d) end(); };
   });
 }
-function askMeta(t, d, fs0, fc0, fc20) {
+const icClip = v => { const s = String(v).trim(); return (window.Intl?.Segmenter ? [...new Intl.Segmenter().segment(s)].map(z => z.segment) : [...s]).slice(0, 4).join(""); };
+function askMeta(t, d, fs0, fc0, fc20, ic0 = "") {
   return new Promise(res => {
     const dl = $("#dlg"), y = $("#dlgy"), n = $("#dlgn"), a = dl.querySelector(".dlga");
     const i = document.createElement("input"), x = document.createElement("textarea");
-    i.className = "sq"; i.maxLength = 80; i.placeholder = "Başlık"; i.value = t; i.style.margin = "0 0 10px";
+    i.className = "sq"; i.maxLength = 80; i.placeholder = "Başlık"; i.value = t; i.style.cssText = "flex:1;min-width:0;margin:0";
+    const k = document.createElement("input"); k.className = "sq"; k.placeholder = "Simge"; k.value = ic0; k.style.cssText = "flex:none;width:76px;margin:0;text-align:center"; k.oninput = () => { const q = icClip(k.value); if (q !== k.value) k.value = q; };
+    const r = document.createElement("div"); r.style.cssText = "display:flex;gap:8px;margin:0 0 10px"; r.append(i, k);
     x.className = "sq"; x.maxLength = 200; x.placeholder = "Açıklama"; x.value = d; x.style.cssText = "margin:0 0 16px;height:120px;padding:12px 16px;border-radius:18px;resize:vertical;max-width:none";
     let fs = "beam", fc = fc0 || PAL[0], fc2 = fc20 || "", two = !!fc20;
     const w = document.createElement("div");
@@ -1674,9 +1679,9 @@ function askMeta(t, d, fs0, fc0, fc20) {
       dr();
     };
     dr();
-    a.before(i, x, w); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
-    const end = v => { dl.hidden = true; i.remove(); x.remove(); w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
-    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), fs, fc, fc2: two ? fc2 : "" }); };
+    a.before(r, x, w); $("#dlgt").textContent = "Başlık ve açıklama"; y.textContent = "Kaydet"; dl.hidden = false;
+    const end = v => { dl.hidden = true; r.remove(); x.remove(); w.remove(); y.onclick = n.onclick = dl.onclick = null; res(v); };
+    y.onclick = () => { if (!i.value.trim()) return toast("Başlık gerekli."); end({ t: i.value.trim(), d: x.value.trim(), ic: icClip(k.value), fs, fc, fc2: two ? fc2 : "" }); };
     n.onclick = () => end(null); dl.onclick = e => { if (e.target === dl) end(null); };
     i.focus();
   });
