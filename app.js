@@ -747,6 +747,10 @@ async function violate(d) {
 }
 function exitViewer() { vxHide(); document.body.classList.remove("vw"); if (ctx.lsKey && localStorage.getItem(ctx.lsKey + "_d")) fsPush(); frame.srcdoc = ""; viewer.hidden = true; document.body.style.overflow = ""; guard(false); }
 let vxt;
+function vxFlash() {
+  const off = { backgroundColor: "#000" }, on = { backgroundColor: "#ff0000" };
+  $("#vx").animate([off, on, off, on, off, on, off], { duration: 900 });
+}
 function vxHide() { clearTimeout(vxt); $("#vx").classList.remove("open"); }
 $("#vx").onclick = () => { const b = $("#vx"); if (b.classList.contains("open")) return exitViewer(); b.classList.add("open"); vxt = setTimeout(vxHide, 3000); };
 
@@ -825,7 +829,7 @@ async function openHtml(id, h) {
     } catch {}
   }
   frame.srcdoc = withShim((h.by === ADMIN_UID && !ctx.admin ? protect(b.data().html, [h.byName]) : b.data().html) + (ctx.admin ? "" : HOOK), ld);
-  viewer.hidden = false; vxHide(); document.body.style.overflow = "hidden"; document.body.classList.add("vw");
+  viewer.hidden = false; vxHide(); vxFlash(); document.body.style.overflow = "hidden"; document.body.classList.add("vw");
   guard(true);
 }
 
