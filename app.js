@@ -332,7 +332,8 @@ function hcard(h) {
   const B = (a, on, ic, x = "") => `<button data-a="${a}" data-id="${h.id}" class="${on ? "on" : ""}">${svg(ic)}${x}</button>`;
   return `<div class="card2${xp}${c2 ? " gr" : ""}" style="--cc:${cardColor(h)}${c2 ? `;--cc2:${c2}` : ""}" data-a="open" data-id="${h.id}">${h.ic ? `<span class="hic">${esc(h.ic)}</span>` : ""}<div><div class="by">${avHtml(h.by, h.byName, "av xs")}<span class="n">${esc(atn(h.byName))}${vb(h.by, "1.07em")}</span></div><b>${esc(h.title)}</b><small>${esc(h.desc)}</small>${h.status === "pending" ? '<em class="bd">Onay bekliyor · sadece sen görüyorsun</em>' : ""}${h.status === "passive" ? '<em class="bd">Pasif · sadece sen görüyorsun</em>' : ""}</div><div class="acts">${B("like", lk, "heart", `<i>${n}</i>`)}${B("cm", 0, "msg", `<i>${cc}</i>`)}${B("fav", fv, "star")}${B("pin", pn, "pin")}${ctx.admin && (own || h.status === "passive") && (h.status === "approved" || h.status === "passive") ? B("hpas", h.status === "passive", h.status === "passive" ? "eyeoff" : "eye") : ""}${own ? B("edit", 0, "pen") : ctx.admin ? B("del", 0, "trash") : ""}</div><button type="button" class="openb" data-a="openh" data-id="${h.id}">Aç</button></div>`;
 }
-const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id)).map(hcard).join("")}</div>` : empty(1);
+const hts = h => h.createdAt === undefined ? 0 : ms(h.createdAt);
+const grid = l => l.length ? `<div class="grid">${[...l].sort((a, b) => ctx.S.prefs.pins.includes(b.id) - ctx.S.prefs.pins.includes(a.id) || hts(b) - hts(a)).map(hcard).join("")}</div>` : empty(1);
 
 const curTab = () => ["reg", "pend", "users", "msgs", "data"].find(k => ctx.ox?.[k]) || (ctx.S.users.some(u => u.id !== ADMIN_UID && u.status === "pending") ? "reg" : ctx.S.pend.length + ctx.S.reqs.length > 0 ? "pend" : "users");
 const secOpen = k => curTab() === k;
